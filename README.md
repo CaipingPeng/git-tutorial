@@ -15,6 +15,7 @@
 - 《Mastering Git》：Git 对象模型、索引、引用、stash 内部机制、`.gitignore` 失效原因、历史清理和工作流取舍。
 - 《Advanced Git》：rebase 冲突视角、`.gitignore` 事后补救、reset/reflog/revert 边界，以及集中式、功能分支、Gitflow、Forking Workflow 的协作取舍。
 - 《Git Essentials, Second Edition》：提交质量、配置层级、别名安全、bare/archive/bundle 备份、SVN 迁移心态和工作流选择。
+- 《Git Notes for Professionals》（GoalKicker，Stack Overflow 文档汇编）：作为命令级食谱补充，覆盖标签、`.gitattributes`、`git worktree`、`git clean`、修订号语法、`shortlog`/`.mailmap`、LFS 等零散但实用的知识点。
 
 完整来源说明见 [参考资料](./references.md)。
 
@@ -115,6 +116,7 @@
 11. [提交历史与查询](./Git教程系列-11-提交历史与查询.md)
     - `log`、`show`、`blame`、`bisect`
     - 如何读历史、定位问题、找到改动原因
+    - `git tag` 标记版本、`git shortlog` 统计贡献者
 
 12. [团队工作流与分支策略](./Git教程系列-12-团队工作流与分支策略.md)
     - 集中式、Feature Branch、GitHub Flow、Git Flow、Trunk-based
@@ -137,6 +139,7 @@
 
 15. [Git 配置与效率工具](./Git教程系列-15-Git配置与效率工具.md)
     - 常用 config、`push.default`、alias、editor、credential helper
+    - `.gitattributes` 统一跨平台换行与二进制规则
     - CLI、GUI、VS Code、GitHub Desktop 如何配合
     - hooks 入门
 
@@ -145,6 +148,7 @@
 16. [Git 内部原理与仓库维护](./Git教程系列-16-Git内部原理与仓库维护.md)
     - blob、tree、commit、tag 的对象模型
     - 索引、引用、HEAD、reflog、stash、FETCH_HEAD、ORIG_HEAD
+    - 修订号语法（`HEAD~`、`^`、`@{n}`）和 `git worktree` 多工作目录
     - `.gitignore` 对已跟踪文件无效的原因和事后补救边界
     - bare 仓库、archive、bundle、迁移和历史清理的安全边界
 

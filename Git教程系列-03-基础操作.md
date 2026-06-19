@@ -562,6 +562,19 @@ git commit -m "停止跟踪本地环境配置"
 
 ---
 
+### 空目录不会被 Git 跟踪
+
+Git 只跟踪文件，不跟踪空目录。如果你需要一个空目录作为占位（比如 `logs/`、`uploads/`），直接建空文件夹提交是没用的，`git status` 不会看到它。常见做法是在里面放一个占位文件：
+
+```bash
+mkdir logs
+echo "" > logs/.gitkeep
+git add logs/.gitkeep
+```
+
+`.gitkeep` 不是 Git 的特殊命令，只是一个约定俗成的占位文件名，让 Git 能把这个目录纳入版本管理。
+
+---
 ## 14. 删除和移动文件：`git rm` 与 `git mv`
 
 如果你想删除一个已经被 Git 管理的文件，可以直接删除文件后再 `git add`，也可以用：

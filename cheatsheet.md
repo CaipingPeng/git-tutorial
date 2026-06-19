@@ -38,6 +38,25 @@
 | 看某个文件历史 | `git log -- 文件名` |
 | 看每行最后是谁改的 | `git blame 文件名` |
 | 找回 HEAD 移动记录 | `git reflog` |
+| 按作者统计提交数 | `git shortlog -sn` |
+| 列出标签 | `git tag` |
+
+## 我想标记版本
+
+| 目标 | 命令 |
+|---|---|
+| 创建附注标签（正式发布用） | `git tag -a v1.0.0 -m "说明"` |
+| 创建轻量标签 | `git tag v1.0.0` |
+| 给某次提交打标签 | `git tag -a v0.9.0 哈希 -m "说明"` |
+| 列出标签 | `git tag` |
+| 按模式过滤标签 | `git tag -l "v1.*"` |
+| 查看标签指向的提交 | `git show v1.0.0` |
+| 推送单个标签 | `git push origin v1.0.0` |
+| 推送所有标签 | `git push origin --tags` |
+| 推送并附带附注标签 | `git push --follow-tags` |
+| 从标签开分支修 bug | `git switch -c hotfix-1.0 v1.0.0` |
+| 删本地标签 | `git tag -d v1.0.0` |
+| 删远程标签 | `git push origin --delete v1.0.0` |
 
 ## 我想开分支或切分支
 
@@ -91,6 +110,8 @@
 | 撤销已提交但未推送，保留改动在暂存区 | `git reset --soft HEAD~1` |
 | 撤销已推送提交 | `git revert 提交哈希` |
 | 找回误删提交 | `git reflog` 后从目标提交创建分支 |
+| 预览将删除的未跟踪文件 | `git clean -nd` |
+| 删除未跟踪文件和目录 | `git clean -fd` |
 
 ## 我想临时保存现场
 
@@ -113,6 +134,9 @@
 | 查看 Git 对象内容 | `git cat-file -p 对象哈希` |
 | 查看对象占用空间 | `git count-objects -vH` |
 | 检查仓库完整性 | `git fsck` |
+| 新开一个工作树检出的分支 | `git worktree add ../path 分支` |
+| 列出所有工作树 | `git worktree list` |
+| 提交跨平台换行/二进制规则 | `.gitattributes` |
 
 ## 我想导出或离线搬运仓库
 

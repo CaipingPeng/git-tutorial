@@ -331,6 +331,10 @@ git show ORIG_HEAD
 
 清理历史不是“更高级的撤销”，而是一次仓库迁移。
 
+如果项目长期需要存放大体积二进制文件（视频、设计稿、数据集、模型权重），反复清理历史治标不治本。更稳妥的做法是用 [Git LFS](https://git-lfs.com) 把大文件存到外部存储，仓库本身只保留指针。这样克隆、fetch 仍然轻快，历史也不会被大文件撑爆。Git LFS 需要服务端支持，GitHub、GitLab、Gitee 都提供，但要注意其存储和流量通常有配额。
+
+
+
 ---
 
 ## 10. 导出、备份和 bare 仓库
@@ -409,7 +413,71 @@ git clone --bare my-project my-project.git
 
 ---
 
-## 12. 什么内容不应该过早深入？
+## 12. 修订号语法：怎么指向某个提交
+
+很多命令都要你给一个“提交”，但你不必每次都复制完整哈希。Git 有一套修订号（revision）写法。下面用一个示例历史说明：
+
+```mermaid
+flowchart TD
+    M0["提交 A"] --> M1["提交 B (main)"] --> M2["提交 C (main, HEAD)"]
+    M1 --> F1["提交 D (feature)"] --> F2["提交 E (feature)"]
+```
+
+常用写法：
+
+| 写法 | 含义 |
+|---|---|
+| `HEAD` | 当前提交 |
+| `HEAD~1` | 当前提交的父提交（往回走一代） |
+| `HEAD~2` | 往回走两代 |
+| `HEAD^` | 当前提交的第一个父提交（和 `~1` 类似） |
+| `HEAD^2` | 当前提交的第二个父提交，即合并提交的另一条父线 |
+| `分支名` | 该分支最新提交，如 `main`、`feature` |
+| `标签名` | 标签指向的提交，如 `v1.0.0` |
+| `origin/main` | 远程跟踪分支指向的提交 |
+| `哈希前缀` | 只要唯一，`c3d4e5f` 就够，不必写全 |
+| `refname@{n}` | reflog 里该引用的第 n 次旧值，救援时有用 |
+| `HEAD@{1}` | reflog 里 HEAD 的上一次位置 |
+
+`~` 和 `^` 的区别主要在合并提交上：合并提交有两个父提交，`^1` 是第一父线（通常是目标分支），`^2` 是第二父线（被合并的分支）；`~n` 则只是“沿第一父线回退 n 代”。
+
+例子：
+
+```bash
+git diff HEAD~2 HEAD          # 比较两代前的提交和现在
+git reset --soft HEAD~1       # 撤销最后一次提交，保留改动在暂存区
+git show HEAD^2               # 看合并提交的另一条父线
+git log feature..main         # main 上有、feature 上没有的提交
+```
+
+`A..B` 表示“在 B 但不在 A 的提交”，是查看分支差异的常用写法。
+
+---
+
+## 13. `git worktree`：一个仓库多个工作目录
+
+平时一个仓库只有一个工作目录，切分支会切换当前目录的文件。但有时你想同时打开两个分支：比如一边在 `feature` 上开发，一边在 `main` 上紧急修 bug，又不想来回 stash。
+
+`git worktree` 让你为同一个仓库创建额外的工作目录，每个目录检出一个分支，互不干扰，且共享同一份 `.git` 历史。
+
+```bash
+git worktree add ../project-hotfix main   # 在隔壁目录再开一个 main 的工作树
+```
+
+之后你在 `../project-hotfix` 里就像在普通仓库里工作，但它和原来的目录共享提交历史。常用命令：
+
+| 命令 | 作用 |
+|---|---|
+| `git worktree add 路径 分支` | 在指定路径开一个工作树，检出该分支 |
+| `git worktree list` | 列出所有工作树 |
+| `git worktree remove 路径` | 删除某个工作树 |
+| `git worktree prune` | 清理已删除目录的残留记录 |
+
+注意：同一个分支不能同时被两个工作树检出。worktree 适合临时并行任务，不是用来长期维护多份代码副本。
+
+---
+
+## 14. 什么内容不应该过早深入？
 
 理解内部原理有用，但新手不需要一开始就掌握所有底层细节。
 
@@ -421,12 +489,16 @@ git clone --bare my-project my-project.git
 | packfile、gc、fsck | 仓库过大或怀疑损坏时 |
 | `filter-repo` / BFG | 误提交大文件或秘密时 |
 | 手动查看 `.git/refs` | 理解 HEAD、分支、远程跟踪分支时 |
+| `git worktree` | 需要同时开多个分支工作目录时 |
+| Git LFS | 项目有大体积二进制文件时 |
+| submodule / subtree | 需要把另一个仓库作为子目录嵌入时 |
+| `git send-email` / patch 工作流 | 给邮件列表驱动的项目（如内核）贡献时 |
 
 不要为了“懂底层”而绕开高层命令。日常操作仍然优先使用 `status`、`add`、`commit`、`switch`、`merge`、`rebase`、`fetch`、`pull`、`push` 这些稳定入口。
 
 ---
 
-## 13. 本章命令速查表
+## 15. 本章命令速查表
 
 | 命令 | 作用 | 注意 |
 |---|---|---|
@@ -450,7 +522,7 @@ git clone --bare my-project my-project.git
 
 ---
 
-## 14. 本章总结
+## 16. 本章总结
 
 1. Git 的核心不是文件夹复制，而是对象、索引和引用。
 2. commit 指向 tree，tree 指向 blob；分支名指向 commit。
