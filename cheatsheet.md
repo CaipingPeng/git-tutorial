@@ -102,6 +102,18 @@
 | 应用并删除 stash | `git stash pop` |
 | 删除 stash | `git stash drop stash@{0}` |
 
+## 我想排查忽略规则或仓库内部
+
+| 目标 | 命令 |
+|---|---|
+| 显示被忽略文件 | `git status --ignored` |
+| 查看哪个忽略规则命中文件 | `git check-ignore -v 文件名` |
+| 停止跟踪文件但保留本地文件 | `git rm --cached 文件名` |
+| 查看当前提交完整哈希 | `git rev-parse HEAD` |
+| 查看 Git 对象内容 | `git cat-file -p 对象哈希` |
+| 查看对象占用空间 | `git count-objects -vH` |
+| 检查仓库完整性 | `git fsck` |
+
 ---
 
 **返回目录**：[README](./README.md)

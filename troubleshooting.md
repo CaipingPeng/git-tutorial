@@ -199,4 +199,35 @@ git pull origin main --allow-unrelated-histories
 
 ---
 
+## `.gitignore` 写了但文件还在被跟踪
+
+典型表现：
+
+```bash
+echo ".env" >> .gitignore
+git status
+```
+
+但 `git status` 仍然显示 `.env` 被修改。
+
+原因通常是：这个文件已经进入过 Git 的索引或历史。`.gitignore` 只影响未跟踪文件，不会让 Git 自动忘记已经跟踪的文件。
+
+保留本地文件，但让 Git 停止跟踪：
+
+```bash
+git rm --cached .env
+git add .gitignore
+git commit -m "停止跟踪本地环境配置"
+```
+
+查看到底是哪条规则命中了忽略：
+
+```bash
+git check-ignore -v .env
+```
+
+如果这个文件里有密钥、token 或密码，停止跟踪不等于清除了历史；需要先轮换泄露凭据，再按团队规则清理历史。
+
+---
+
 **返回目录**：[README](./README.md)
