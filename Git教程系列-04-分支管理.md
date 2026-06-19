@@ -1016,6 +1016,10 @@ master
 git log --oneline --graph --all --decorate
 ```
 
+真实项目里的输出可能像这样：
+
+![git log --graph 展示本地分支和远程分支位置](./assets/git-apprentice-branch-history.png)
+
 各参数含义：
 
 | 参数 | 作用 |
@@ -1041,6 +1045,7 @@ git log --oneline --graph --all --decorate
 - `main` 在哪里
 - 你的功能分支在哪里
 - 两条线有没有分开
+- `origin/main` 这类名字在哪里：它表示你本地记录的远程分支位置，远程协作章节会详细讲
 
 ---
 
@@ -1095,7 +1100,7 @@ git log --oneline --graph --all --decorate
 
 ---
 
-**下一步**：[合并与冲突](./05-合并与冲突.md)
+**下一步**：[合并与冲突](./Git教程系列-05-合并与冲突.md)
 
 ---
 

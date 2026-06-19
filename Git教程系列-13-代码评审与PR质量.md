@@ -224,7 +224,7 @@ git diff origin/main...HEAD
 
 ---
 
-**下一步**：[GitHub 实战与开源贡献](./14-GitHub实战与开源贡献.md)
+**下一步**：[GitHub 实战与开源贡献](./Git教程系列-14-GitHub实战与开源贡献.md)
 
 ---
 

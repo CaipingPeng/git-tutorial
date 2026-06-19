@@ -249,7 +249,7 @@ git switch -c hotfix/payment-timeout
 
 ---
 
-**下一步**：[代码评审与 PR 质量](./13-代码评审与PR质量.md)
+**下一步**：[代码评审与 PR 质量](./Git教程系列-13-代码评审与PR质量.md)
 
 ---
 

@@ -5,6 +5,7 @@
 本教程参考了以下允许使用的资料方向，并以原创中文讲解重写：
 
 - 《Learning Git A Hands-On and Visual Guide to the Basics of Git》
+- 《Git Apprentice: Getting Started with Git Commands & Concepts》：入门路径、暂存区、分支图、合并图和远程同步案例。
 - 《Git for Teams》：团队工作流、分支策略、评审和协作规则。
 - 《Git Learn Version Control with Git》：基础概念、生命周期、常见命令和错误修复。
 - 《Git Mastery Accelerated Crash Course》：安装配置、SSH、`.gitignore`、stash、rebase、hooks 和排障。
@@ -44,18 +45,18 @@
 
 ### 第一部分：本地仓库基础
 
-1. [基础概念](./01-基础概念.md)
+1. [基础概念](./Git教程系列-01-基础概念.md)
    - Git 是什么
    - 快照模型、仓库、工作目录、暂存区、本地仓库
    - commit、父提交、HEAD、分支和远程仓库的初步印象
 
-2. [安装与初始化](./02-安装与初始化.md)
+2. [安装与初始化](./Git教程系列-02-安装与初始化.md)
    - Windows/macOS/Linux 安装思路
    - 配置用户名、邮箱、默认分支和换行符
    - 命令行基础
    - `git init` 和 `.git` 文件夹
 
-3. [基础操作](./03-基础操作.md)
+3. [基础操作](./Git教程系列-03-基础操作.md)
    - `git status`、`git add`、`git commit`
    - `git log`、`git show`、`git diff`
    - `.gitignore`、`git rm`、`git mv`
@@ -63,13 +64,13 @@
 
 ### 第二部分：分支、合并与冲突
 
-4. [分支管理](./04-分支管理.md)
+4. [分支管理](./Git教程系列-04-分支管理.md)
    - 为什么需要分支
    - 分支是指向提交的可移动指针
    - `HEAD`、detached HEAD、创建/切换/删除分支
    - 分支命名和生命周期
 
-5. [合并与冲突](./05-合并与冲突.md)
+5. [合并与冲突](./Git教程系列-05-合并与冲突.md)
    - 源分支和目标分支
    - fast-forward、三方合并、no-ff、squash merge
    - 合并冲突产生原因和解决流程
@@ -77,19 +78,19 @@
 
 ### 第三部分：远程协作与 PR
 
-6. [远程协作](./06-远程协作.md)
+6. [远程协作](./Git教程系列-06-远程协作.md)
    - 本地仓库和远程仓库
    - `origin`、`upstream`、远程跟踪分支
    - HTTPS/SSH、`clone`、`push`、`fetch`、`pull`
    - 推送失败和远程分支排障
 
-7. [变基](./07-变基.md)
+7. [变基](./Git教程系列-07-变基.md)
    - rebase 解决什么问题
    - merge 和 rebase 的区别
    - 交互式 rebase、squash/fixup/reword/drop
    - `--force-with-lease`、reflog 恢复和团队规则
 
-8. [拉取请求](./08-拉取请求.md)
+8. [拉取请求](./Git教程系列-08-拉取请求.md)
    - Pull Request / Merge Request 是什么
    - 创建 PR、写好 PR、代码审查、CI 检查
    - 合并方式选择和分支清理
@@ -97,52 +98,50 @@
 
 ### 第四部分：救援、效率与团队实战
 
-9. [撤销与恢复](./09-撤销与恢复.md)
+9. [撤销与恢复](./Git教程系列-09-撤销与恢复.md)
    - 未暂存、已暂存、已提交、已推送分别怎么撤销
    - `restore`、`reset`、`revert`、`reflog`
    - 安全撤销决策树
 
-10. [暂存与保存现场](./10-暂存与保存现场.md)
+10. [暂存与保存现场](./Git教程系列-10-暂存与保存现场.md)
     - `git stash` 保存现场
     - `apply`、`pop`、`drop`、stash 冲突
     - stash 和临时提交怎么选
 
-11. [提交历史与查询](./11-提交历史与查询.md)
+11. [提交历史与查询](./Git教程系列-11-提交历史与查询.md)
     - `log`、`show`、`blame`、`bisect`
     - 如何读历史、定位问题、找到改动原因
 
-12. [团队工作流与分支策略](./12-团队工作流与分支策略.md)
+12. [团队工作流与分支策略](./Git教程系列-12-团队工作流与分支策略.md)
     - 集中式、Feature Branch、GitHub Flow、Git Flow、Trunk-based
     - release/hotfix 分支
     - 小团队、开源项目、企业项目如何选择
 
-13. [代码评审与 PR 质量](./13-代码评审与PR质量.md)
+13. [代码评审与 PR 质量](./Git教程系列-13-代码评审与PR质量.md)
     - 好 PR 和坏 PR
     - review checklist
     - 作者和审查者职责
     - 合并前检查
 
-14. [GitHub 实战与开源贡献](./14-GitHub实战与开源贡献.md)
+14. [GitHub 实战与开源贡献](./Git教程系列-14-GitHub实战与开源贡献.md)
     - SSH key、fork、upstream、issue、PR
     - GitHub/GitLab/Gitee 差异
     - 开源贡献完整流程
 
-15. [Git 配置与效率工具](./15-Git配置与效率工具.md)
+15. [Git 配置与效率工具](./Git教程系列-15-Git配置与效率工具.md)
     - 常用 config、alias、editor、credential helper
     - CLI、GUI、VS Code、GitHub Desktop 如何配合
     - hooks 入门
 
-16. [综合实战项目](./16-综合实战项目.md)
+16. [综合实战项目](./Git教程系列-16-综合实战项目.md)
     - 从零创建练习项目
     - 分支、冲突、远程、PR、review、清理
     - 故意犯错并用 reflog 恢复
 
 ### 附录
 
-- [术语表](./glossary.md)
 - [命令速查表](./cheatsheet.md)
 - [常见错误排障](./troubleshooting.md)
-- [图片资产索引](./assets.md)
 - [参考资料](./references.md)
 
 ---
@@ -228,7 +227,7 @@ git merge 源分支
 | `git rebase` | 会重写当前分支提交 | 只对自己的分支谨慎使用 |
 | `git branch -D` | 强制删除未合并分支 | 先确认提交能从其他分支或 reflog 找回 |
 
-详细撤销恢复见 [撤销与恢复](./09-撤销与恢复.md)。
+详细撤销恢复见 [撤销与恢复](./Git教程系列-09-撤销与恢复.md)。
 
 ---
 

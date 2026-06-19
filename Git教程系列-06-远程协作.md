@@ -314,6 +314,25 @@ git remote add upstream 原项目URL
 git remote -v
 ```
 
+一个典型的 fork 工作流可以这样读：
+
+| 你要做什么 | 常用命令 | 操作对象 |
+|---|---|---|
+| 从原项目拿最新变化 | `git fetch upstream` | 原作者仓库 |
+| 把原项目变化合进本地 main | `git merge upstream/main` | 本地 `main` |
+| 把自己的功能分支推上去 | `git push -u origin feature-cart` | 你的 fork |
+| 在平台上发 PR | GitHub/GitLab/Gitee 页面操作 | 从你的 fork 请求合并到原项目 |
+
+这里最容易混的是方向：
+
+```text
+upstream/main  --同步到-->  本地 main
+本地 feature  --推送到-->  origin/feature
+origin/feature --发 PR 到--> upstream/main
+```
+
+如果你只是克隆自己的项目，通常只有 `origin` 就够了。只有在 fork 别人的项目、同时要跟原项目保持同步时，才需要额外添加 `upstream`。
+
 ---
 
 ## 8. 推送提交：git push
@@ -653,7 +672,7 @@ git fetch -p
 
 ---
 
-**下一步**：[变基](./07-变基.md)
+**下一步**：[变基](./Git教程系列-07-变基.md)
 
 ---
 
