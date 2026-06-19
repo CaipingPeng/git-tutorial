@@ -53,7 +53,7 @@ Open Git Bash Here
 Open Git GUI Here
 ```
 
-![image-20260609170357060](C:\Users\Administrator\Desktop\git学习\git-tutorial\assets\image-20260609170357060.png)
+![Git for Windows 安装后右键菜单里的 Git Bash](./assets/image-20260609170357060.png)
 
 本教程主要使用 **Git Bash**。它是一个命令行窗口，可以运行 Git 命令。
 
@@ -282,6 +282,14 @@ ls -a
 ```
 
 `.git` 就是 Git 仓库的核心。
+
+如果你在 Windows 文件资源管理器里看不到 `.git`，需要先打开“隐藏的项目”：
+
+![Windows 文件资源管理器中开启隐藏的项目](./assets/image-20260608215317639.png)
+
+开启后，项目文件夹里就能看到 `.git` 文件夹：
+
+![Windows 文件资源管理器中显示 .git 文件夹](./assets/image-20260608221704134.png)
 
 ---
 

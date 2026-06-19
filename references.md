@@ -14,6 +14,7 @@
 | 《Git Prodigy: Mastering Version Control with Git and GitHub》 | Git/GitHub 实战、CLI/GUI 配合、开源贡献、分支与合并实践 |
 | 《Learning Git A Hands-On and Visual Guide to the Basics of Git》 | 可视化理解快照、分支、合并和基础命令 |
 | 《Git Apprentice: Getting Started with Git Commands & Concepts》 | 入门路径、暂存区、`git log` 查询、分支/合并图、远程同步与多 remote 场景 |
+| 《Learn Git The Hard Way》, Ian Miell | 四阶段内容流转、分布式仓库平等模型、命令行实操顺序、push 被拒绝诊断、rebase/squash/force push 协作风险、reflog 救援、cherry-pick 和 hooks 边界 |
 
 ## 图片署名
 
@@ -26,6 +27,10 @@
 - `assets/git-apprentice-three-way-merge.png`
 
 Attribution: Artwork/images/designs: from Git Apprentice, available at www.raywenderlich.com.
+
+`assets/image-20260609170357060.png`、`assets/image-20260608215317639.png`、`assets/image-20260608221704134.png` 是本教程配套的 Windows 操作截图，用于说明安装后菜单和 `.git` 隐藏目录查看方式。
+
+《Learn Git The Hard Way》PDF 版权页显示 “© 2018 - 2020 Ian Miell”，未在本地 PDF 中看到允许复用原图的开放许可说明。因此本次未提取、未引用该书原图；相关教学点改为原创中文讲解、Markdown 表格和 Mermaid 图示。
 
 ## 官方与平台资料
 

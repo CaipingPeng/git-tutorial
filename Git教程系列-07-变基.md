@@ -191,6 +191,15 @@ A --- B --- E --- F --- C' --- D'
 
 假设你当前在 `feature-login` 分支上，想让它基于最新的 `main`。
 
+先看清楚现在的历史形状：
+
+```bash
+git status
+git log --oneline --graph --decorate --all -12
+```
+
+`git status` 最好显示工作目录干净。`git log --graph` 用来确认：当前分支确实是你想整理的功能分支，目标分支也确实在你想要的新基底上。
+
 先切到功能分支：
 
 ```bash
@@ -227,6 +236,8 @@ git rebase main
 ```text
 把 feature-login 重新放到 main 的最新位置后面。
 ```
+
+如果命令输出提示 `Successfully rebased and updated refs/heads/feature-login.`，表示当前分支指针已经指向 rebase 后的新提交。接下来可以再次运行 `git log --oneline --graph --decorate --all -12`，确认历史形状符合预期。
 
 ---
 
@@ -277,23 +288,25 @@ error: could not apply a1b2c3d... 修改 hello 文件
 处理流程是：
 
 ```text
-1. 打开冲突文件
-2. 决定最终内容
-3. 删除冲突标记
-4. 保存文件
-5. git add 文件
-6. git rebase --continue
+1. git status 看 Git 正在等你处理哪些文件
+2. 打开冲突文件
+3. 决定最终内容
+4. 删除冲突标记
+5. 保存文件
+6. git add 文件
+7. git rebase --continue
 ```
 
 命令示例：
 
 ```bash
+git status
 # 编辑 hello.txt，解决冲突后
 git add hello.txt
 git rebase --continue
 ```
 
-注意这里`add`后，不是 `git commit`，绝对不可以手动`commit`，会破坏`rebase`链路。`git rebase --continue`执行后会自动进入提交信息编辑界面，填写本次提交信息后保存推出自动完成rebase后续工作。
+注意这里 `add` 后，不要另起一次普通 `git commit`。`git rebase --continue` 会让 Git 继续完成当前正在重放的那次提交；有时会打开提交信息编辑器，有时会直接继续。
 
 merge 冲突解决后通常用：
 
@@ -546,6 +559,20 @@ git push --force-with-lease
 
 它比 `git push --force` 更安全，因为它会先确认远程分支没有被别人更新过。如果别人已经推了新提交，它会拒绝覆盖。
 
+使用前至少先看：
+
+```bash
+git status
+git branch -vv
+git log --oneline --graph --decorate --all -12
+```
+
+确认三件事：
+
+1. 当前分支是自己的功能分支。
+2. 上游远程分支是这条功能分支，不是 `main`。
+3. 这次 rebase 改写的是你自己的提交，没有包含别人新推的工作。
+
 但安全不等于可以乱用：
 
 | 命令 | 风险 |
@@ -554,6 +581,8 @@ git push --force-with-lease
 | `git push --force-with-lease` | 会检查远程是否被别人更新，仍然是在改写远程历史 |
 
 团队里使用前先确认规则。
+
+如果你不确定为什么 push 被拒绝，不要直接强推。先回到第 6 章的诊断流程：`fetch`、看分支图、确认本地和远程到底在哪里分叉。
 
 ---
 

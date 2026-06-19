@@ -6,8 +6,9 @@
 
 1. 用 `git log` 按不同方式查看历史
 2. 用 `git show` 查看某次提交内容
-3. 用 `git blame` 找到某一行最后是谁改的
-4. 用 `git bisect` 定位哪个提交引入了问题
+3. 知道 `git cherry-pick` 适合什么场景
+4. 用 `git blame` 找到某一行最后是谁改的
+5. 用 `git bisect` 定位哪个提交引入了问题
 
 ---
 
@@ -20,6 +21,7 @@
 | 最近有哪些提交？ | `git log --oneline` |
 | 分支怎么分叉和合并的？ | `git log --oneline --graph --all --decorate` |
 | 某次提交到底改了什么？ | `git show 提交哈希` |
+| 想把某个提交搬到当前分支 | `git cherry-pick 提交哈希` |
 | 某个文件经历了哪些提交？ | `git log -- 文件名` |
 | 某一行是谁改的？ | `git blame 文件名` |
 | bug 从哪次提交开始出现？ | `git bisect` |
@@ -143,7 +145,53 @@ git show c3d4e5f:路径/文件名
 
 ---
 
-## 6. 查看某个文件历史
+## 6. 搬运单个提交：`git cherry-pick`
+
+有时你不想合并整个分支，只想把某一个提交带到当前分支。例如：
+
+- bug 修复提交在 `feature-login` 上，但 `main` 也急需这个修复
+- 某个文档修正提交应该先进入发布分支
+- 你误把一个独立改动提交到了别的分支
+
+这时可以先看清历史：
+
+```bash
+git log --oneline --graph --decorate --all -12
+```
+
+确认要搬运的提交哈希后，切到目标分支：
+
+```bash
+git switch main
+git cherry-pick c3d4e5f
+```
+
+这条命令的意思是：
+
+> 把 `c3d4e5f` 这个提交所代表的改动，重新应用到当前分支上，并生成一个新提交。
+
+注意，它不是“移动原提交”。cherry-pick 后当前分支上会出现一个新提交，内容来自原提交，但提交哈希通常不同。
+
+如果发生冲突，处理方式和 rebase 更像：
+
+```bash
+git status
+# 编辑冲突文件
+git add 冲突文件
+git cherry-pick --continue
+```
+
+如果发现选错提交，可以取消：
+
+```bash
+git cherry-pick --abort
+```
+
+新手阶段要记住边界：cherry-pick 适合少量独立提交；如果你想整合一整条功能分支，通常应该用 merge、rebase 或 PR。
+
+---
+
+## 7. 查看某个文件历史
 
 ```bash
 git log -- README.md
@@ -167,7 +215,7 @@ git log --follow --oneline -- README.md
 
 ---
 
-## 7. 找某一行是谁改的：`git blame`
+## 8. 找某一行是谁改的：`git blame`
 
 ```bash
 git blame README.md
@@ -190,7 +238,7 @@ a1b2c3d4 (Alice 2026-06-01 10:00:00 +0800  12) 本项目使用 Git 管理版本
 
 ---
 
-## 8. 用二分法找 bug：`git bisect`
+## 9. 用二分法找 bug：`git bisect`
 
 场景：你知道现在有 bug，也知道以前某个版本没 bug，但不知道中间哪次提交引入了它。
 
@@ -234,13 +282,14 @@ git bisect reset
 
 ---
 
-## 9. 历史查询的安全边界
+## 10. 历史查询的安全边界
 
 本章命令大多是只读的，但有两个例外要注意：
 
 | 命令 | 风险 |
 |---|---|
 | `git bisect` | 会切换工作目录到不同提交；开始前保持工作目录干净 |
+| `git cherry-pick` | 会在当前分支创建新提交；开始前确认目标分支正确 |
 | `git show 哈希:文件` | 只读，不会改文件 |
 
 运行 `bisect` 前先：
@@ -253,12 +302,13 @@ git status
 
 ---
 
-## 10. 本章检查点
+## 11. 本章检查点
 
 1. 想看分支合并图，用哪条命令？
 2. 想看某次提交具体 diff，用哪条命令？
-3. `git blame` 的正确使用目的是什么？
-4. `git bisect reset` 为什么重要？
+3. `cherry-pick` 适合搬运整个分支还是单个独立提交？
+4. `git blame` 的正确使用目的是什么？
+5. `git bisect reset` 为什么重要？
 
 ---
 
