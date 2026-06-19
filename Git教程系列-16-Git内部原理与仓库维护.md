@@ -223,6 +223,14 @@ git check-ignore -v .env
 
 如果误提交的是密钥、token、密码，`git rm --cached` 只会阻止以后继续跟踪，不会抹掉历史里的秘密。此时要立即撤销或轮换密钥，再考虑历史清理。
 
+还有一个容易忽略的点：`.gitignore` 本身也是普通文件，它在不同分支上也可能不同。你从一个分支切到另一个分支时，可能会看到“这个分支忽略它，那个分支还在跟踪它”的情况。判断时不要只看当前工作目录里有没有文件，要看它是否已经在索引里：
+
+```bash
+git ls-files .env
+```
+
+如果命令输出了 `.env`，说明它仍被 Git 跟踪；如果没有输出，再结合 `git check-ignore -v .env` 判断是哪条忽略规则生效。
+
 ---
 
 ## 7. `assume-unchanged` 和 `skip-worktree` 不要乱用
@@ -256,6 +264,14 @@ git rm --cached config.local
 git update-index --no-assume-unchanged config.local
 git update-index --no-skip-worktree config.local
 ```
+
+可以用下面命令查看哪些文件带了这类本地标记：
+
+```bash
+git ls-files -v
+```
+
+输出里以小写标记显示的文件，往往就是被本地标记影响的文件。看到这种状态时，先问自己：这是临时性能优化、本地环境差异，还是应该真正从版本控制里退出？不要把本地标记提交给团队，因为这些标记不会像 `.gitignore` 一样成为团队共享规则。
 
 ---
 
@@ -302,6 +318,8 @@ git show ORIG_HEAD
 
 老资料里常见 `git filter-branch`，但它现在通常不再作为首选方案。它慢、容易误用，而且 Git 官方文档也更推荐使用替代工具。你需要知道它存在，但不要把它当成新项目默认方案。
 
+也不要用交互式 rebase 去处理已经公开很久的大文件或密钥历史。rebase 适合整理自己分支上有限的一段提交；清理整个仓库历史是团队级迁移，应该使用专门工具，并提前安排所有协作者的同步方式。
+
 清理历史前的原则：
 
 1. 先备份仓库。
@@ -340,6 +358,8 @@ git show ORIG_HEAD
 | `git cat-file -p HEAD^{tree}` | 查看当前提交的根 tree | 可继续追 blob |
 | `git status --ignored` | 显示被忽略文件 | 排查 `.gitignore` |
 | `git check-ignore -v 文件` | 查看忽略规则来源 | 比猜规则可靠 |
+| `git ls-files 文件` | 判断文件是否仍在索引里 | 排查 `.gitignore` 事后无效 |
+| `git ls-files -v` | 查看本地 index 标记 | 排查 assume-unchanged/skip-worktree |
 | `git rm --cached 文件` | 从索引移除但保留工作目录文件 | 常用于停止跟踪配置文件 |
 | `git count-objects -vH` | 查看对象占用 | 仓库过大时 |
 | `git gc` | Git 仓库维护 | 一般不必频繁手动运行 |

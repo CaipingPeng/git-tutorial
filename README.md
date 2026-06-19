@@ -13,6 +13,7 @@
 - Git 官方文档与主流代码托管平台文档。
 - 《Learn Git The Hard Way》：四阶段内容流转、仓库平等模型、push 失败诊断、rebase/squash/force push 风险、reflog 救援和 hooks 边界。
 - 《Mastering Git》：Git 对象模型、索引、引用、stash 内部机制、`.gitignore` 失效原因、历史清理和工作流取舍。
+- 《Advanced Git》：rebase 冲突视角、`.gitignore` 事后补救、reset/reflog/revert 边界，以及集中式、功能分支、Gitflow、Forking Workflow 的协作取舍。
 
 完整来源说明见 [参考资料](./references.md)。
 
@@ -117,6 +118,8 @@
 12. [团队工作流与分支策略](./Git教程系列-12-团队工作流与分支策略.md)
     - 集中式、Feature Branch、GitHub Flow、Git Flow、Trunk-based
     - release/hotfix 分支
+    - 个人分支、共享分支、公共分支的更新规则
+    - Forking Workflow 的协作位置
     - 小团队、开源项目、企业项目如何选择
 
 13. [代码评审与 PR 质量](./Git教程系列-13-代码评审与PR质量.md)
@@ -127,6 +130,7 @@
 
 14. [GitHub 实战与开源贡献](./Git教程系列-14-GitHub实战与开源贡献.md)
     - SSH key、fork、upstream、issue、PR
+    - fork、origin、upstream 和本地 clone 的关系
     - GitHub/GitLab/Gitee 差异
     - 开源贡献完整流程
 
@@ -140,7 +144,7 @@
 16. [Git 内部原理与仓库维护](./Git教程系列-16-Git内部原理与仓库维护.md)
     - blob、tree、commit、tag 的对象模型
     - 索引、引用、HEAD、reflog、stash、FETCH_HEAD、ORIG_HEAD
-    - `.gitignore` 对已跟踪文件无效的原因
+    - `.gitignore` 对已跟踪文件无效的原因和事后补救边界
     - 大文件、密钥和历史清理的安全边界
 
 17. [综合实战项目](./Git教程系列-17-综合实战项目.md)

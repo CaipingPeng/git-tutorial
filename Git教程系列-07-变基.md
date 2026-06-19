@@ -324,6 +324,28 @@ git rebase --continue
 
 > 这个提交的冲突解决好了，继续应用下一个提交。
 
+### rebase 冲突里，`HEAD` 指的是谁？
+
+这是 rebase 最容易让人看反的地方。
+
+在普通 merge 里，`HEAD` 通常是你当前分支原来的位置。但在 rebase 过程中，Git 会先把 `HEAD` 移到新的基底上，再按顺序重放你的旧提交。于是冲突文件里的“当前版本”往往代表新基底那边的内容，而正在被应用的那次提交，才是你原功能分支里的某个旧提交。
+
+所以遇到 rebase 冲突时，不要只凭 `<<<<<<< HEAD` 猜“这一定是我的改动”。更稳的做法是：
+
+```bash
+git status
+git show --stat
+git log --oneline --graph --decorate --all -12
+```
+
+先看 Git 正在应用哪一个提交，再决定最终内容。复杂冲突里，也可以配置 diff3 样式，让冲突块显示共同祖先，帮助你判断两边各自改了什么：
+
+```bash
+git config --global merge.conflictStyle diff3
+```
+
+这不是必须配置，但它能减少“把对方改动误删掉”的概率。
+
 ---
 
 ## 8. 不想继续 rebase 怎么办？
@@ -342,6 +364,14 @@ git rebase --abort
 - 冲突太多，想先停下来
 - 不确定应该怎么解决
 - 想回到 rebase 前重新规划
+
+你也可能看到 Git 提示：
+
+```bash
+git rebase --skip
+```
+
+它的意思是：跳过当前正在重放的这个提交。这个命令不是“跳过冲突继续保留改动”，而是放弃当前这个提交带来的改动。只有当你确认这次提交已经不需要，或者它的改动已经被新基底包含时，才考虑使用。
 
 ---
 
@@ -767,6 +797,7 @@ rebase 前的位置
 | `git rebase origin/main` | 把当前分支变基到远程 main 后面 | 更新个人功能分支时 |
 | `git rebase --continue` | 解决冲突后继续 rebase | rebase 中遇到冲突并处理完后 |
 | `git rebase --abort` | 取消 rebase | rebase 过程想放弃时 |
+| `git rebase --skip` | 跳过当前正在重放的提交 | 确认该提交不再需要时 |
 | `git pull --rebase` | 下载远程更新并 rebase | 理解 fetch + rebase 后再使用 |
 | `git rebase -i HEAD~3` | 交互式整理最近 3 个提交 | 进阶整理自己的提交历史时 |
 | `git push --force-with-lease` | 更安全地更新已 rebase 的远程分支 | 团队允许且确认是自己的功能分支时 |
@@ -783,7 +814,8 @@ rebase 前的位置
 3. rebase 后提交编号会变，因为 Git 创建了新提交。
 4. rebase 冲突解决后，用 `git rebase --continue`。
 5. 不想继续时，用 `git rebase --abort`。
-6. 不要随便 rebase 公共历史。
+6. `git rebase --skip` 会放弃当前提交，不是普通的“下一步”。
+7. 不要随便 rebase 公共历史。
 
 如果你现在觉得 rebase 比 merge 难，这是正常的。先会用 merge 完成协作，再逐步理解 rebase，会更稳。
 

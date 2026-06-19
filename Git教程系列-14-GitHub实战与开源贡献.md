@@ -77,18 +77,31 @@ ssh -T git@github.com
 
 ---
 
-## 4. origin 和 upstream
+## 4. fork、origin 和 upstream
 
-在自己的仓库里，`origin` 通常表示你主要推送的远程仓库。
+fork 不是 Git 命令，而是代码托管平台提供的“在你账号下复制一份仓库”的能力。Git 本身只认识仓库、提交、分支和远程地址，并不知道“fork”这个动作有什么特殊魔法。
 
-在 fork 工作流里，经常有两个远程：
+在 fork 工作流里，经常有三个位置：
 
-```text
-upstream：原作者仓库
-origin：你 fork 后自己账号下的仓库
+```mermaid
+flowchart TD
+    U[upstream<br/>原作者仓库]
+    O[origin<br/>你账号下的 fork]
+    L[local clone<br/>你电脑上的仓库]
+
+    U -->|平台 Fork| O
+    O -->|git clone| L
+    U -->|git fetch upstream| L
+    L -->|git push origin feature| O
 ```
 
-查看：
+| 名称 | 在哪里 | 你通常对它做什么 |
+|---|---|---|
+| `upstream` | 原作者或组织的仓库 | 拉取最新主线、提交 PR 的目标 |
+| `origin` | 你 fork 后自己账号下的仓库 | 推送自己的功能分支 |
+| 本地仓库 | 你电脑上的 clone | 开分支、提交、合并、rebase |
+
+查看远程地址：
 
 ```bash
 git remote -v
@@ -99,6 +112,14 @@ git remote -v
 ```bash
 git remote add upstream 原项目URL
 ```
+
+如果你 clone 的是自己的 fork，`origin` 通常已经自动指向你的 fork；`upstream` 需要你手动添加。
+
+### 为什么 fork 看起来像“另一套仓库”？
+
+因为它本来就是另一套服务端仓库。对 Git 来说，原项目、你的 fork、本地 clone 没有等级差异，区别只是远程地址不同。
+
+这也是为什么开源贡献通常不建议直接在自己的 `main` 上开发：你的 `main` 最好尽量镜像 `upstream/main`，个人改动放到功能分支里。这样同步原项目时更清爽，PR 也更容易审查。
 
 同步原项目更新：
 
@@ -114,6 +135,8 @@ git merge upstream/main
 git push origin main
 ```
 
+如果平台页面提供 “Fetch upstream” 或类似按钮，也可以用网页同步 fork。但作为学习 Git 的读者，建议你至少手动跑通过一次上面的命令，知道本地到底发生了什么。
+
 ---
 
 ## 5. 开源贡献标准流程
@@ -122,6 +145,7 @@ git push origin main
 fork 原项目
   → clone 自己的 fork
   → 添加 upstream
+  → 同步 upstream/main
   → 创建功能分支
   → 修改并提交
   → 推送到 origin
@@ -151,6 +175,44 @@ git push -u origin fix-doc-typo
 ```text
 your-name:fix-doc-typo → original-owner:main
 ```
+
+这个箭头要读成：
+
+```text
+把我 fork 里的 fix-doc-typo 分支，请求合入原项目的 main 分支
+```
+
+PR 创建后，后续修改仍然提交到同一个本地分支，再 push 到自己的 fork：
+
+```bash
+git switch fix-doc-typo
+# 继续修改
+git add README.md
+git commit -m "根据 review 调整文档说明"
+git push
+```
+
+不要为了每条 review 意见重新开一个 PR。除非维护者要求拆分，否则同一个主题的修改留在同一个 PR 里，审查上下文更完整。
+
+### 贡献前的同步检查
+
+在准备开新分支前，先确认自己的 `main` 跟上游一致：
+
+```bash
+git fetch upstream
+git switch main
+git status
+git merge upstream/main
+git push origin main
+```
+
+预期结果是：
+
+- `git status` 显示当前在 `main`。
+- 合并后没有冲突。
+- `origin/main` 推到了和本地 `main` 相同的位置。
+
+如果你的 `main` 上混入了自己的提交，不要急着强推。更稳妥的做法是先把个人提交移到新分支，再让 `main` 回到 `upstream/main`。这已经属于撤销恢复场景，可以回看第 9 章和第 11 章。
 
 ---
 
@@ -194,6 +256,7 @@ README.md
 4. 不要催维护者立刻合并。
 5. review 要求修改时，继续在同一分支提交并 push。
 6. 不要把 unrelated changes 混进 PR。
+7. 保持自己的 fork 主分支接近 upstream 主分支，功能改动放在短生命周期分支里。
 
 开源贡献不是“我提交了你必须收”。维护者要对项目长期质量负责。
 
@@ -204,7 +267,8 @@ README.md
 1. Git 和 GitHub 的区别是什么？
 2. fork 工作流里 origin 和 upstream 分别是什么？
 3. 为什么私钥不能提交到仓库？
-4. 开源 PR 前应该先看哪些文件？
+4. 为什么不建议直接在 fork 的 main 上做功能开发？
+5. 开源 PR 前应该先看哪些文件？
 
 ---
 
