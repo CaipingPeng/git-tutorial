@@ -114,6 +114,16 @@
 | 查看对象占用空间 | `git count-objects -vH` |
 | 检查仓库完整性 | `git fsck` |
 
+## 我想导出或离线搬运仓库
+
+| 目标 | 命令 |
+|---|---|
+| 导出当前提交的源码 zip，不含历史 | `git archive HEAD --format=zip --output=../project.zip` |
+| 导出完整历史到 bundle | `git bundle create ../project.bundle --all` |
+| 检查 bundle 是否可用 | `git bundle verify ../project.bundle` |
+| 从 bundle 克隆仓库 | `git clone ../project.bundle project-copy` |
+| 克隆成 bare 仓库 | `git clone --bare my-project my-project.git` |
+
 ---
 
 **返回目录**：[README](./README.md)

@@ -14,6 +14,7 @@
 - 《Learn Git The Hard Way》：四阶段内容流转、仓库平等模型、push 失败诊断、rebase/squash/force push 风险、reflog 救援和 hooks 边界。
 - 《Mastering Git》：Git 对象模型、索引、引用、stash 内部机制、`.gitignore` 失效原因、历史清理和工作流取舍。
 - 《Advanced Git》：rebase 冲突视角、`.gitignore` 事后补救、reset/reflog/revert 边界，以及集中式、功能分支、Gitflow、Forking Workflow 的协作取舍。
+- 《Git Essentials, Second Edition》：提交质量、配置层级、别名安全、bare/archive/bundle 备份、SVN 迁移心态和工作流选择。
 
 完整来源说明见 [参考资料](./references.md)。
 
@@ -63,7 +64,7 @@
    - `git status`、`git add`、`git commit`
    - `git log`、`git show`、`git diff`
    - `.gitignore`、`git rm`、`git mv`
-   - 提交粒度和提交信息
+   - 提交粒度、提交信息和拆分改动
 
 ### 第二部分：分支、合并与冲突
 
@@ -135,7 +136,7 @@
     - 开源贡献完整流程
 
 15. [Git 配置与效率工具](./Git教程系列-15-Git配置与效率工具.md)
-    - 常用 config、alias、editor、credential helper
+    - 常用 config、`push.default`、alias、editor、credential helper
     - CLI、GUI、VS Code、GitHub Desktop 如何配合
     - hooks 入门
 
@@ -145,7 +146,7 @@
     - blob、tree、commit、tag 的对象模型
     - 索引、引用、HEAD、reflog、stash、FETCH_HEAD、ORIG_HEAD
     - `.gitignore` 对已跟踪文件无效的原因和事后补救边界
-    - 大文件、密钥和历史清理的安全边界
+    - bare 仓库、archive、bundle、迁移和历史清理的安全边界
 
 17. [综合实战项目](./Git教程系列-17-综合实战项目.md)
     - 从零创建练习项目

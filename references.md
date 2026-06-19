@@ -17,6 +17,7 @@
 | 《Learn Git The Hard Way》, Ian Miell | 四阶段内容流转、分布式仓库平等模型、命令行实操顺序、push 被拒绝诊断、rebase/squash/force push 协作风险、reflog 救援、cherry-pick 和 hooks 边界 |
 | 《Mastering Git: Understanding Git Internals and Commands》, Chris Belanger & Jawwad Ahmad | Git 内部对象模型、索引/暂存区、引用、stash 内部机制、`.gitignore` 对已跟踪文件无效的原因、历史清理、集中式/功能分支/Gitflow/fork 工作流取舍 |
 | 《Advanced Git: Understanding Git Collaboration & Workflows (2nd Edition)》, Jawwad Ahmad & Chris Belanger | rebase 冲突中的 `HEAD` 视角、`git rebase --skip` 边界、`.gitignore` 事后补救、reset/reflog/revert 的撤销边界、集中式/Feature Branch/Gitflow/Forking Workflow 的团队协作取舍 |
+| 《Git Essentials, Second Edition》, Ferdinando Santacroce | 提交质量与提交信息、配置层级、`push.default`、alias 边界、stash/amend/blame 的协作语境、bare 仓库、`git archive`、`git bundle`、从 SVN/旧系统迁移到 Git 的原则 |
 
 ## 图片署名
 
@@ -37,6 +38,8 @@ Attribution: Artwork/images/designs: from Git Apprentice, available at www.raywe
 《Mastering Git》PDF 版权页允许使用或修改书中 art/images/designs，但要求保留 attribution: “Artwork/images/designs: from Mastering Git, available at www.raywenderlich.com”。本次实际检查候选图页后，未采用该书图片：多数候选图是 GitHub 页面截图、终端截图，或与当前教程已有分支/合并图重复；Git 内部对象模型和仓库维护内容改用原创中文讲解、表格和 Mermaid 图示。
 
 《Advanced Git》PDF 版权页允许使用或修改书中 art/images/designs，但要求保留 attribution: “Artwork/images/designs: from Advanced Git, available at www.raywenderlich.com”。本次检查了集中式/分支工作流、Gitflow、Forking Workflow 和 PR 页面相关候选图；由于候选图多为英文流程图、旧版 GitHub 页面截图或与中文教程可用 Mermaid 图重复，正文未采用该书位图，也未新增图片提取脚本。相关结构和教学角度已消化为原创中文讲解、表格和 Mermaid 图示。
+
+《Git Essentials, Second Edition》PDF 版权页显示 “Copyright © 2017 Packt Publishing. All rights reserved.”，未看到允许复用原图的开放许可说明。本次读取了目录、元数据、章节文本和图片分布，并检查了对象模型、三阶段区域、rebase/merge/cherry-pick、配置层级、提交质量、工作流和 SVN 迁移等候选图页；因候选图多为英文终端截图、旧界面截图、版权漫画或可由中文 Mermaid/表格更清楚表达，正文未采用该书位图，也未新增图片提取脚本。相关教学点已消化为原创中文讲解、表格和 Mermaid 图示。
 
 ## 官方与平台资料
 

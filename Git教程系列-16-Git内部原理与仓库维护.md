@@ -8,7 +8,7 @@
 2. 分清工作目录、索引、对象库和引用
 3. 知道 `.gitignore` 为什么不影响已经被跟踪的文件
 4. 理解 reflog、stash、FETCH_HEAD、ORIG_HEAD 这些“救援线索”
-5. 知道仓库维护和清理历史的安全边界
+5. 区分 bare 仓库、archive、bundle 和历史清理的边界
 
 如果你是完全新手，可以先跳过本章，学完综合实战后再回来读。
 
@@ -333,7 +333,83 @@ git show ORIG_HEAD
 
 ---
 
-## 10. 什么内容不应该过早深入？
+## 10. 导出、备份和 bare 仓库
+
+Git 仓库有三种很容易混淆的“带走项目”方式：
+
+| 方式 | 带走什么 | 常见用途 | 不适合什么 |
+|---|---|---|---|
+| `git archive` | 某个提交里的项目文件，不包含 Git 历史 | 发源码包给没有 Git 的人 | 备份完整仓库历史 |
+| `git bundle` | 提交历史和引用，可离线 clone/fetch | 没网络时搬运仓库或做一次性备份 | 替代长期远程仓库 |
+| bare 仓库 | 只有仓库数据，没有工作目录 | 自建远程仓库、中转仓库、迁移验证 | 日常编辑文件 |
+
+### `git archive`：只导出文件
+
+如果你只想把当前版本打包给别人，不希望对方看到 Git 历史，可以在仓库根目录运行：
+
+```bash
+git archive HEAD --format=zip --output=../project-source.zip
+```
+
+这个 zip 包里是 `HEAD` 对应的项目文件，没有 `.git/`。它适合交付源码快照，不适合备份仓库。
+
+### `git bundle`：把历史打成一个文件
+
+如果你要在没有网络的机器之间搬运仓库历史，可以用 bundle：
+
+```bash
+git bundle create ../project.bundle --all
+```
+
+在另一台机器上可以验证并克隆：
+
+```bash
+git bundle verify ../project.bundle
+git clone ../project.bundle project-copy
+```
+
+bundle 是一个很实用的离线传输方式，但它只是某个时刻导出的文件。团队协作仍然需要正常远程仓库、权限控制和备份策略。
+
+### bare 仓库：远程仓库常见形态
+
+bare 仓库没有工作目录，通常以 `.git` 结尾：
+
+```bash
+git init --bare project.git
+```
+
+也可以把现有仓库克隆成 bare 版本：
+
+```bash
+git clone --bare my-project my-project.git
+```
+
+它适合放在服务器上供别人 `push` 和 `fetch`，不适合直接进去编辑文件。你在 GitHub、GitLab、Gitee 上看到的远程仓库，从 Git 的角度看也更接近这种“只负责存储和交换历史”的角色。
+
+---
+
+## 11. 从 SVN 或旧系统迁移到 Git 的原则
+
+如果团队从 Subversion、TFS 或其他集中式版本控制迁移到 Git，不要只做“命令对照表”。Git 的核心差异是：每个克隆都有完整历史，分支和标签是引用，协作通过 fetch/push/PR/MR 交换提交。
+
+迁移时优先关注这些问题：
+
+| 问题 | 为什么重要 |
+|---|---|
+| 作者信息如何映射？ | 旧系统里的用户名需要对应到 Git 的姓名和邮箱 |
+| trunk/branches/tags 如何转换？ | SVN 里标签常像目录拷贝，Git 里标签是引用 |
+| 忽略规则如何迁移？ | 旧系统的忽略规则需要落到 `.gitignore` 或平台规则 |
+| 是否保留全部历史？ | 大仓库可能需要分阶段验证，不能一次性冒进 |
+| 什么时候冻结旧仓库？ | 迁移期间两边同时写入会制造混乱 |
+| 团队怎么重新同步？ | 历史迁移后，旧 clone 往往不能继续当作普通更新处理 |
+
+如果来源是 SVN，`git svn` 可以作为过渡或迁移工具。但对中文 Git 新手来说，先理解迁移原则比背 `git svn clone` 参数更重要。真实迁移建议在副本里反复演练：先生成作者映射，转换忽略规则，推到临时 bare 仓库，检查分支、标签和关键历史，再安排正式切换。
+
+迁移不是一次“高级 pull”，而是团队级流程变更。越是历史久、仓库大、权限复杂的项目，越要先备份、先演练、先写清楚回退方案。
+
+---
+
+## 12. 什么内容不应该过早深入？
 
 理解内部原理有用，但新手不需要一开始就掌握所有底层细节。
 
@@ -341,6 +417,7 @@ git show ORIG_HEAD
 |---|---|
 | blob/tree/commit | 学完提交、分支、合并后 |
 | `git cat-file`、`rev-parse` | 想理解对象模型时 |
+| bare 仓库、archive、bundle | 需要导出、离线搬运或自建远程仓库时 |
 | packfile、gc、fsck | 仓库过大或怀疑损坏时 |
 | `filter-repo` / BFG | 误提交大文件或秘密时 |
 | 手动查看 `.git/refs` | 理解 HEAD、分支、远程跟踪分支时 |
@@ -349,7 +426,7 @@ git show ORIG_HEAD
 
 ---
 
-## 11. 本章命令速查表
+## 13. 本章命令速查表
 
 | 命令 | 作用 | 注意 |
 |---|---|---|
@@ -364,18 +441,23 @@ git show ORIG_HEAD
 | `git count-objects -vH` | 查看对象占用 | 仓库过大时 |
 | `git gc` | Git 仓库维护 | 一般不必频繁手动运行 |
 | `git fsck` | 检查仓库完整性 | 怀疑对象损坏时 |
+| `git archive HEAD --format=zip --output=../project.zip` | 导出某个提交的文件快照 | 不包含 Git 历史 |
+| `git bundle create ../project.bundle --all` | 把仓库历史打成离线 bundle | 适合搬运或一次性备份 |
+| `git bundle verify ../project.bundle` | 检查 bundle 是否可用 | 克隆或传给别人前 |
+| `git clone --bare 仓库目录 仓库.git` | 克隆成 bare 仓库 | 自建远程或迁移中转 |
 | `git reflog` | 查看本地指针移动记录 | 救援常用 |
 | `git stash list` | 查看 stash 栈 | stash 不是长期分支 |
 
 ---
 
-## 12. 本章总结
+## 14. 本章总结
 
 1. Git 的核心不是文件夹复制，而是对象、索引和引用。
 2. commit 指向 tree，tree 指向 blob；分支名指向 commit。
 3. `.gitignore` 只影响未跟踪文件，已跟踪文件要用 `git rm --cached` 退出索引。
 4. reflog、stash、FETCH_HEAD、ORIG_HEAD 都是本地排障线索。
-5. 清理历史要当成团队级迁移处理，尤其是密钥泄露和大文件清理。
+5. `archive`、`bundle` 和 bare 仓库解决的是不同的导出/交换问题，不能混用。
+6. 清理历史和旧系统迁移都要当成团队级迁移处理，尤其是密钥泄露、大文件清理和 SVN 迁移。
 
 ---
 
