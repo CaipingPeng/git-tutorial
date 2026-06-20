@@ -21,6 +21,11 @@
 | 《Git Notes for Professionals》, GoalKicker（Stack Overflow 文档汇编） | 命令级食谱补充：标签、`.gitattributes`、`git worktree`、`git clean`、修订号语法、`shortlog`/`.mailmap`、Git LFS、子模块/子树、bisect/blame 进阶用法 |
 | 《Git Repository Management in 30 Days: Learn to manage code repositories like a pro》, Sumit Jaiswal | 仓库管理与平台协作视角：PR reviewer/assignee/label/milestone、开源 bug report、release tag 与 release branch、fork/duplicate/bare repo 语境，以及 `fetch + reset --hard` 这类危险覆盖式同步的边界 |
 | 《Git for Humans》, David Demaree | 用面向人的版本控制叙事补强版本思维、可信提交节奏、命令行/GUI 配合、远程 hub 模型、短哈希、范围查询、标签永久性和 detached HEAD 边界 |
+| 《Git Fundamentals》, Thom Parkin | 面向非程序员的极简入门：Git 是纯本地系统不需要服务器、commit 即快照、`git commit -am` 快捷方式、checkout 等于时间旅行、分支即铁路系统比喻、Git ≠ GitHub 的明确区分、Never Fear Change 的心态模型 |
+
+### 本书图片情况
+
+《Git Fundamentals》PDF 中图片均为终端截图和命令行输出截图，不包含教学价值高的原创图解。本次未提取、未使用该书图片。相关教学角度已消化为原创中文讲解、表格和 Mermaid 图示。
 
 ## 图片署名
 

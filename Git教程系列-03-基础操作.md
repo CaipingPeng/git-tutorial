@@ -127,6 +127,15 @@ Changes to be committed:
 
 这表示 `hello.txt` 已经进入暂存区，准备提交。
 
+> **快捷方式：`git commit -am`**
+> 如果你只想提交所有已经被 Git 跟踪过的文件的改动（跳过暂存这一步），可以用 `git commit -am “说明”`。这个命令等于先 `git add` 所有已跟踪文件，再 `git commit`。
+>
+> ```bash
+> git commit -am “fix: 修复了登录按钮的样式问题”
+> ```
+>
+> 注意它 **不会** 自动跟踪新文件——新建的文件仍然需要先 `git add`。如果既有修改已有文件又有新增文件，你还是需要先 `git add` 新增文件，再用 `git commit -am` 或 `git commit`。
+
 ### 暂存区到底有什么用？
 
 暂存区让你可以选择“这次提交要包含哪些改动”。

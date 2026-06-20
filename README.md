@@ -6,6 +6,7 @@
 
 - 《Learning Git A Hands-On and Visual Guide to the Basics of Git》
 - 《Git Apprentice: Getting Started with Git Commands & Concepts》：入门路径、暂存区、分支图、合并图和远程同步案例。
+- **《Git Fundamentals》（Thom Parkin）** — 面向非程序员的极简入门，强调 Git 是纯本地系统、commit 即快照、Never Fear Change 的心态。
 - 《Git for Teams》：团队工作流、分支策略、评审和协作规则。
 - 《Git Learn Version Control with Git》：基础概念、生命周期、常见命令和错误修复。
 - 《Git Mastery Accelerated Crash Course》：安装配置、SSH、`.gitignore`、stash、rebase、hooks 和排障。

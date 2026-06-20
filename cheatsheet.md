@@ -19,6 +19,7 @@
 | 暂存当前目录改动 | `git add .` |
 | 提交暂存区 | `git commit -m "说明"` |
 | 修改最后一次提交说明或补文件 | `git commit --amend` |
+| 暂存所有已跟踪文件并提交（快捷方式） | `git commit -am "说明"` |
 
 ## 我想看改了什么
 
@@ -137,6 +138,7 @@
 |---|---|
 | 显示被忽略文件 | `git status --ignored` |
 | 查看哪个忽略规则命中文件 | `git check-ignore -v 文件名` |
+| 查看 Git 正在跟踪哪些文件 | `git ls-files` |
 | 停止跟踪文件但保留本地文件 | `git rm --cached 文件名` |
 | 查看当前提交完整哈希 | `git rev-parse HEAD` |
 | 查看 Git 对象内容 | `git cat-file -p 对象哈希` |
