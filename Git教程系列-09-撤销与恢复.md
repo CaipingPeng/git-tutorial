@@ -183,6 +183,113 @@ git reset HEAD~1
 | `git reset --soft HEAD~1` | 不在 | 暂存区 |
 | `git reset --mixed HEAD~1` | 不在 | 工作目录 |
 
+
+### reset 三种模式的准确行为对比
+
+为了彻底理解 reset，我们需要明确它对三个区域的影响：
+
+| reset 模式 | HEAD 和分支 | 暂存区（Index） | 工作目录 | 适用场景 |
+|-----------|------------|---------------|---------|---------|
+| `--soft` | ✅ 移动 | ❌ 不变 | ❌ 不变 | 只想撤销提交，马上重新提交 |
+| `--mixed`（默认）| ✅ 移动 | ✅ 重置 | ❌ 不变 | 想重新选择暂存哪些文件 |
+| `--hard` | ✅ 移动 | ✅ 重置 | ✅ 重置 | 想完全回退，丢弃所有改动 |
+
+#### 准确理解 --mixed 的行为
+
+很多人误以为 `git reset --mixed` 会"把改动从暂存区移回工作目录"。这个说法容易引起误解。
+
+**准确的理解**：
+
+1. `git reset --mixed HEAD~1` 执行时：
+   - ✅ 移动 HEAD 和当前分支指针到 `HEAD~1`
+   - ✅ 重置暂存区，使其内容匹配 `HEAD~1`
+   - ❌ **不改变工作目录**（你的文件内容保持不变）
+
+2. **结果**：
+   - 因为暂存区被重置为 `HEAD~1`（旧版本）
+   - 而工作目录还保留着你的修改（新内容）
+   - Git 比较后发现：工作目录比暂存区"更新"
+   - 所以这些改动表现为"未暂存的修改"（Changes not staged for commit）
+
+#### 实例演示
+
+假设你的状态是：
+
+```bash
+# 提交历史
+A --- B --- C (HEAD -> main)
+
+# 你在 C 提交中修改了 file.txt，内容是 "version C"
+```
+
+现在执行 `git reset --mixed HEAD~1`：
+
+**步骤分解**：
+
+| 时刻 | HEAD | 暂存区内容 | 工作目录内容 | Git 看到的状态 |
+|-----|------|----------|------------|--------------|
+| reset 前 | C | file.txt = "version C" | file.txt = "version C" | 干净 |
+| reset 后 | B | file.txt = "version B" | file.txt = "version C" | 未暂存的修改 |
+
+工作目录的 `file.txt` 仍然是 "version C"（没有被 reset 修改），但暂存区现在匹配 B 提交（"version B"），所以 Git 认为你的工作目录有未暂存的修改。
+
+**这就是为什么 --mixed 看起来"保留了改动"**——不是因为它主动把改动移回工作目录，而是因为它**不碰工作目录**。
+
+#### 三种模式的典型使用场景
+
+**场景1：只想改提交信息**
+```bash
+git reset --soft HEAD~1
+# 改动还在暂存区，可以直接重新提交
+git commit -m "更好的提交信息"
+```
+
+**场景2：想重新选择暂存哪些文件**
+```bash
+git reset --mixed HEAD~1
+# 或者 git reset HEAD~1
+
+# 改动在工作目录，可以重新选择
+git add file1.txt
+git add file2.txt
+git commit -m "只提交部分文件"
+```
+
+**场景3：完全回退，放弃这次提交的所有改动**
+```bash
+# ⚠️ 危险操作！先确认 git status
+git reset --hard HEAD~1
+```
+
+#### 安全检查清单
+
+在执行 `git reset` 前，建议检查：
+
+```bash
+# 1. 看看要回退到哪里
+git log --oneline -5
+
+# 2. 看看当前有没有未提交的改动
+git status
+
+# 3. 如果有未保存的改动，考虑先 stash 或 commit
+git stash push -m "临时保存"
+
+# 4. 确认后再 reset
+git reset --mixed HEAD~1
+```
+
+#### 对比记忆法
+
+可以这样记忆：
+
+- `--soft`：只动"提交历史"（最温柔）
+- `--mixed`：动"提交历史 + 暂存区"（默认）
+- `--hard`：动"提交历史 + 暂存区 + 工作目录"（最危险）
+
+**向右越多，改变越大，越危险。**
+
+
 ---
 
 ## 5. 危险撤销：`reset --hard`
