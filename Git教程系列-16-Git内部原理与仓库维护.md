@@ -663,7 +663,6 @@ git am --signoff < 0001-fix-title.patch
 
 ---
 
-**下一步**：[综合实战项目](./Git教程系列-17-综合实战项目.md)
 
 ---
 

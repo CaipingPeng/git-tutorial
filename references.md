@@ -23,6 +23,46 @@
 | 《Git for Humans》, David Demaree | 用面向人的版本控制叙事补强版本思维、可信提交节奏、命令行/GUI 配合、远程 hub 模型、短哈希、范围查询、标签永久性和 detached HEAD 边界 |
 | 《Git Fundamentals》, Thom Parkin | 面向非程序员的极简入门：Git 是纯本地系统不需要服务器、commit 即快照、`git commit -am` 快捷方式、checkout 等于时间旅行、分支即铁路系统比喻、Git ≠ GitHub 的明确区分、Never Fear Change 的心态模型 |
 | 《Git in Practice: Includes 66 Techniques》, Mike McQuaid | 66 种实战技巧的组织形式、技术驱动的讲解角度；`git rerere`、`git describe`、`git cherry`、`git add --patch`、`git diff --check`、`assume-unchanged`/`skip-worktree`、`difftool`/`mergetool` 等具体技术点；CMake 与 Homebrew 真实工作流对比；Git 配置附录（color、autocorrect、prune、全局忽略文件等）；`git bisect run` 自动化；`git filter-branch` 大体重写场景；老式仓库托管命令的边界 |
+
+
+### Pro Git 第2版 (Scott Chacon & Ben Straub)
+
+**用途**: Git 官方推荐教材,全面覆盖 Git 核心概念、命令和内部原理
+
+**本教程借鉴的主要内容**:
+
+- 快照模型 vs 差异模型的对比
+- 文件状态生命周期图 (untracked/unmodified/modified/staged)
+- 分支的内部表示(commit对象、tree对象、blob对象、父指针)
+- 分支创建、切换、分叉的可视化流程
+- 远程分支跟踪机制(origin/main 等远程跟踪分支)
+- Rebase 的可视化过程(简单 rebase 和 --onto 场景)
+- Reset 三模式的清晰对比(--soft/--mixed/--hard)
+- Git 对象模型(blob/tree/commit/tag)
+- 分布式工作流模型(集中式/集成管理员/层级维护者)
+
+**图片使用**: 本教程从 Pro Git PDF 中提取了 31 张教学图,包括:
+
+- 版本控制演进图(本地/集中式/分布式 VCS)
+- 快照 vs 差异存储模型
+- 文件生命周期图
+- 分支和 HEAD 指针图示
+- 远程分支同步过程
+- Rebase 变基流程
+- Reset 三模式对比
+- Git 对象模型
+
+所有图片均来自 Pro Git 第2版(版本 2.1.450, 2026-05-25),按 Creative Commons Attribution Non Commercial Share Alike 3.0 license 使用。原书作者 Scott Chacon 和 Ben Straub,出版方 Apress。
+
+**Attribution**:
+- Book: Pro Git, 2nd Edition
+- Authors: Scott Chacon and Ben Straub
+- Publisher: Apress
+- License: Creative Commons Attribution Non Commercial Share Alike 3.0
+- Source: https://git-scm.com/book
+
+本教程吸收了 Pro Git 的教学结构、概念讲解和可视化方法,用原创中文重写,不复制原文段落。相关章节已标注图片来源。
+
 | 《Git Best Practices Guide》, Eric Pidoux | 以实践问题组织 Git 学习路径：远程协议选择、bare 仓库语境、tracking branch、`git grep` 内容搜索、stash 临时分支化、`reset` 三模式、`git clean` 预览、`bisect run`、submodule/subtree 取舍、format-patch/am 补丁工作流、hooks 分类、commit template、CI/QA 分支门禁和 GUI/仓库管理器的定位 |
 | 《Git Internals: Source code control and beyond》, Scott Chacon | 从“Git 是内容跟踪工具而非传统 SCM”的角度补强对象模型、内容寻址、blob/tree/commit/tag、引用、HEAD、远程跟踪分支、treeish、工作目录与索引；补充 `git cat-file`、`git ls-tree`、`git rev-parse`、`git ls-files --stage` 等观察命令；校正 `clone`、`fetch`、`push` 交换对象和引用的表述；补强集成管理员/层级维护者模型；同时把 `git daemon`、静态 HTTP 仓库和 `git instaweb` 等旧式内容降为边界知识 |
 
