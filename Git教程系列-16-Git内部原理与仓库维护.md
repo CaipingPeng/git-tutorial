@@ -4,13 +4,16 @@
 
 本章目标：
 
-1. 理解 Git 如何用对象保存一次提交
+1. 理解 Git 如何用对象和引用保存一次提交
 2. 分清工作目录、索引、对象库和引用
-3. 知道 `.gitignore` 为什么不影响已经被跟踪的文件
-4. 理解 reflog、stash、FETCH_HEAD、ORIG_HEAD 这些“救援线索”
-5. 区分 bare 仓库、archive、bundle 和历史清理的边界
+3. 能用 `rev-parse`、`cat-file`、`ls-tree`、`ls-files --stage` 观察仓库内部
+4. 知道 `.gitignore` 为什么不影响已经被跟踪的文件
+5. 理解 reflog、stash、FETCH_HEAD、ORIG_HEAD 这些“救援线索”
+6. 区分 bare 仓库、archive、bundle 和历史清理的边界
 
 如果你是完全新手，可以先跳过本章，学完综合实战后再回来读。
+
+本章会出现一些偏底层的命令。你不需要把它们当成日常操作入口；它们更像显微镜，用来验证“Git 到底把什么存在哪里”。
 
 ---
 
@@ -43,6 +46,15 @@ flowchart LR
 
 这也是很多问题的根源：你以为自己在改“一个文件”，Git 实际在比较“工作目录、索引、HEAD 指向的提交”三者。
 
+还有一组术语可以先认识：
+
+| 类型 | 含义 | 例子 |
+|---|---|---|
+| porcelain（瓷器命令） | 面向人日常使用的高层命令 | `git status`、`git add`、`git commit`、`git switch` |
+| plumbing（管道命令） | 面向脚本和内部观察的底层命令 | `git cat-file`、`git ls-tree`、`git rev-parse` |
+
+教程主线仍然教 porcelain；本章用少量 plumbing 命令帮你把心智模型坐实。
+
 ---
 
 ## 2. Git 对象：blob、tree、commit、tag
@@ -55,6 +67,8 @@ Git 保存历史时，不是把文件夹简单压缩成 zip。它把内容拆成
 | tree | 文件名、目录结构、权限，以及指向 blob/tree 的引用 | 一个目录清单 |
 | commit | 作者、时间、提交说明、父提交、指向根 tree 的引用 | 一次版本记录 |
 | tag | 指向某个对象的固定标签，常用于版本发布 | `v1.0.0` 标签 |
+
+这里最容易误解的是 blob：blob 保存的是**文件内容**，不是文件名。文件名、路径和权限在 tree 里。两个路径里的文件内容如果完全一样，可以指向同一个 blob；Git 不需要为相同内容重复保存两份正文。
 
 一次提交可以这样理解：
 
@@ -76,12 +90,15 @@ flowchart TD
 
 提交哈希不是随机编号。默认情况下，Git 会根据对象内容和元数据计算哈希。内容不同，哈希通常就不同；父提交不同，提交对象的哈希也会不同。这就是为什么 rebase、amend、squash 会“改写历史”：它们不是把旧提交挪一挪，而是创建了新的提交对象。
 
+对象之间组成的是一张有方向、不会绕回来的图：commit 指向 tree，tree 指向 blob 或子 tree，commit 还会指向父 commit。Git 读历史时就是从某个引用（例如 `HEAD`、`main`、`v1.0.0`）出发，一路沿着这些指针找到需要的对象。
+
 可以用下面命令观察对象：
 
 ```bash
 git rev-parse HEAD
 git cat-file -p HEAD
 git cat-file -p HEAD^{tree}
+git ls-tree -r HEAD
 ```
 
 解释：
@@ -91,14 +108,33 @@ git cat-file -p HEAD^{tree}
 | `git rev-parse HEAD` | 把 `HEAD` 解析成完整提交哈希 |
 | `git cat-file -p HEAD` | 查看当前提交对象内容 |
 | `git cat-file -p HEAD^{tree}` | 查看当前提交指向的根目录 tree |
+| `git ls-tree -r HEAD` | 递归列出当前提交的目录树、文件模式和 blob 哈希 |
 
 这些命令适合学习和诊断，不是日常开发必需品。
+
+如果你想继续追某个文件内容，可以从 `git ls-tree -r HEAD` 的输出里复制对应 blob 哈希，再运行：
+
+```bash
+git cat-file -t 哈希      # 看对象类型
+git cat-file -s 哈希      # 看对象大小
+git cat-file -p 哈希      # 打印对象内容；二进制文件不要随便 -p
+```
+
+这条观察链很重要：
+
+```text
+HEAD → 当前分支 → commit → tree → blob
+```
+
+你平时运行的 `git show`、`git diff`、`git checkout`/`switch`，背后都离不开这条链路，只是高层命令替你把细节藏起来了。
 
 ---
 
 ## 3. `.git/objects` 不适合手动编辑
 
 如果打开 `.git/objects`，你可能会看到很多以两位字符命名的目录。Git 会把对象哈希拆开：前两位作为目录名，剩余部分作为文件名。这样可以避免一个目录里塞进过多文件。
+
+刚创建的小仓库里，这些对象可能是一个个 loose object。仓库使用久了以后，Git 会把很多对象压缩进 packfile，以节省空间并加快传输。你不需要手动解包或编辑它们；知道“对象可能散放，也可能打包”就够了。
 
 你不需要手动管理这些文件。更重要的是：不要手动删除 `.git/objects` 里的对象来“清理空间”。对象之间互相引用，乱删可能让仓库损坏。
 
@@ -117,6 +153,8 @@ git fsck
 | `git fsck` | 检查对象连通性和仓库完整性 | 怀疑仓库损坏时 |
 
 一般项目不需要频繁手动运行 `git gc`，Git 会在合适时机自动维护。手动运行前，先确认没有正在进行的 rebase、merge 或其他操作。
+
+`git fsck` 有时会报告 dangling commit/blob/tree。dangling 的意思通常是“这个对象暂时没有被任何可达引用指向”，不一定代表仓库损坏。例如刚做过 rebase、reset、amend 后，旧提交对象可能还留在本地一段时间。先看上下文，不要一看到 dangling 就急着 `git prune`。
 
 ---
 
@@ -152,6 +190,8 @@ HEAD -> 某个 commit
 git switch -c rescue-work 提交哈希
 ```
 
+远程跟踪分支也是引用，只是命名空间不同。`refs/remotes/origin/main` 记录的是“上次 fetch 时，远程 origin 的 main 在哪里”。运行 `git fetch origin` 会更新这类引用；它不会自动移动你的本地 `main`。这就是第 6 章反复强调 `fetch` 比 `pull` 更适合观察的原因。
+
 ---
 
 ## 5. 索引：暂存区也是 Git 的内部状态
@@ -183,6 +223,21 @@ git diff --staged
 | `git diff --staged` | 索引 vs HEAD |
 
 也就是说，`git add` 不是给文件贴永久标签，而是把“这一刻的内容”放进下一次提交。
+
+想直接看索引里记录了什么，可以运行：
+
+```bash
+git ls-files --stage
+```
+
+输出大致像这样：
+
+```text
+100644 a1b2c3d4... 0    README.md
+100644 e5f6a7b8... 0    src/app.js
+```
+
+这里能看到文件模式、对象哈希、stage 编号和路径。普通状态下 stage 编号通常是 `0`；合并冲突时，同一个路径可能出现多个 stage，分别代表共同祖先、当前分支和被合并分支的版本。这就是为什么冲突解决后必须 `git add`：你是在告诉索引“这个路径的最终版本已经确定”。
 
 ---
 
@@ -298,6 +353,12 @@ git show ORIG_HEAD
 ```
 
 注意：这些多是本地记录。换一台电脑、重新 clone 仓库，不一定有同样的 reflog 或 stash。
+
+有些老资料会用 `git reset --hard ORIG_HEAD` 撤销刚才的 merge 或 rebase。这个思路没错，但命令很重：`--hard` 会让工作目录和索引都回到目标提交。真正执行前，先运行 `git status`，确认没有要保留的未提交改动；不确定时，先从 `ORIG_HEAD` 创建救援分支更稳：
+
+```bash
+git switch -c before-risky-operation ORIG_HEAD
+```
 
 ---
 
@@ -438,6 +499,8 @@ flowchart TD
 | `哈希前缀` | 只要唯一，`c3d4e5f` 就够，不必写全 |
 | `refname@{n}` | reflog 里该引用的第 n 次旧值，救援时有用 |
 | `HEAD@{1}` | reflog 里 HEAD 的上一次位置 |
+| `HEAD^{tree}` | 当前提交指向的根目录 tree |
+| `HEAD:README.md` | 当前提交里 `README.md` 这个路径对应的 blob 内容 |
 
 `~` 和 `^` 的区别主要在合并提交上：合并提交有两个父提交，`^1` 是第一父线（通常是目标分支），`^2` 是第二父线（被合并的分支）；`~n` 则只是“沿第一父线回退 n 代”。
 
@@ -448,6 +511,7 @@ git diff HEAD~2 HEAD          # 比较两代前的提交和现在
 git reset --soft HEAD~1       # 撤销最后一次提交，保留改动在暂存区
 git show HEAD^2               # 看合并提交的另一条父线
 git log feature..main         # main 上有、feature 上没有的提交
+git show HEAD:README.md       # 只查看 HEAD 里某个文件的内容
 ```
 
 `A..B` 表示“在 B 但不在 A 的提交”，是查看分支差异的常用写法。
@@ -537,7 +601,7 @@ git am --signoff < 0001-fix-title.patch
 | 内容 | 建议学习时机 |
 |---|---|
 | blob/tree/commit | 学完提交、分支、合并后 |
-| `git cat-file`、`rev-parse` | 想理解对象模型时 |
+| `git cat-file`、`rev-parse`、`ls-tree`、`ls-files --stage` | 想理解对象模型、目录树和索引时 |
 | bare 仓库、archive、bundle | 需要导出、离线搬运或自建远程仓库时 |
 | packfile、gc、fsck | 仓库过大或怀疑损坏时 |
 | `filter-repo` / BFG | 误提交大文件或秘密时 |
@@ -546,6 +610,7 @@ git am --signoff < 0001-fix-title.patch
 | Git LFS | 项目有大体积二进制文件时 |
 | submodule / subtree | 需要把另一个仓库作为子目录嵌入时 |
 | `git send-email` / patch 工作流 | 给邮件列表驱动的项目（如内核）贡献时 |
+| `git daemon`、静态 HTTP 仓库、`git instaweb` | 了解老式共享和浏览方式即可，现代团队通常用 GitHub/GitLab/Gitee 或自建平台 |
 
 不要为了“懂底层”而绕开高层命令。日常操作仍然优先使用 `status`、`add`、`commit`、`switch`、`merge`、`rebase`、`fetch`、`pull`、`push` 这些稳定入口。
 
@@ -557,7 +622,11 @@ git am --signoff < 0001-fix-title.patch
 |---|---|---|
 | `git rev-parse HEAD` | 查看当前提交完整哈希 | 常用于脚本和诊断 |
 | `git cat-file -p HEAD` | 查看对象内容 | 学习内部结构时用 |
+| `git cat-file -t 哈希` | 查看对象类型 | 分不清 blob/tree/commit/tag 时 |
+| `git cat-file -s 哈希` | 查看对象大小 | 排查异常大对象时有用 |
 | `git cat-file -p HEAD^{tree}` | 查看当前提交的根 tree | 可继续追 blob |
+| `git ls-tree -r HEAD` | 递归列出提交里的 tree/blob | 从提交追到具体文件对象 |
+| `git ls-files --stage` | 查看索引里的对象记录 | 理解暂存区和冲突 stage |
 | `git status --ignored` | 显示被忽略文件 | 排查 `.gitignore` |
 | `git check-ignore -v 文件` | 查看忽略规则来源 | 比猜规则可靠 |
 | `git ls-files 文件` | 判断文件是否仍在索引里 | 排查 `.gitignore` 事后无效 |
@@ -584,12 +653,13 @@ git am --signoff < 0001-fix-title.patch
 ## 17. 本章总结
 
 1. Git 的核心不是文件夹复制，而是对象、索引和引用。
-2. commit 指向 tree，tree 指向 blob；分支名指向 commit。
-3. `.gitignore` 只影响未跟踪文件，已跟踪文件要用 `git rm --cached` 退出索引。
-4. reflog、stash、FETCH_HEAD、ORIG_HEAD 都是本地排障线索。
-5. `archive`、`bundle` 和 bare 仓库解决的是不同的导出/交换问题，不能混用。
-6. 清理历史和旧系统迁移都要当成团队级迁移处理，尤其是密钥泄露、大文件清理和 SVN 迁移。
-7. submodule、subtree 和 patch 工作流属于特定场景工具；先理解边界，再决定是否引入。
+2. commit 指向 tree，tree 指向 blob；分支名、远程跟踪分支和标签都是给对象图提供入口的引用。
+3. `cat-file`、`ls-tree`、`ls-files --stage` 能把对象库、目录树和索引直接显示出来。
+4. `.gitignore` 只影响未跟踪文件，已跟踪文件要用 `git rm --cached` 退出索引。
+5. reflog、stash、FETCH_HEAD、ORIG_HEAD 都是本地排障线索。
+6. `archive`、`bundle` 和 bare 仓库解决的是不同的导出/交换问题，不能混用。
+7. 清理历史和旧系统迁移都要当成团队级迁移处理，尤其是密钥泄露、大文件清理和 SVN 迁移。
+8. submodule、subtree、patch 工作流和老式共享协议都属于特定场景工具；先理解边界，再决定是否引入。
 
 ---
 

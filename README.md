@@ -20,6 +20,7 @@
 - 《Git Repository Management in 30 Days》：仓库管理视角，补强 PR 元数据、开源 bug report、release tag 与 release branch 的关系，以及危险覆盖式同步的边界。
 - 《Git for Humans》：用“人如何管理变化”的角度补强版本思维、可信提交节奏、远程 hub 模型、历史阅读和命令行/GUI 配合。
 - 《Git Best Practices Guide》：以实践问题组织 Git 知识，补强远程协议选择、tracking branch、`git grep`、stash 分支化、补丁工作流、hooks 分类和 CI 分支门禁。
+- 《Git Internals: Source code control and beyond》：用底层对象、引用、索引、treeish 和分布式仓库模型解释日常命令背后的机制，补强 `cat-file`、`ls-tree`、`rev-parse` 等观察命令。
 
 完整来源说明见 [参考资料](./references.md)。
 
@@ -160,6 +161,7 @@
 16. [Git 内部原理与仓库维护](./Git教程系列-16-Git内部原理与仓库维护.md)
     - blob、tree、commit、tag 的对象模型
     - 索引、引用、HEAD、reflog、stash、FETCH_HEAD、ORIG_HEAD
+    - 用 `rev-parse`、`cat-file`、`ls-tree`、`ls-files --stage` 观察仓库内部状态
     - 修订号语法（`HEAD~`、`^`、`@{n}`）和 `git worktree` 多工作目录
     - submodule、subtree 与 patch 工作流的适用边界
     - `.gitignore` 对已跟踪文件无效的原因和事后补救边界

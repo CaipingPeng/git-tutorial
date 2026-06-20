@@ -336,7 +336,34 @@ git push -u origin fix-doc-typo
 
 ---
 
-## 8. release 与 hotfix 分支
+## 8. 维护者模型：为什么不是每个人都能合并？
+
+分布式 Git 的一个容易误解之处是：技术上每个 clone 都很完整，但团队协作上并不是每个人都能把提交放进“正式版本”。开源项目尤其明显：贡献者可以 fork、提交、发 PR，但最终是否合入，通常由维护者或核心团队决定。
+
+常见维护模型有三种：
+
+| 模型 | 谁能合入正式仓库 | 适合场景 |
+|---|---|---|
+| 集中式团队 | 团队成员都能推或合并 | 小团队、权限简单 |
+| 集成管理员 | 维护者从贡献者分支/PR 中挑选、测试、合并 | 大多数 GitHub/GitLab 开源项目 |
+| 层级维护者 | 子系统维护者先集成，再交给总维护者 | 大型项目、内核类项目、复杂企业平台 |
+
+用图表示就是：
+
+```mermaid
+flowchart LR
+    C1[贡献者 A fork/branch] --> PR1[PR / Pull Request]
+    C2[贡献者 B fork/branch] --> PR2[PR / Pull Request]
+    PR1 --> M[维护者测试与审查]
+    PR2 --> M
+    M --> R[正式仓库 main]
+```
+
+这解释了为什么 PR 不是“我把代码上传了，请系统自动合并”，而是“我把一组提交交给项目维护者审查”。团队越大，越需要明确谁有合并权限、谁负责回流 release/hotfix、谁能修改受保护分支。
+
+---
+
+## 9. release 与 hotfix 分支
 
 ### release 分支
 
@@ -397,7 +424,7 @@ git switch -c hotfix/payment-timeout
 
 ---
 
-## 9. 真实项目对比：CMake 的 merge 策略与 Homebrew 的 rebase 策略
+## 10. 真实项目对比：CMake 的 merge 策略与 Homebrew 的 rebase 策略
 
 为了更直观地理解 merge-heavy 和 rebase-heavy 工作流的区别，来看两个真实开源项目。
 
@@ -450,52 +477,6 @@ fork → 功能分支 → rebase + squash → cherry-pick 到 master
 
 ---
 
-## 10. Mike Flow：作者推荐的混合工作流
-
-Mike Flow 是《Git in Practice》作者 Mike McQuaid 基于他在 GitHub 和 Homebrew 的经验总结的工作流。它分两种变体：
-
-### Mike Flow Single（单版本流）
-
-适合持续部署或只维护一个版本的项目。本质上是 GitHub Flow 加上 rebase 和 tag：
-
-- 所有开发在功能分支上完成
-- 功能分支在合并前可以 rebase、squash、重写历史
-- master 分支始终保持稳定
-- 发布时在 master 上打 tag
-
-```text
-master → 功能分支 → 开发 → rebase master → 合并回 master → 打 tag 发布
-```
-
-### Mike Flow Multiple（多版本流）
-
-适合需要同时维护多个发布版本的项目：
-
-- 在 Mike Flow Single 的基础上增加 release 分支
-- release 分支从 master 分出，可以被 cherry-pick
-- release 分支永不重写历史
-- 标签打在 release 分支上，而不是 master
-
-```text
-master → 功能分支 → 开发 → 合并回 master
-       → release-2.x 分支（从 master 分出）
-       → hotfix 分支 → 合并回 master 和 release 分支
-       → 在 release 分支上打 v2.0、v2.1 等标签
-```
-
-### 选择建议
-
-| 情况 | 推荐工作流 |
-|---|---|
-| 小型团队、Web 应用 | GitHub Flow |
-| 需要多版本支持 | Git Flow |
-| 持续部署 + 干净历史优先 | Mike Flow Single |
-| 多版本发布 + 干净历史优先 | Mike Flow Multiple |
-| 开源项目、大量外部贡献 | Homebrew 式 rebase + squash |
-| 需要完整追踪功能来源 | CMake 式 merge-heavy |
-
----
-
 ## 11. 怎么选择工作流？
 
 | 团队/项目 | 推荐 |
@@ -541,8 +522,9 @@ master → 功能分支 → 开发 → 合并回 master
 2. 个人功能分支和多人共享功能分支，更新主线时为什么策略不同？
 3. Gitflow 里的 `main` 和 `develop` 分别承担什么角色？
 4. Forking Workflow 里，`origin` 和 `upstream` 分别是什么？
-5. 为什么 hotfix 通常从 `main` 创建，而不是从 `develop` 创建？
-6. QA/集成分支为什么不应该长期存在？
+5. 集成管理员模型里，PR 为什么需要维护者审查后才合入正式仓库？
+6. 为什么 hotfix 通常从 `main` 创建，而不是从 `develop` 创建？
+7. QA/集成分支为什么不应该长期存在？
 
 ---
 

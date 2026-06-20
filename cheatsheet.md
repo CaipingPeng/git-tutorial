@@ -146,7 +146,10 @@
 | 查看 Git 正在跟踪哪些文件 | `git ls-files` |
 | 停止跟踪文件但保留本地文件 | `git rm --cached 文件名` |
 | 查看当前提交完整哈希 | `git rev-parse HEAD` |
+| 查看 Git 对象类型 | `git cat-file -t 对象哈希` |
 | 查看 Git 对象内容 | `git cat-file -p 对象哈希` |
+| 递归列出某次提交的 tree/blob | `git ls-tree -r HEAD` |
+| 查看索引里的暂存记录 | `git ls-files --stage` |
 | 查看对象占用空间 | `git count-objects -vH` |
 | 检查仓库完整性 | `git fsck` |
 | 新开一个工作树检出的分支 | `git worktree add ../path 分支` |
