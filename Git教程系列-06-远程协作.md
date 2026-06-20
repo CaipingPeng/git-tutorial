@@ -858,6 +858,52 @@ git fetch -p
 
 ---
 
+
+---
+
+## 17.5. 查看远程和本地引用
+
+### git ls-remote - 查看远程引用
+
+不用 fetch 就能查看远程仓库有哪些分支和标签:
+
+```bash
+git ls-remote origin
+```
+
+**使用场景**:
+- 检查远程分支是否存在
+- 查看远程标签
+- 调试推送问题
+
+只查看分支: `git ls-remote --heads origin`
+只查看标签: `git ls-remote --tags origin`
+
+### git show-ref - 查看本地引用
+
+查看本地所有引用:
+
+```bash
+git show-ref
+```
+
+只查看分支: `git show-ref --heads`
+只查看标签: `git show-ref --tags`
+
+**使用场景**:
+- 调试 detached HEAD
+- 查找丢失的分支
+- 理解引用结构
+
+**对比**:
+
+| 特性 | ls-remote | show-ref |
+|---|---|---|
+| 查询位置 | 远程仓库 | 本地仓库 |
+| 需要网络 | 是 | 否 |
+| 用途 | 检查远程状态 | 检查本地引用 |
+
+---
 ## 18. 本章总结
 
 这一章把 Git 从“本地版本管理”扩展到了“远程协作”：

@@ -108,7 +108,7 @@ git merge bob/main
 | **教学路径** | 先理解再实践,强调"为什么" | 先做再理解,强调"怎么做" |
 | **适用人群** | 想深入理解Git工作原理的学习者 | 想快速上手的新手 |
 
-**融合效果**: 
+**融合效果**:
 - 新手: 第03章最小流程 → 快速上手 → 第04/06章场景 → 建立直觉 → Pro Git图片 → 理解原理
 - 进阶: Pro Git可视化 → 深入内部机制 → gittutorial实战 → 掌握最佳实践
 
@@ -255,6 +255,6 @@ git-tutorial/
 ---
 
 **优化完成时间**: 2026-06-21
-**参考资源**: 
+**参考资源**:
 - Pro Git 2nd Edition (https://git-scm.com/book)
 - gittutorial (https://git-scm.com/docs/gittutorial)
