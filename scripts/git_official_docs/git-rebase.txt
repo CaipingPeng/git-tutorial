@@ -1,0 +1,158 @@
+URL: https://git-scm.com/docs/git-rebase
+Title: Git - git-rebase Documentation
+================================================================================
+
+[p] git-rebase - Reapply commits on top of another base tip
+
+[pre] git rebase[-i | --interactive] [<options>] [--exec <cmd>]
+	[--onto <newbase> | --keep-base] [<upstream> [<branch>]]git rebase[-i | --interactive] [<options>] [--exec <cmd>] [--onto <newbase>]
+	--root [<branch>]git rebase(--continue|--skip|--abort|--quit|--edit-todo|--show-current-patch)
+
+[h2] DESCRIPTION
+
+[p] Transplant a series of commits onto a different starting point.
+You can also usegitrebaseto reorder or combine commits: see INTERACTIVE
+MODE below for how to do that.
+
+[p] For example, imagine that you have been working on thetopicbranch in this
+history, and you want to "catch up" to the work done on themasterbranch.
+
+[pre] A---B---C topic
+         /
+    D---E---F---G master
+
+[p] You want to transplant the commits you made ontopicsince it diverged frommaster(i.e. A, B, and C), on top of the currentmaster.  You can do this
+by runninggitrebasemasterwhile thetopicbranch is checked out.  If you
+want to rebasetopicwhile on another branch,gitrebasemastertopicis a
+shortcut forgit checkout topic && git rebase master.
+
+[pre] A'--B'--C' topic
+                 /
+    D---E---F---G master
+
+[p] If there is a merge conflict during this process,gitrebasewill stop at the
+first problematic commit and leave conflict markers. If this happens, you can do
+one of these things:
+
+[li] Resolve the conflict. You can usegitdiffto find the markers (<<<<<<)
+and make edits to resolve the conflict. For each file you edit, you need to
+tell Git that the conflict has been resolved. You can mark the conflict as
+resolved withgitadd<filename>. After resolving all of the conflicts,
+you can continue the rebasing process withgit rebase --continue
+
+[p] Resolve the conflict. You can usegitdiffto find the markers (<<<<<<)
+and make edits to resolve the conflict. For each file you edit, you need to
+tell Git that the conflict has been resolved. You can mark the conflict as
+resolved withgitadd<filename>. After resolving all of the conflicts,
+you can continue the rebasing process with
+
+[pre] git rebase --continue
+
+[li] Stop thegitrebaseand return your branch to its original state withgit rebase --abort
+
+[p] Stop thegitrebaseand return your branch to its original state with
+
+[pre] git rebase --abort
+
+[li] Skip the commit that caused the merge conflict withgit rebase --skip
+
+[p] Skip the commit that caused the merge conflict with
+
+[pre] git rebase --skip
+
+[p] If you don’t specify an<upstream>to rebase onto, the upstream configured inbranch.<name>.remoteandbranch.<name>.mergeoptions will be used (seegit-config[1]for details) and the--fork-pointoption is
+assumed.  If you are currently not on any branch or if the current
+branch does not have a configured upstream, the rebase will abort.
+
+[code] --fork-point
+
+[p] Here is a simplified description of whatgitrebase<upstream>does:
+
+[li] Make a list of all commits on your current branch since it branched
+off from<upstream>that do not have an equivalent commit in<upstream>.
+
+[p] Make a list of all commits on your current branch since it branched
+off from<upstream>that do not have an equivalent commit in<upstream>.
+
+[li] Check out<upstream>with the equivalent ofgitcheckout--detach<upstream>.
+
+[p] Check out<upstream>with the equivalent ofgitcheckout--detach<upstream>.
+
+[li] Replay the commits, one by one, in order. This is similar to runninggitcherry-pick<commit>for each commit. See REBASING MERGES for how merges
+are handled.
+
+[p] Replay the commits, one by one, in order. This is similar to runninggitcherry-pick<commit>for each commit. See REBASING MERGES for how merges
+are handled.
+
+[code] cherry-pick
+
+[li] Update your branch to point to the final commit with the equivalent
+ofgitcheckout-B<branch>.
+
+[p] Update your branch to point to the final commit with the equivalent
+ofgitcheckout-B<branch>.
+
+[h2] TRANSPLANTING A TOPIC BRANCH WITH --ONTO
+
+[p] Here is how you would transplant a topic branch based on one
+branch to another, to pretend that you forked the topic branch
+from the latter branch, usingrebase--onto.
+
+[p] First let’s assume yourtopicis based on branchnext.
+For example, a feature developed intopicdepends on some
+functionality which is found innext.
+
+[pre] o---o---o---o---o  master
+         \
+          o---o---o---o---o  next
+                           \
+                            o---o---o  topic
+
+[p] We want to maketopicforked from branchmaster; for example,
+because the functionality on whichtopicdepends was merged into the
+more stablemasterbranch. We want our tree to look like this:
+
+[pre] o---o---o---o---o  master
+        |            \
+        |             o'--o'--o'  topic
+         \
+          o---o---o---o---o  next
+
+[p] We can get this using the following command:
+
+[pre] git rebase --onto master next topic
+
+[p] Another example of --onto option is to rebase part of a
+branch.  If we have the following situation:
+
+[pre] H---I---J topicB
+                           /
+                  E---F---G  topicA
+                 /
+    A---B---C---D  master
+
+[p] then the command
+
+[pre] git rebase --onto master topicA topicB
+
+[p] would result in:
+
+[pre] H'--I'--J'  topicB
+                /
+                | E---F---G  topicA
+                |/
+    A---B---C---D  master
+
+[p] This is useful when topicB does not depend on topicA.
+
+[p] A range of commits could also be removed with rebase.  If we have
+the following situation:
+
+[pre] E---F---G---H---I---J  topicA
+
+[p] then the command
+
+[pre] git rebase --onto topicA~5 topicA~3 topicA
+
+[p] would result in the removal of commits F and G:
+

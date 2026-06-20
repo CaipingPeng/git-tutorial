@@ -1,0 +1,159 @@
+URL: https://git-scm.com/docs/git-switch
+Title: Git - git-switch Documentation
+================================================================================
+
+[p] git-switch - Switch branches
+
+[pre] gitswitch[<options>] [--no-guess]<branch>gitswitch[<options>]--detach[<start-point>]gitswitch[<options>] (-c|-C)<new-branch>[<start-point>]gitswitch[<options>]--orphan<new-branch>
+
+[h2] DESCRIPTION
+
+[p] Switch to a specified branch. The working tree and the index are
+updated to match the branch. All new commits will be added to the tip
+of this branch.
+
+[p] Optionally a new branch could be created with either-c,-C,
+automatically from a remote branch of same name (see--guess), or
+detach the working tree from any branch with--detach, along with
+switching.
+
+[p] Switching branches does not require a clean index and working tree
+(i.e. no differences compared toHEAD). The operation is aborted
+however if the operation leads to loss of local changes, unless told
+otherwise with--discard-changesor--merge.
+
+[code] --discard-changes
+
+[p] Branch to switch to.
+
+[p] Name for the new branch.
+
+[p] The starting point for the new branch. Specifying a<start-point>allows you to create a branch based on some
+other point in history than whereHEADcurrently points. (Or,
+in the case of--detach, allows you to inspect and detach
+from some other point.)
+
+[p] You can use the@{-<N>}syntax to refer to the<N>-th last
+branch/commit switched to usinggitswitchorgitcheckoutoperation. You may also specify-which is synonymous to@{-1}.
+This is often used to switch quickly between two branches, or to undo
+a branch switch by mistake.
+
+[p] As a special case, you may use<rev-a>...<rev-b>as a shortcut for the merge
+base of<rev-a>and<rev-b>if there is exactly one merge base. You can leave
+out at most one of<rev-a>and<rev-b>, in which case it defaults toHEAD.
+
+[p] Create a new branch named<new-branch>starting at<start-point>before switching to the branch. This is the
+transactional equivalent of
+
+[pre] $ git branch <new-branch>
+$ git switch <new-branch>
+
+[p] that is to say, the branch is not reset/created unlessgitswitchis
+successful (e.g., when the branch is in use in another worktree, not
+just the current branch stays the same, but the branch is not reset to
+the start-point, either).
+
+[code] --force-create
+
+[p] Similar to--createexcept that if<new-branch>already
+exists, it will be reset to<start-point>. This is a
+convenient shortcut for:
+
+[pre] $ git branch -f _<new-branch>_
+$ git switch _<new-branch>_
+
+[p] Switch to a commit for inspection and discardable
+experiments. See the "DETACHED HEAD" section ingit-checkout[1]for details.
+
+[p] If<branch>is not found but there does exist a tracking
+branch in exactly one remote (call it<remote>) with a
+matching name, treat as equivalent to
+
+[pre] $ git switch -c<branch>--track <remote>/<branch>
+
+[p] If the branch exists in multiple remotes and one of them is named by
+thecheckout.defaultRemoteconfiguration variable, we’ll use that
+one for the purposes of disambiguation, even if the<branch>isn’t
+unique across all remotes. Set it to e.g.checkout.defaultRemote=originto always checkout remote branches from there if<branch>is
+ambiguous but exists on theoriginremote. See alsocheckout.defaultRemoteingit-config[1].
+
+[code] checkout.defaultRemote
+
+[code] checkout.defaultRemote=origin
+
+[code] checkout.defaultRemote
+
+[p] --guessis the default behavior. Use--no-guessto disable it.
+
+[p] The default behavior can be set via thecheckout.guessconfiguration
+variable.
+
+[code] checkout.guess
+
+[p] An alias for--discard-changes.
+
+[code] --discard-changes
+
+[code] --discard-changes
+
+[p] Proceed even if the index or the working tree differs fromHEAD. Both the index and working tree are restored to match
+the switching target. If--recurse-submodulesis specified,
+submodule content is also restored to match the switching
+target. This is used to throw away local changes.
+
+[code] --recurse-submodules
+
+[p] If you have local modifications to one or more files that are
+different between the current branch and the branch to which
+you are switching, the command refuses to switch branches in
+order to preserve your modifications in context.  However,
+with this option, a three-way merge between the current
+branch, your working tree contents, and the new branch is
+done, and you will be on the new branch.
+
+[p] When a merge conflict happens, the index entries for conflicting
+paths are left unmerged, and you need to resolve the conflicts
+and mark the resolved paths withgitadd(orgitrmif the merge
+should result in deletion of the path).
+
+[code] --conflict=
+
+[p] The same as--mergeoption above, but changes the way the
+conflicting hunks are presented, overriding themerge.conflictStyleconfiguration variable.  Possible values aremerge(default),diff3, andzdiff3.
+
+[code] merge.conflictStyle
+
+[p] Quiet, suppress feedback messages.
+
+[code] --no-progress
+
+[p] Progress status is reported on the standard error stream
+by default when it is attached to a terminal, unless--quietis specified. This flag enables progress reporting even if not
+attached to a terminal, regardless of--quiet.
+
+[p] When creating a new branch, set up "upstream" configuration.-cis implied. See--trackingit-branch[1]for
+details.
+
+[p] If no-coption is given, the name of the new branch will be derived
+from the remote-tracking branch, by looking at the local part of the
+refspec configured for the corresponding remote, and then stripping
+the initial part up to the "*".  This would tell us to usehackas
+the local branch when branching off oforigin/hack(orremotes/origin/hack, or evenrefs/remotes/origin/hack).  If the
+given name has no slash, or the above guessing results in an empty
+name, the guessing is aborted.  You can explicitl
+
+[code] origin/hack
+
+[code] remotes/origin/hack
+
+[code] refs/remotes/origin/hack
+
+[p] Do not set up "upstream" configuration, even if thebranch.autoSetupMergeconfiguration variable is true.
+
+[code] branch.autoSetupMerge
+
+[p] Create a new unborn branch, named<new-branch>. All
+tracked files are removed.
+
+[code] --ignore-other-worktrees
+

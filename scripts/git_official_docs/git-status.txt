@@ -1,0 +1,141 @@
+URL: https://git-scm.com/docs/git-status
+Title: Git - git-status Documentation
+================================================================================
+
+[p] git-status - Show the working tree status
+
+[pre] gitstatus[<options>] [--] [<pathspec>…​]
+
+[h2] DESCRIPTION
+
+[p] Displays paths that have differences between the index file and the
+current HEAD commit, paths that have differences between the working
+tree and the index file, and paths in the working tree that are not
+tracked by Git (and are not ignored bygitignore[5]). The first
+are what youwouldcommit by runninggitcommit; the second and
+third are what youcouldcommit by runninggitaddbefore runninggitcommit.
+
+[p] Give the output in the short-format.
+
+[p] Show the branch and tracking info even in short-format.
+
+[code] --show-stash
+
+[p] Show the number of entries currently stashed away.
+
+[code] --porcelain
+
+[p] Give the output in an easy-to-parse format for scripts.
+This is similar to the short output, but will remain stable
+across Git versions and regardless of user configuration. See
+below for details.
+
+[p] The<version>parameter is used to specify the format version.
+This is optional and defaults to the original versionv1format.
+
+[p] Give the output in the long-format. This is the default.
+
+[p] In addition to the names of files that have been changed, also
+show the textual changes that are staged to be committed
+(i.e., like the output ofgitdiff--cached). If-vis specified
+twice, then also show the changes in the working tree that
+have not yet been staged (i.e., like the output ofgitdiff).
+
+[code] --untracked-files
+
+[p] Show untracked files.
+
+[p] The mode parameter is used to specify the handling of untracked files.
+It is optional: it defaults toall, and if specified, it must be
+stuck to the option (e.g.-uno, but not-uno).
+
+[p] The possible options are:
+
+[p] Show no untracked files.
+
+[p] Show untracked files and directories.
+
+[p] Also show individual files in untracked directories.
+
+[p] When-uoption is not used, untracked files and directories are
+shown (i.e. the same as specifyingnormal), to help you avoid
+forgetting to add newly created files.  Because it takes extra work
+to find untracked files in the filesystem, this mode may take some
+time in a large working tree.
+Consider enabling untracked cache and split index if supported (seegitupdate-index--untracked-cacheandgitupdate-index--split-index), Otherwise you can usenoto havegitstatusreturn more quickly without showing untr
+
+[code] update-index
+
+[code] --untracked-cache
+
+[code] update-index
+
+[code] --split-index
+
+[p] The default can be changed using thestatus.showUntrackedFilesconfiguration variable documented ingit-config[1].
+
+[code] status.showUntrackedFiles
+
+[code] --ignore-submodules
+
+[p] Ignore changes to submodules when looking for changes.<when>can be
+eithernone,untracked,dirtyorall, which is the default.
+
+[p] will consider the submodule modified when it either contains
+untracked or modified files or its HEAD differs from the commit recorded
+in the superproject and can be used to override any settings of theignoreoption ingit-config[1]orgitmodules[5].
+
+[p] submodules are not considered dirty when they only
+contain untracked content (but they are still scanned for modified
+content).
+
+[p] ignore all changes to the work tree of submodules,
+only changes to the commits stored in the superproject are shown (this was
+the behavior before 1.7.0).
+
+[p] hide all changes to submodules
+(and suppresses the output of submodule summaries when the config optionstatus.submoduleSummaryis set).
+
+[code] status.submoduleSummary
+
+[p] Show ignored files as well.
+
+[p] The mode parameter is used to specify the handling of ignored files.
+It is optional: it defaults totraditional.
+
+[code] traditional
+
+[p] The possible options are:
+
+[code] traditional
+
+[p] Show ignored files and directories, unless--untracked-files=allis specified, in which case
+ individual files in ignored directories are
+ displayed.
+
+[code] --untracked-files=all
+
+[p] Show no ignored files.
+
+[p] Show ignored files and directories matching an
+ignore pattern.
+
+[p] Paths that explicitly match an
+ignored pattern are shown. If a directory matches an ignore pattern,
+then it is shown, but not paths contained in the ignored directory. If
+a directory does not match an ignore pattern, but all contents are
+ignored, then the directory is not shown, but all contents are shown.
+
+[p] Terminate entries withNUL, instead ofLF.  This implies
+the--porcelain=v1output format if no other format is given.
+
+[code] --porcelain=v1
+
+[code] --no-column
+
+[p] Display untracked files in columns. See configuration variablecolumn.statusfor option syntax.--columnand--no-columnwithout options are equivalent toalwaysandneverrespectively.
+
+[code] column.status
+
+[code] --no-column
+

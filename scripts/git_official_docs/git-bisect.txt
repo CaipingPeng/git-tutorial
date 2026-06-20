@@ -1,0 +1,152 @@
+URL: https://git-scm.com/docs/git-bisect
+Title: Git - git-bisect Documentation
+================================================================================
+
+[p] git-bisect - Use binary search to find the commit that introduced a bug
+
+[pre] git bisectstart [--term-(bad|new)=<term-new> --term-(good|old)=<term-old>]
+		   [--no-checkout] [--first-parent] [<bad> [<good>…​]] [--] [<pathspec>…​]git bisect(bad|new|<term-new>) [<rev>]git bisect(good|old|<term-old>) [<rev>…​]git bisectterms [--term-(good|old) | --term-(bad|new)]git bisectskip [(<rev>|<range>)…​]git bisectnextgit bisectreset [<commit>]git bisect(visualize|view)git bisectreplay <logfile>git bisectloggit bisectrun <cmd> [<arg>…​]git bisecthelp
+
+[h2] DESCRIPTION
+
+[p] This command uses a binary search algorithm to find which commit in
+your project’s history introduced a bug. You use it by first telling
+it a "bad" commit that is known to contain the bug, and a "good"
+commit that is known to be before the bug was introduced. Thengitbisectpicks a commit between those two endpoints and asks you
+whether the selected commit is "good" or "bad". It continues narrowing
+down the range until it finds the exact commit that introduced the
+change.
+
+[p] In fact,gitbisectcan be used to find the commit that changedanyproperty of your project; e.g., the commit that fixed a bug, or
+the commit that caused a benchmark’s performance to improve. To
+support this more general usage, the terms "old" and "new" can be used
+in place of "good" and "bad", or you can choose your own terms. See
+section "Alternate terms" below for more information.
+
+[h3] Basic bisect commands: start, bad, good
+
+[p] As an example, suppose you are trying to find the commit that broke a
+feature that was known to work in versionv2.6.13-rc2of your
+project. You start a bisect session as follows:
+
+[code] v2.6.13-rc2
+
+[pre] $ git bisect start
+$ git bisect bad                 # Current version is bad
+$ git bisect good v2.6.13-rc2    # v2.6.13-rc2 is known to be good
+
+[p] Once you have specified at least one bad and one good commit,gitbisectselects a commit in the middle of that range of history,
+checks it out, and outputs something similar to the following:
+
+[pre] Bisecting: 675 revisions left to test after this (roughly 10 steps)
+
+[p] You should now compile the checked-out version and test it. If that
+version works correctly, type
+
+[pre] $ git bisect good
+
+[p] If that version is broken, type
+
+[pre] $ git bisect bad
+
+[p] Thengitbisectwill respond with something like
+
+[pre] Bisecting: 337 revisions left to test after this (roughly 9 steps)
+
+[p] Keep repeating the process: compile the tree, test it, and depending
+on whether it is good or bad rungitbisectgoodorgitbisectbadto ask for the next commit that needs testing.
+
+[p] Eventually there will be no more revisions left to inspect, and the
+command will print out a description of the first bad commit. The
+referencerefs/bisect/badwill be left pointing at that commit.
+
+[code] refs/bisect/bad
+
+[h3] Bisect reset
+
+[p] After a bisect session, to clean up the bisection state and return to
+the original HEAD, issue the following command:
+
+[pre] $ git bisect reset
+
+[p] By default, this will return your tree to the commit that was checked
+out beforegitbisectstart.  (A newgitbisectstartwill also do
+that, as it cleans up the old bisection state.)
+
+[p] With an optional argument, you can return to a different commit
+instead:
+
+[pre] $ git bisect reset<commit>
+
+[p] For example,gitbisectresetbisect/badwill check out the first
+bad revision, whilegitbisectresetHEADwill leave you on the
+current bisection commit and avoid switching commits at all.
+
+[h3] Alternate terms
+
+[p] Sometimes you are not looking for the commit that introduced a
+breakage, but rather for a commit that caused a change between some
+other "old" state and "new" state. For example, you might be looking
+for the commit that introduced a particular fix. Or you might be
+looking for the first commit in which the source-code filenames were
+finally all converted to your company’s naming standard. Or whatever.
+
+[p] In such cases it can be very confusing to use the terms "good" and
+"bad" to refer to "the state before the change" and "the state after
+the change". So instead, you can use the terms "old" and "new",
+respectively, in place of "good" and "bad". (But note that you cannot
+mix "good" and "bad" with "old" and "new" in a single session.)
+
+[p] In this more general usage, you providegitbisectwith a "new"
+commit that has some property and an "old" commit that doesn’t have that
+property. Each timegitbisectchecks out a commit, you test if that
+commit has the property. If it does, mark the commit as "new";
+otherwise, mark it as "old". When the bisection is done,gitbisectwill report which commit introduced the property.
+
+[p] To use "old" and "new" instead of "good" and bad, you must rungitbisectstartwithout commits as argument and then run the following
+commands to add the commits:
+
+[pre] git bisect old [<rev>]
+
+[p] to indicate that a commit was before the sought change, or
+
+[pre] git bisect new [<rev>...]
+
+[p] to indicate that it was after.
+
+[p] To get a reminder of the currently used terms, use
+
+[pre] git bisect terms
+
+[p] You can get just the old term withgitbisectterms--term-oldorgitbisectterms--term-good;gitbisectterms--term-newandgitbisectterms--term-badcan be used to learn how to call
+the commits more recent than the sought change.
+
+[code] --term-good
+
+[p] If you would like to use your own terms instead of "bad"/"good" or
+"new"/"old", you can choose any names you like (except existing bisect
+subcommands likereset,start, …​) by starting the
+bisection using
+
+[pre] git bisect start --term-old <term-old> --term-new <term-new>
+
+[p] For example, if you are looking for a commit that introduced a
+performance regression, you might use
+
+[pre] git bisect start --term-old fast --term-new slow
+
+[p] Or if you are looking for the commit that fixed a bug, you might use
+
+[pre] git bisect start --term-new fixed --term-old broken
+
+[p] Then, usegitbisect<term-old>andgitbisect<term-new>instead
+ofgitbisectgoodandgitbisectbadto mark commits.
+
+[h3] Bisect visualize/view
+
+[p] To see the currently remaining suspects ingitk, issue the following
+command during the bisection process (the subcommandviewcan be used
+as an alternative tovisualize):
+
+[pre] $ git bisect visualize
+

@@ -1,0 +1,158 @@
+URL: https://git-scm.com/docs/git-notes
+Title: Git - git-notes Documentation
+================================================================================
+
+[p] git-notes - Add or inspect object notes
+
+[pre] gitnotes[list[<object>]]gitnotesadd[-f] [--allow-empty] [--[no-]separator|--separator=<paragraph-break>] [--[no-]stripspace] [-F<file>|-m<msg>| (-c|-C)<object>] [-e] [<object>]gitnotescopy[-f] (--stdin|<from-object>[<to-object>] )gitnotesappend[--allow-empty] [--[no-]separator|--separator=<paragraph-break>] [--[no-]stripspace] [-F<file>|-m<msg>| (-c|-C)<object>] [-e] [<object>]gitnotesedit[--allow-empty] [<object>] [--[no-]stripspace]gitnotesshow[<object>]gitnotesmerge[-v|-q] [-s<strategy>]<note
+
+[code] --allow-empty
+
+[code] --separator=
+
+[code] --allow-empty
+
+[code] --separator=
+
+[code] --allow-empty
+
+[code] --ignore-missing
+
+[h2] DESCRIPTION
+
+[p] Adds, removes, or reads notes attached to objects, without touching
+the objects themselves.
+
+[p] By default, notes are saved to and read fromrefs/notes/commits, but
+this default can be overridden.  See the OPTIONS, CONFIGURATION, and
+ENVIRONMENT sections below.  If this ref does not exist, it will be
+quietly created when it is first needed to store a note.
+
+[code] refs/notes/commits
+
+[p] A typical use of notes is to supplement a commit message without
+changing the commit itself. Notes can be shown bygitlogalong with
+the original commit message. To distinguish these notes from the
+message stored in the commit object, the notes are indented like the
+message, after an unindented line saying "Notes (<refname>):" (or
+"Notes:" forrefs/notes/commits).
+
+[code] refs/notes/commits
+
+[p] Notes can also be added to patches prepared withgitformat-patchby
+using the--notesoption. Such notes are added as a patch commentary
+after a three dash separator line.
+
+[code] format-patch
+
+[p] To change which notes are shown bygitlog, see thenotes.displayRefdiscussion inCONFIGURATION.
+
+[code] notes.displayRef
+
+[p] See thenotes.rewrite.<command>configuration for a way to carry
+notes across commands that rewrite commits.
+
+[code] notes.rewrite.
+
+[h2] SUBCOMMANDS
+
+[p] List the notes object for a given object. If no object is
+given, show a list of all note objects and the objects they
+annotate (in the format "<note-object><annotated-object>").
+This is the default subcommand if no subcommand is given.
+
+[p] Add notes for a given object (defaults toHEAD). Abort if the
+object already has notes (use-fto overwrite existing notes).
+However, if you’re usingaddinteractively (using an editor
+to supply the notes contents), then - instead of aborting -
+the existing notes will be opened in the editor (like theeditsubcommand). If you specify multiple-mand-F, a blank
+line will be inserted between the messages. Use the--separatoroption to insert other delimiters. You can use-eto edit and
+fine-tune the message(s)
+
+[code] --separator
+
+[p] Copy the notes for the first object onto the second object (defaults toHEAD). Abort if the second object already has notes, or if the first
+object has none (use-fto overwrite existing notes to the
+second object). This subcommand is equivalent to:gitnotesadd[-f]-C$(gitnoteslist<from-object>)<to-object>
+
+[p] In--stdinmode, take lines in the format
+
+[pre] <from-object> SP <to-object> [ SP <rest> ] LF
+
+[p] on standard input, and copy the notes from each<from-object>to its
+corresponding<to-object>.  (The optional<rest>is ignored so that
+the command can read the input given to thepost-rewritehook.)
+
+[code] post-rewrite
+
+[p] --stdincannot be combined with object names given on the command
+line.
+
+[p] Append new message(s) given by-mor-Foptions to an
+existing note, or add them as a new note if one does not
+exist, for the object (defaults toHEAD).  When appending to
+an existing note, a blank line is added before each new
+message as an inter-paragraph separator.  The separator can
+be customized with the--separatoroption.
+Edit the notes to be appended given by-mand-Foptions with-einteractively (using an editor) before appending the note.
+
+[code] --separator
+
+[p] Edit the notes for a given object (defaults toHEAD).
+
+[p] Show the notes for a given object (defaults toHEAD).
+
+[p] Merge the given notes ref into the current notes ref.
+This will try to merge the changes made by the given
+notes ref (called "remote") since the merge-base (if
+any) into the current notes ref (called "local").
+
+[p] If conflicts arise and a strategy for automatically resolving
+conflicting notes (see the "NOTES MERGE STRATEGIES" section) is not given,
+themanualresolver is used. This resolver checks out the
+conflicting notes in a special worktree (.git/NOTES_MERGE_WORKTREE),
+and instructs the user to manually resolve the conflicts there.
+When done, the user can either finalize the merge withgitnotesmerge--commit, or abort the merge withgitnotesmerge--abort.
+
+[code] .git/NOTES_MERGE_WORKTREE
+
+[p] Remove the notes for given objects (defaults toHEAD). When
+giving zero or one object from the command line, this is
+equivalent to specifying an empty note message to
+theeditsubcommand.
+
+[p] In--stdinmode, also remove the object names given on standard
+input. In other words,--stdincan be combined with object names from
+the command line.
+
+[p] Remove all notes for non-existing/unreachable objects.
+
+[p] Print the current notes ref. This provides an easy way to
+retrieve the current notes ref (e.g. from scripts).
+
+[p] When adding notes to an object that already has notes,
+overwrite the existing notes (instead of aborting).
+
+[p] Use the given note message (instead of prompting).
+If multiple-moptions are given, their values
+are concatenated as separate paragraphs.
+
+[p] Take the note message from the given file.  Use-to
+read the note message from the standard input.
+
+[code] --reuse-message=
+
+[p] Take the given blob object (for example, another note) as the
+note message. (Usegitnotescopy<object>instead to
+copy notes between objects.)  Implies--no-stripspacesince
+the default behavior is to copy the message verbatim.
+
+[code] --no-stripspace
+
+[code] --reedit-message=
+
+[p] Like-C, but with-cthe editor is invoked, so that
+the user can further edit the note message.
+
+[code] --allow-empty
+

@@ -476,6 +476,172 @@ git log --oneline --graph --all --decorate
 
 ---
 
+
+---
+
+## 8.5. push 的高级用法
+
+### --force-with-lease: 安全的强制推送
+
+**问题**: `git push --force` 非常危险,会直接覆盖远程改动。
+
+```bash
+git push --force  # ⚠️ 危险! 可能覆盖别人的提交
+```
+
+**解决**: 使用 `--force-with-lease`
+
+```bash
+git push --force-with-lease
+```
+
+**原理**: 只有当远程分支和你上次 fetch 时一样,才允许强推。
+
+**对比**:
+
+| 场景 | --force | --force-with-lease |
+|---|---|---|
+| 远程有别人的新提交 | ✗ 直接覆盖 (丢失别人的工作) | ✓ 拒绝推送 (保护别人的工作) |
+| 远程没变化 | ✓ 推送成功 | ✓ 推送成功 |
+| 安全性 | 低 | 高 |
+
+**实战场景**:
+
+```bash
+# 1. 你在本地 rebase 整理了历史
+git rebase -i HEAD~3
+
+# 2. 尝试推送
+git push
+# 报错: Updates were rejected
+
+# 3. 用 --force-with-lease
+git push --force-with-lease
+
+# 如果远程有新提交 (别人推送了)
+# 拒绝: ! [rejected] main -> main (stale info)
+
+# 如果远程没变化
+# 成功: + abc123...def456 main -> main (forced update)
+```
+
+**最佳实践**:
+- ✅ 永远用 `--force-with-lease`,不用 `--force`
+- ✅ 推送前先 `git fetch` 确认远程状态
+- ✅ 只在自己的 feature 分支上强推
+- ❌ 不要在 main/master 等共享分支上强推
+
+### --set-upstream (-u): 设置上游分支
+
+第一次推送新分支时:
+
+```bash
+git push --set-upstream origin feature
+# 或简写
+git push -u origin feature
+```
+
+**效果**:
+1. 推送 feature 分支到远程
+2. 设置本地 feature 跟踪远程 origin/feature
+3. 以后只需要 `git push`,不用指定远程和分支
+
+**对比**:
+
+```bash
+# 不设置上游
+git push origin feature
+git push origin feature  # 每次都要写全
+
+# 设置上游
+git push -u origin feature
+git push  # 以后就简单了
+```
+
+---
+
+## 9.5. fetch 的高级用法
+
+### --prune: 清理已删除的远程分支
+
+**问题**: 远程分支被删除了,但本地的远程跟踪分支还在。
+
+```bash
+git branch -r
+# origin/feature  <- 远程已删除,但本地还显示
+# origin/main
+```
+
+**解决**:
+
+```bash
+git fetch --prune
+```
+
+**效果**: 删除本地的过时远程跟踪分支。
+
+**自动prune**: 可以配置每次 fetch 都自动 prune
+
+```bash
+git config --global fetch.prune true
+```
+
+### --tags: 获取所有标签
+
+**问题**: 默认 fetch 不获取标签。
+
+```bash
+git fetch  # 不会获取新标签
+```
+
+**解决**:
+
+```bash
+git fetch --tags
+```
+
+**对比**:
+
+| 命令 | 获取分支 | 获取标签 |
+|---|---|---|
+| `git fetch` | ✓ | ✗ (只获取关联的标签) |
+| `git fetch --tags` | ✓ | ✓ (所有标签) |
+| `git fetch --no-tags` | ✓ | ✗ (明确不要标签) |
+
+### --all: 从所有远程获取
+
+如果配置了多个 remote:
+
+```bash
+git remote -v
+# origin   https://github.com/user/repo.git
+# upstream https://github.com/original/repo.git
+```
+
+一次性全部更新:
+
+```bash
+git fetch --all
+```
+
+等价于:
+
+```bash
+git fetch origin
+git fetch upstream
+```
+
+### --force: 强制更新本地引用
+
+**场景**: 远程分支被 force push 了,你的本地跟踪分支过时。
+
+```bash
+git fetch --force origin main:origin/main
+```
+
+**警告**: 这会丢弃你本地跟踪分支的历史,只在确定要跟随远程的 force push 时使用。
+
+---
 ## 9.5. 实战场景: Alice 和 Bob 的协作
 
 用一个具体场景来理解 fetch 和 pull。

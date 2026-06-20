@@ -1,0 +1,162 @@
+URL: https://git-scm.com/docs/git-mergetool
+Title: Git - git-mergetool Documentation
+================================================================================
+
+[p] git-mergetool - Run merge conflict resolution tools to resolve merge conflicts
+
+[pre] gitmergetool[--tool=<tool>] [-y|--[no-]prompt] [<file>…​]
+
+[h2] DESCRIPTION
+
+[p] Usegitmergetoolto run one of several merge utilities to resolve
+merge conflicts.  It is typically run aftergitmerge.
+
+[p] If one or more <file> parameters are given, the merge tool program will
+be run to resolve differences in each file (skipping those without
+conflicts).  Specifying a directory will include all unresolved files in
+that path.  If no<file>names are specified,gitmergetoolwill run
+the merge tool program on every file with merge conflicts.
+
+[p] Use the merge resolution program specified by<tool>.
+Valid values includeemerge,gvimdiff,kdiff3,meld,vimdiff, andtortoisemerge. Rungitmergetool--tool-helpfor the list of valid<tool>settings.
+
+[code] tortoisemerge
+
+[code] --tool-help
+
+[p] If a merge resolution program is not specified,gitmergetoolwill use the configuration variablemerge.tool.  If the
+configuration variablemerge.toolis not set,gitmergetoolwill pick a suitable default.
+
+[p] You can explicitly provide a full path to the tool by setting the
+configuration variablemergetool.<tool>.path. For example, you
+can configure the absolute path to kdiff3 by settingmergetool.kdiff3.path. Otherwise,gitmergetoolassumes the
+tool is available in$PATH.
+
+[code] mergetool.kdiff3.path
+
+[p] Instead of running one of the known merge tool programs,gitmergetoolcan be customized to run an alternative program
+by specifying the command line to invoke in a configuration
+variablemergetool.<tool>.cmd.
+
+[p] Whengitmergetoolis invoked with this tool (either through the-tor--tooloption or themerge.toolconfiguration
+variable), the configured command line will be invoked withBASEset to the name of a temporary file containing the common base for
+the merge, if available;LOCALset to the name of a temporary
+file containing the contents of the file on the current branch;REMOTEset to the name of a temporary file containing the
+contents of the file to be merged, andMERGEDset to the name
+of the file to which t
+
+[p] If the custom merge tool correctly indicates the success of a
+merge resolution with its exit code, then the configuration
+variablemergetool.<tool>.trustExitCodecan be set totrue.
+Otherwise,gitmergetoolwill prompt the user to indicate the
+success of the resolution after the custom tool has exited.
+
+[code] .trustExitCode
+
+[code] --tool-help
+
+[p] Print a list of merge tools that may be used with--tool.
+
+[code] --no-prompt
+
+[p] Don’t prompt before each invocation of the merge resolution
+program.
+This is the default if the merge resolution program is
+explicitly specified with the--tooloption or with themerge.toolconfiguration variable.
+
+[p] Prompt before each invocation of the merge resolution program
+to give the user a chance to skip the path.
+
+[p] Whengit-mergetoolis invoked with the-gor--guioption,
+the default merge tool will be read from the configuredmerge.guitoolvariable instead ofmerge.tool. Ifmerge.guitoolis not set, we will fallback to the tool
+configured undermerge.tool. This may be autoselected using
+the configuration variablemergetool.guiDefault.
+
+[code] git-mergetool
+
+[code] merge.guitool
+
+[code] merge.guitool
+
+[code] mergetool.guiDefault
+
+[p] This overrides a previous-gor--guisetting ormergetool.guiDefaultconfiguration and reads the default merge
+tool from the configuredmerge.toolvariable.
+
+[code] mergetool.guiDefault
+
+[p] Process files in the order specified in the<orderfile>, which has one shell glob pattern per line.
+This overrides thediff.orderFileconfiguration variable
+(seegit-config[1]).  To canceldiff.orderFile,
+use-O/dev/null.
+
+[code] diff.orderFile
+
+[code] diff.orderFile
+
+[code] -O/dev/null
+
+[h2] CONFIGURATION
+
+[p] Everything below this line in this section is selectively included
+from thegit-config[1]documentation. The content is the same
+as what’s found there:
+
+[p] Override the path for the given tool.  This is useful in case
+your tool is not in the$PATH.
+
+[p] Specify the command to invoke the specified merge tool.  The
+specified command is evaluated in shell with the following
+variables available:BASEis the name of a temporary file
+containing the common base of the files to be merged, if available;LOCALis the name of a temporary file containing the contents of
+the file on the current branch;REMOTEis the name of a temporary
+file containing the contents of the file from the branch being
+merged;MERGEDcontains the name of the file to which the merge
+tool
+
+[code] .hideResolved
+
+[p] Allows the user to override the globalmergetool.hideResolvedvalue
+for a specific tool. Seemergetool.hideResolvedfor the full
+description.
+
+[code] mergetool.hideResolved
+
+[code] mergetool.hideResolved
+
+[code] .trustExitCode
+
+[p] For a custom merge command, specify whether the exit code of
+the merge command can be used to determine whether the merge was
+successful.  If this is not set to true then the merge target file
+timestamp is checked, and the merge is assumed to have been successful
+if the file has been updated; otherwise, the user is prompted to
+indicate the success of the merge.
+
+[code] mergetool.meld.hasOutput
+
+[p] Older versions ofmelddo not support the--outputoption.
+Git will attempt to detect whethermeldsupports--outputby inspecting the output ofmeld--help.  Configuringmergetool.meld.hasOutputwill make Git skip these checks and
+use the configured value instead.  Settingmergetool.meld.hasOutputtotruetells Git to unconditionally use the--outputoption,
+andfalseavoids using--output.
+
+[code] mergetool.meld.hasOutput
+
+[code] mergetool.meld.hasOutput
+
+[code] mergetool.meld.useAutoMerge
+
+[p] When the--auto-mergeis given, meld will merge all non-conflicting
+parts automatically, highlight the conflicting parts, and wait for
+user decision.  Settingmergetool.meld.useAutoMergetotruetells
+Git to unconditionally use the--auto-mergeoption withmeld.
+Setting this value toautomakes git detect whether--auto-mergeis supported and will only use--auto-mergewhen available.  A
+value offalseavoids using--auto-mergealtogether, and is the
+default value.
+
+[code] --auto-merge
+
+[code] mergetool.meld.useAutoMerge
+
+[code] --auto-merge
+

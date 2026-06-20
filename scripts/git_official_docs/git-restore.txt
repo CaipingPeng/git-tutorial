@@ -1,0 +1,149 @@
+URL: https://git-scm.com/docs/git-restore
+Title: Git - git-restore Documentation
+================================================================================
+
+[p] git-restore - Restore working tree files
+
+[pre] gitrestore[<options>] [--source=<tree>] [--staged] [--worktree] [--]<pathspec>…​gitrestore[<options>] [--source=<tree>] [--staged] [--worktree]--pathspec-from-file=<file>[--pathspec-file-nul]gitrestore(-p|--patch) [<options>] [--source=<tree>] [--staged] [--worktree] [--] [<pathspec>…​]
+
+[code] --pathspec-from-file=
+
+[code] --pathspec-file-nul
+
+[h2] DESCRIPTION
+
+[p] Restore specified paths in the working tree with some contents from a
+restore source. If a path is tracked but does not exist in the restore
+source, it will be removed to match the source.
+
+[p] The command can also be used to restore the content in the index with--staged, or restore both the working tree and the index with--staged--worktree.
+
+[p] By default, if--stagedis given, the contents are restored fromHEAD,
+otherwise from the index. Use--sourceto restore from a different commit.
+
+[p] See "Reset, restore and revert" ingit[1]for the differences
+between the three commands.
+
+[p] Restore the working tree files with the content from the given
+tree. It is common to specify the source tree by naming a
+commit, branch or tag associated with it.
+
+[p] If not specified, the contents are restored fromHEADif--stagedis
+given, otherwise from the index.
+
+[p] As a special case, you may use"<rev-A>...<rev-B>"as a shortcut for the
+merge base of<rev-A>and<rev-B>if there is exactly one merge base. You can
+leave out at most one of<rev-A>_and<rev-B>, in which case it defaults toHEAD.
+
+[p] Interactively select hunks in the difference between the
+restore source and the restore location. See the "Interactive
+Mode" section ofgit-add[1]to learn how to operate
+the--patchmode.
+
+[p] Generate diffs with<n>lines of context. The number of context
+lines defaults todiff.contextor 3 if the configuration variable
+is unset. (-Uwithout<n>is silently accepted as a synonym for-pdue to a historical accident).
+
+[code] diff.context
+
+[code] --inter-hunk-context=
+
+[p] Show the context between diff hunks, up to the specified<number>of lines, thereby fusing hunks that are close to each other.
+Defaults todiff.interHunkContextor 0 if the config option
+is unset.
+
+[code] diff.interHunkContext
+
+[p] Specify the restore location. If neither option is specified,
+by default the working tree is restored. Specifying--stagedwill only restore the index. Specifying both restores both.
+
+[p] Quiet, suppress feedback messages. Implies--no-progress.
+
+[code] --no-progress
+
+[code] --no-progress
+
+[p] Progress status is reported on the standard error stream
+by default when it is attached to a terminal, unless--quietis specified. This flag enables progress reporting even if not
+attached to a terminal, regardless of--quiet.
+
+[p] When restoring files in the working tree from the index, use
+stage #2 (ours) or #3 (theirs) for unmerged paths.
+This option cannot be used when checking out paths from a
+tree-ish (i.e. with the--sourceoption).
+
+[p] Note that duringgitrebaseandgitpull--rebase,oursandtheirsmay appear swapped. See the explanation of the same options
+ingit-checkout[1]for details.
+
+[p] When restoring files on the working tree from the index,
+recreate the conflicted merge in the unmerged paths.
+This option cannot be used when checking out paths from a
+tree-ish (i.e. with the--sourceoption).
+
+[code] --conflict=
+
+[p] The same as--mergeoption above, but changes the way the
+conflicting hunks are presented, overriding themerge.conflictStyleconfiguration variable.  Possible values
+aremerge(default),diff3, andzdiff3.
+
+[code] merge.conflictStyle
+
+[code] --ignore-unmerged
+
+[p] When restoring files on the working tree from the index, do
+not abort the operation if there are unmerged entries and
+neither--ours,--theirs,--mergeor--conflictis
+specified. Unmerged paths on the working tree are left alone.
+
+[code] --ignore-skip-worktree-bits
+
+[p] In sparse checkout mode, the default is to only update entries
+matched by<pathspec>and sparse patterns in$GIT_DIR/info/sparse-checkout. This option ignores the sparse
+patterns and unconditionally restores any files in<pathspec>.
+
+[code] $GIT_DIR/info/sparse-checkout
+
+[code] --recurse-submodules
+
+[code] --no-recurse-submodules
+
+[p] If<pathspec>names an active submodule and the restore location
+includes the working tree, the submodule will only be updated if
+this option is given, in which case its working tree will be
+restored to the commit recorded in the superproject, and any local
+modifications overwritten. If nothing (or--no-recurse-submodules) is used, submodules working trees will
+not be updated. Just likegit-checkout[1], this will detachHEADof the submodule.
+
+[code] --no-recurse-submodules
+
+[code] --no-overlay
+
+[p] In overlay mode, never remove files when restoring. In no-overlay mode,
+remove tracked files that do not appear in the<tree>of--source=<tree>, to make them match<tree>exactly. The default
+is no-overlay mode.
+
+[code] --pathspec-from-file=
+
+[p] Pathspec is passed in<file>instead of commandline args. If<file>is exactly-then standard input is used. Pathspec
+elements are separated byLForCR/LF. Pathspec elements can be
+quoted as explained for the configuration variablecore.quotePath(seegit-config[1]). See also--pathspec-file-nuland
+global--literal-pathspecs.
+
+[code] core.quotePath
+
+[code] --pathspec-file-nul
+
+[code] --literal-pathspecs
+
+[code] --pathspec-file-nul
+
+[p] Only meaningful with--pathspec-from-file. Pathspec elements are
+separated withNULcharacter and all other characters are taken
+literally (including newlines and quotes).
+
+[code] --pathspec-from-file
+
+[p] Do not interpret any more arguments as options.
+
+[p] Limits the paths affected by the operation.
+

@@ -1,0 +1,174 @@
+URL: https://git-scm.com/docs/git-imap-send
+Title: Git - git-imap-send Documentation
+================================================================================
+
+[p] git-imap-send - Send a collection of patches from stdin to an IMAP folder
+
+[pre] git imap-send[-v] [-q] [--[no-]curl] [(--folder|-f) <folder>]git imap-send--list
+
+[h2] DESCRIPTION
+
+[p] This command uploads a mailbox generated withgitformat-patchinto an IMAP drafts folder.  This allows patches to be sent as
+other email is when using mail clients that cannot read mailbox
+files directly. The command also works with any general mailbox
+in which emails have the fieldsFrom,Date, andSubjectin
+that order.
+
+[code] format-patch
+
+[p] Typical usage is something like:
+
+[pre] $ git format-patch --signoff --stdout --attach origin | git imap-send
+
+[p] Be verbose.
+
+[p] Specify the folder in which the emails have to saved.
+For example:--folder=[Gmail]/Draftsor-fINBOX/Drafts.
+
+[code] INBOX/Drafts
+
+[p] Use libcurl to communicate with the IMAP server, unless tunneling
+into it.  Ignored if Git was built without the USE_CURL_FOR_IMAP_SEND
+option set.
+
+[p] Talk to the IMAP server using git’s own IMAP routines instead of
+using libcurl.  Ignored if Git was built with the NO_OPENSSL option
+set.
+
+[p] Run the IMAP LIST command to output a list of all the folders present.
+
+[h2] CONFIGURATION
+
+[p] To use the tool,imap.folderand eitherimap.tunnelorimap.hostmust be set
+to appropriate values.
+
+[code] imap.folder
+
+[code] imap.tunnel
+
+[p] Everything above this line in this section isn’t included from thegit-config[1]documentation. The content that follows is the
+same as what’s found there:
+
+[p] The folder to drop the mails into, which is typically the Drafts
+folder. For example:INBOX.Drafts,INBOX/Draftsor[Gmail]/Drafts. The IMAP folder to interact with MUST be specified;
+the value of this configuration variable is used as the fallback
+default value when the--folderoption is not given.
+
+[code] INBOX.Drafts
+
+[code] INBOX/Drafts
+
+[p] Command used to set up a tunnel to the IMAP server through which
+commands will be piped instead of using a direct network connection
+to the server. Required when imap.host is not set.
+
+[p] A URL identifying the server. Use animap://prefix for non-secure
+connections and animaps://prefix for secure connections.
+Ignored when imap.tunnel is set, but required otherwise.
+
+[p] The username to use when logging in to the server.
+
+[p] The password to use when logging in to the server.
+
+[p] An integer port number to connect to on the server.
+Defaults to 143 for imap:// hosts and 993 for imaps:// hosts.
+Ignored when imap.tunnel is set.
+
+[p] A boolean to enable/disable verification of the server certificate
+used by the SSL/TLS connection. Default istrue. Ignored when
+imap.tunnel is set.
+
+[p] A boolean to enable/disable the use of html encoding when sending
+a patch.  An html encoded patch will be bracketed with <pre>
+and have a content type of text/html.  Ironically, enabling this
+option causes Thunderbird to send the patch as a plain/text,
+format=fixed email.  Default isfalse.
+
+[p] Specify the authentication method for authenticating with the IMAP server.
+If Git was built with the NO_CURL option, or if your curl version is older
+than 7.34.0, or if you’re running git-imap-send with the--no-curloption, the only supported methods arePLAIN,CRAM-MD5,OAUTHBEARERandXOAUTH2. If this is not set thengitimap-senduses the basic IMAP
+plaintextLOGINcommand.
+
+[code] OAUTHBEARER
+
+[h2] GETTING A LIST OF AVAILABLE FOLDERS
+
+[p] In order to send an email to a specific folder, you need to know the correct name of
+intended folder in your mailbox. The names like "Junk", "Trash" etc. displayed by
+various email clients need not be the actual names of the folders stored in the mail
+server of your email provider.
+
+[p] In order to get the correct folder name to be used withgitimap-send, you can rungitimap-send--list. This will display a list of valid folder names. An example
+of such an output when run on a Gmail account is:
+
+[pre] * LIST (\HasNoChildren) "/" "INBOX"
+* LIST (\HasChildren \Noselect) "/" "[Gmail]"
+* LIST (\All \HasNoChildren) "/" "[Gmail]/All Mail"
+* LIST (\Drafts \HasNoChildren) "/" "[Gmail]/Drafts"
+* LIST (\HasNoChildren \Important) "/" "[Gmail]/Important"
+* LIST (\HasNoChildren \Sent) "/" "[Gmail]/Sent Mail"
+* LIST (\HasNoChildren \Junk) "/" "[Gmail]/Spam"
+* LIST (\Flagged \HasNoChildren) "/" "[Gmail]/Starred"
+* LIST (\HasNoChildren \Trash) "/" "[Gmail]/Trash"
+
+[p] Here, you can observe that the correct name for the "Junk" folder is[Gmail]/Spamand for the "Trash" folder is[Gmail]/Trash. Similar logic can be used to determine
+other folders as well.
+
+[p] Using tunnel mode:
+
+[pre] [imap]
+    folder = "INBOX.Drafts"
+    tunnel = "ssh -q -C user@example.com /usr/bin/imapd ./Maildir 2> /dev/null"
+
+[p] Using direct mode:
+
+[pre] [imap]
+    folder = "INBOX.Drafts"
+    host = imap://imap.example.com
+    user = bob
+    pass = p4ssw0rd
+
+[p] Using direct mode with SSL:
+
+[pre] [imap]
+    folder = "INBOX.Drafts"
+    host = imaps://imap.example.com
+    user = bob
+    pass = p4ssw0rd
+    port = 123
+    ; sslVerify = false
+
+[code] sslVerify=false
+
+[code] example.com
+
+[p] Using Gmail’s IMAP interface:
+
+[pre] [imap]
+    folder = "[Gmail]/Drafts"
+    host = imaps://imap.gmail.com
+    user = user@gmail.com
+    port = 993
+
+[p] Gmail does not allow using your regular password forgitimap-send.
+If you have multi-factor authentication set up on your Gmail account, you
+can generate an app-specific password for use withgitimap-send.
+Visithttps://security.google.com/settings/security/apppasswordsto create
+it. Alternatively, use OAuth2.0 authentication as described below.
+
+[p] If you want to use OAuth2.0 based authentication, you can specifyOAUTHBEARERorXOAUTH2mechanism in your config. It is more secure
+than using app-specific passwords, and also does not enforce the need of
+having multi-factor authentication. You will have to use an OAuth2.0
+access token in place of your password when using this authentication.
+
+[code] OAUTHBEARER
+
+[pre] [imap]
+    folder = "[Gmail]/Drafts"
+    host = imaps://imap.gmail.com
+    user = user@gmail.com
+    port = 993
+    authmethod = OAUTHBEARER
+
+[p] Using Outlook’s IMAP interface:
+

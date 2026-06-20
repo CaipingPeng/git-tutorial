@@ -1,0 +1,163 @@
+URL: https://git-scm.com/docs/git-branch
+Title: Git - git-branch Documentation
+================================================================================
+
+[p] git-branch - List, create, or delete branches
+
+[pre] gitbranch[--color[=<when>] |--no-color] [--show-current]
+	   [-v[--abbrev=<n>|--no-abbrev]]
+	   [--column[=<options>] |--no-column] [--sort=<key>]
+	   [--merged[<commit>]] [--no-merged[<commit>]]
+	   [--contains[<commit>]] [--no-contains[<commit>]]
+	   [--points-at<object>] [--format=<format>]
+	   [(-r|--remotes) | (-a|--all)]
+	   [--list] [<pattern>…​]gitbranch[--track[=(direct|inherit)] |--no-track] [-f]
+	   [--recurse-submodules]<branch-name>[<start-point>]gitbranch(--set-upstream-to=<upstrea
+
+[code] --show-current
+
+[code] --no-abbrev
+
+[code] --no-column
+
+[code] --no-merged
+
+[code] --no-contains
+
+[code] --points-at
+
+[code] --recurse-submodules
+
+[code] --set-upstream-to=
+
+[code] --unset-upstream
+
+[code] --edit-description
+
+[h2] DESCRIPTION
+
+[p] If--listis given, or if there are no non-option arguments, existing
+branches are listed; the current branch will be highlighted in green and
+marked with an asterisk.  Any branches checked out in linked worktrees will
+be highlighted in cyan and marked with a plus sign. Option-rcauses the
+remote-tracking branches to be listed,
+and option-ashows both local and remote branches.
+
+[p] If a<pattern>is given, it is used as a shell wildcard to restrict the output to
+matching branches. If multiple patterns are given, a branch is shown if
+it matches any of the patterns.
+
+[p] Note that when providing a<pattern>, you must use--list; otherwise the command may be interpreted
+as branch creation.
+
+[p] With--contains, shows only the branches that contain the named commit
+(in other words, the branches whose tip commits are descendants of the
+named commit),--no-containsinverts it. With--merged, only branches
+merged into the named commit (i.e. the branches whose tip commits are
+reachable from the named commit) will be listed.  With--no-mergedonly
+branches not merged into the named commit will be listed.  If the<commit>argument is missing it defaults toHEAD(i.e. the tip of the current
+branch).
+
+[code] --no-contains
+
+[code] --no-merged
+
+[p] The command’s second form creates a new branch head named<branch-name>which points to the currentHEAD, or<start-point>if given. As a
+special case, for<start-point>, you may use<rev-A>...<rev-B>as a
+shortcut for the merge base of<rev-A>and<rev-B>if there is exactly
+one merge base. You can leave out at most one of<rev-A>and<rev-B>,
+in which case it defaults toHEAD.
+
+[p] Note that this will create the new branch, but it will not switch the
+working tree to it; usegitswitch<new-branch>to switch to the
+new branch.
+
+[p] When a local branch is started off a remote-tracking branch, Git sets up the
+branch (specifically thebranch.<name>.remoteandbranch.<name>.mergeconfiguration entries) so thatgitpullwill appropriately merge from
+the remote-tracking branch. This behavior may be changed via the globalbranch.autoSetupMergeconfiguration flag. That setting can be
+overridden by using the--trackand--no-trackoptions, and
+changed later usinggitbranch--set-upstream-to.
+
+[code] branch.autoSetupMerge
+
+[code] --set-upstream-to
+
+[p] With a-mor-Moption,<old-branch>will be renamed to<new-branch>.
+If<old-branch>had a corresponding reflog, it is renamed to match<new-branch>, and a reflog entry is created to remember the branch
+renaming. If<new-branch>exists,-Mmust be used to force the rename
+to happen.
+
+[p] The-cand-Coptions have the exact same semantics as-mand-M, except instead of the branch being renamed, it will be copied to a
+new name, along with its config and reflog.
+
+[p] With a-dor-Doption,<branch-name>will be deleted.  You may
+specify more than one branch for deletion.  If the branch currently
+has a reflog then the reflog will also be deleted.
+
+[p] Use-rtogether with-dto delete remote-tracking branches. Note, that it
+only makes sense to delete remote-tracking branches if they no longer exist
+in the remote repository or ifgitfetchwas configured not to fetch
+them again. See also theprunesubcommand ofgit-remote[1]for a
+way to clean up all obsolete remote-tracking branches.
+
+[p] Delete a branch. The branch must be fully merged in its
+upstream branch, or inHEADif no upstream was set with--trackor--set-upstream-to.
+
+[code] --set-upstream-to
+
+[p] Shortcut for--delete--force.
+
+[code] --create-reflog
+
+[p] Create the branch’s reflog.  This activates recording of
+all changes made to the branch ref, enabling use of date
+based sha1 expressions such as<branch-name>@{yesterday}.
+Note that in non-bare repositories, reflogs are usually
+enabled by default by thecore.logAllRefUpdatesconfig option.
+The negated form--no-create-reflogonly overrides an earlier--create-reflog, but currently does not negate the setting ofcore.logAllRefUpdates.
+
+[code] @{yesterday}
+
+[code] core.logAllRefUpdates
+
+[code] --no-create-reflog
+
+[code] --create-reflog
+
+[code] core.logAllRefUpdates
+
+[p] Reset<branch-name>to<start-point>, even if<branch-name>exists
+already. Without-f,gitbranchrefuses to change an existing branch.
+In combination with-d(or--delete), allow deleting the
+branch irrespective of its merged status, or whether it even
+points to a valid commit. In combination with-m(or--move), allow renaming the branch even if the new
+branch name already exists, the same applies for-c(or--copy).
+
+[p] Note thatgitbranch-f<branch-name>[<start-point>], even with-f,
+refuses to change an existing branch<branch-name>that is checked out
+in another worktree linked to the same repository.
+
+[p] Move/rename a branch, together with its config and reflog.
+
+[p] Shortcut for--move--force.
+
+[p] Copy a branch, together with its config and reflog.
+
+[p] Shortcut for--copy--force.
+
+[p] Color branches to highlight current, local, and
+remote-tracking branches.
+The value must bealways(the default),never, orauto.
+
+[p] Turn off branch colors, even when the configuration file gives the
+default to color output.
+Same as--color=never.
+
+[code] --color=never
+
+[code] --ignore-case
+
+[p] Sorting and filtering branches are case insensitive.
+
+[code] --omit-empty
+

@@ -1,0 +1,149 @@
+URL: https://git-scm.com/docs/git-send-email
+Title: Git - git-send-email Documentation
+================================================================================
+
+[p] git-send-email - Send a collection of patches as emails
+
+[pre] git send-email[<options>] (<file>|<directory>)…​git send-email[<options>] <format-patch-options>git send-email--dump-aliasesgit send-email--translate-aliases
+
+[h2] DESCRIPTION
+
+[p] Takes the patches given on the command line and emails them out.
+Patches can be specified as files, directories (which will send all
+files in the directory), or directly as a revision list.  In the
+last case, any format accepted bygit-format-patch[1]can
+be passed togitsend-email, as well as options understood bygit-format-patch[1].
+
+[p] The header of the email is configurable via command-line options.  If not
+specified on the command line, the user will be prompted with a ReadLine
+enabled interface to provide the necessary information.
+
+[p] There are two formats accepted for patch files:
+
+[li] mbox format filesThis is whatgit-format-patch[1]generates.  Most headers and MIME
+formatting are ignored.
+
+[p] mbox format files
+
+[p] This is whatgit-format-patch[1]generates.  Most headers and MIME
+formatting are ignored.
+
+[li] The original format used by Greg Kroah-Hartman’ssend_lots_of_email.plscriptThis format expects the first line of the file to contain theCc:value
+and theSubject:of the message as the second line.
+
+[p] The original format used by Greg Kroah-Hartman’ssend_lots_of_email.plscript
+
+[code] send_lots_of_email.pl
+
+[p] This format expects the first line of the file to contain theCc:value
+and theSubject:of the message as the second line.
+
+[p] Review and edit each patch you’re about to send. Default is the value
+ofsendemail.annotate. See the CONFIGURATION section forsendemail.multiEdit.
+
+[code] sendemail.annotate
+
+[code] sendemail.multiEdit
+
+[p] Specify aBcc:value for each email. Default is the value ofsendemail.bcc.
+
+[code] sendemail.bcc
+
+[p] This option may be specified multiple times.
+
+[p] Specify a startingCc:value for each email.
+Default is the value ofsendemail.cc.
+
+[code] sendemail.cc
+
+[p] This option may be specified multiple times.
+
+[p] Invoke a text editor (see GIT_EDITOR ingit-var[1])
+to edit an introductory message for the patch series.
+
+[p] When--composeis used,gitsend-emailwill use theFrom,To,Cc,Bcc,Subject,Reply-To, andIn-Reply-Toheaders specified in the
+message. If the body of the message (what you type after the headers and a
+blank line) only contains blank (orGit:prefixed) lines, the summary won’t be
+sent, but the headers mentioned above will be used unless they are
+removed.
+
+[code] In-Reply-To
+
+[p] MissingFromorIn-Reply-Toheaders will be prompted for.
+
+[code] In-Reply-To
+
+[p] See the CONFIGURATION section forsendemail.multiEdit.
+
+[code] sendemail.multiEdit
+
+[p] Specify the sender of the emails.  If not specified on the command line,
+the value of thesendemail.fromconfiguration option is used.  If
+neither the command-line option norsendemail.fromare set, then the
+user will be prompted for the value.  The default for the prompt will be
+the value ofGIT_AUTHOR_IDENT, orGIT_COMMITTER_IDENTif that is not
+set, as returned bygitvar-l.
+
+[code] sendemail.from
+
+[code] sendemail.from
+
+[code] GIT_AUTHOR_IDENT
+
+[code] GIT_COMMITTER_IDENT
+
+[p] Specify the address where replies from recipients should go to.
+Use this if replies to messages should go to another address than what
+is specified with the--fromparameter.
+
+[p] Make the first mail (or all the mails with--no-thread) appear as a
+reply to the given Message-ID, which avoids breaking threads to
+provide a new patch series.
+The second and subsequent emails will be sent as replies according to
+the--[no-]chain-reply-tosetting.
+
+[code] --no-thread
+
+[code] chain-reply-to
+
+[p] So for example when--threadand--no-chain-reply-toare specified, the
+second and subsequent patches will be replies to the first one like in the
+illustration below where[PATCHv20/3]is in reply to[PATCH0/2]:
+
+[code] --no-chain-reply-to
+
+[pre] [PATCH 0/2] Here is what I did...
+  [PATCH 1/2] Clean up and tests
+  [PATCH 2/2] Implementation
+  [PATCH v2 0/3] Here is a reroll
+    [PATCH v2 1/3] Clean up
+    [PATCH v2 2/3] New tests
+    [PATCH v2 3/3] Implementation
+
+[p] Only necessary if--composeis also set.  If--composeis not set, this will be prompted for.
+
+[p] Microsoft Outlook SMTP servers discard the Message-ID sent via email and
+assign a new random Message-ID, thus breaking threads.
+
+[p] With--outlook-id-fix,gitsend-emailuses a mechanism specific to
+Outlook servers to learn the Message-ID the server assigned to fix the
+threading. Use it only when you know that the server reports the
+rewritten Message-ID the same way as Outlook servers do.
+
+[code] --outlook-id-fix
+
+[p] Without this option specified, the fix is done by default when talking
+tosmtp.office365.comorsmtp-mail.outlook.com. Use--no-outlook-id-fixto disable even when talking to these two servers.
+
+[code] --no-outlook-id-fix
+
+[p] Specify the initial subject of the email thread.
+Only necessary if--composeis also set.  If--composeis not set, this will be prompted for.
+
+[p] Specify the primary recipient of the emails generated. Generally, this
+will be the upstream maintainer of the project involved. Default is the
+value of thesendemail.toconfiguration value; if that is unspecified,
+and--to-cmdis not specified, this will be prompted for.
+
+[code] sendemail.to
+

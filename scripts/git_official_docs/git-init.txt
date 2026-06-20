@@ -1,0 +1,152 @@
+URL: https://git-scm.com/docs/git-init
+Title: Git - git-init Documentation
+================================================================================
+
+[p] git-init - Create an empty Git repository or reinitialize an existing one
+
+[pre] gitinit[-q|--quiet] [--bare] [--template=<template-directory>]
+	 [--separate-git-dir<git-dir>] [--object-format=<format>]
+	 [--ref-format=<format>]
+	 [-b<branch-name>|--initial-branch=<branch-name>]
+	 [--shared[=<permissions>]] [<directory>]
+
+[code] --template=
+
+[code] --separate-git-dir
+
+[code] --object-format=
+
+[code] --ref-format=
+
+[code] --initial-branch=
+
+[h2] DESCRIPTION
+
+[p] This command creates an empty Git repository - basically a.gitdirectory with subdirectories forobjects,refs/heads,refs/tags, and template files.  An initial branch without any
+commits will be created (see the--initial-branchoption below
+for its name).
+
+[code] --initial-branch
+
+[p] If theGIT_DIRenvironment variable is set then it specifies a path
+to use instead of./.gitfor the base of the repository.
+
+[p] If the object storage directory is specified via theGIT_OBJECT_DIRECTORYenvironment variable then the sha1 directories
+are created underneath; otherwise, the default$GIT_DIR/objectsdirectory is used.
+
+[code] GIT_OBJECT_DIRECTORY
+
+[code] $GIT_DIR/objects
+
+[p] Runninggitinitin an existing repository is safe. It will not
+overwrite things that are already there. The primary reason for
+rerunninggitinitis to pick up newly added templates (or to move
+the repository to another place if--separate-git-diris given).
+
+[code] --separate-git-dir
+
+[p] Only print error and warning messages; all other output will be suppressed.
+
+[p] Create a bare repository. IfGIT_DIRenvironment is not set, it is set to the
+current working directory.
+
+[code] --object-format=
+
+[p] Specify the given object<format>(hash algorithm) for the repository.  The valid
+values aresha1and (if enabled)sha256.sha1is the default.
+
+[p] Note: At present, there is no interoperability between SHA-256
+repositories and SHA-1 repositories.
+
+[p] Historically, we warned that SHA-256 repositories may later need
+backward incompatible changes when we introduce such interoperability
+features. Today, we only expect compatible changes. Furthermore, if such
+changes prove to be necessary, it can be expected that SHA-256 repositories
+created with today’s Git will be usable by future versions of Git
+without data loss.
+
+[code] --ref-format=
+
+[p] Specify the given ref storage<format>for the repository. The valid values are:
+
+[p] for loose files with packed-refs.
+This is the default.
+
+[p] for the reftable format.
+
+[code] --template=
+
+[p] Specify the directory from which templates will be used.  (See the "TEMPLATE
+DIRECTORY" section below.)
+
+[code] --separate-git-dir=
+
+[p] Instead of initializing the repository as a directory to either$GIT_DIRor./.git/, create a text file there containing the path to the actual
+repository.  This file acts as a filesystem-agnostic Git symbolic link to the
+repository.
+
+[p] If this is a reinitialization, the repository will be moved to the specified path.
+
+[code] --initial-branch=
+
+[p] Use<branch-name>for the initial branch in the newly created
+repository.  If not specified, fall back to the default name
+(currentlymaster, but this will change tomainwhen Git 3.0 is released).
+The default name can be customized via theinit.defaultBranchconfiguration
+variable.
+
+[code] init.defaultBranch
+
+[p] Specify that the Git repository is to be shared amongst several users.  This
+allows users belonging to the same group to push into that
+repository.  When specified, the config variablecore.sharedRepositoryis
+set so that files and directories under$GIT_DIRare created with the
+requested permissions.  When not specified, Git will use permissions reported
+byumask(2).
+
+[code] core.sharedRepository
+
+[p] The option can have the following values, defaulting togroupif no value
+is given:
+
+[p] Use permissions reported byumask(2). The default, when--sharedis not
+specified.
+
+[p] Make the repository group-writable, (andg+sx, since the git group may not be
+the primary group of all users). This is used to loosen the permissions of an
+otherwise safeumask(2) value. Note that the umask still applies to the other
+permission bits (e.g. if umask is0022, usinggroupwill not remove read
+privileges from other (non-group) users). See0xxxfor how to exactly specify
+the repository permissions.
+
+[p] Same asgroup, but make the repository readable by all users.
+
+[p] <perm>is a 3-digit octal number prefixed with0and each file
+will have mode<perm>.<perm>will override users'umask(2)
+value (and not only loosen permissions asgroupandalldo).0640will create a repository which is group-readable, but
+not group-writable or accessible to others.0660will create a repo
+that is readable and writable to the current user and group, but
+inaccessible to others (directories and executable files get theirxbit from therbit for corresponding classes of users).
+
+[p] By default, the configuration flagreceive.denyNonFastForwardsis enabled
+in shared repositories, so that you cannot force a non fast-forwarding push
+into it.
+
+[code] receive.denyNonFastForwards
+
+[p] If you provide a<directory>, the command is run inside it. If this directory
+does not exist, it will be created.
+
+[h2] TEMPLATE DIRECTORY
+
+[p] Files and directories in the template directory whose name do not start with a
+dot will be copied to the$GIT_DIRafter it is created.
+
+[p] The template directory will be one of the following (in order):
+
+[li] the argument given with the--templateoption;
+
+[p] the argument given with the--templateoption;
+
+[li] the contents of the$GIT_TEMPLATE_DIRenvironment variable;
+

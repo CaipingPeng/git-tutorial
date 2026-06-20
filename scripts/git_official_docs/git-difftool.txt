@@ -1,0 +1,155 @@
+URL: https://git-scm.com/docs/git-difftool
+Title: Git - git-difftool Documentation
+================================================================================
+
+[p] git-difftool - Show changes using common diff tools
+
+[pre] git difftool[<options>] [<commit>[<commit>]] [--] [<path>…​]
+
+[h2] DESCRIPTION
+
+[p] git difftoolis a Git command that allows you to compare and edit files
+between revisions using common diff tools.git difftoolis a frontend
+togit diffand accepts the same options and arguments. Seegit-diff[1].
+
+[p] Copy the modified files to a temporary location and perform
+a directory diff on them. This mode never prompts before
+launching the diff tool.
+
+[p] Do not prompt before launching a diff tool.
+
+[p] Prompt before each invocation of the diff tool.
+This is the default behaviour; the option is provided to
+override any configuration settings.
+
+[p] Start showing the diff for the given path,
+the paths before it will move to the end and output.
+
+[p] Start showing the diff for the given path, skipping all
+the paths before it.
+
+[p] Use the diff tool specified by <tool>.  Valid values include
+emerge, kompare, meld, and vimdiff. Rungitdifftool--tool-helpfor the list of valid <tool> settings.
+
+[code] --tool-help
+
+[p] If a diff tool is not specified,git difftoolwill use the configuration variablediff.tool.  If the
+configuration variablediff.toolis not set,git difftoolwill pick a suitable default.
+
+[p] You can explicitly provide a full path to the tool by setting the
+configuration variabledifftool.<tool>.path. For example, you
+can configure the absolute path to kdiff3 by settingdifftool.kdiff3.path. Otherwise,git difftoolassumes the
+tool is available in PATH.
+
+[code] difftool.kdiff3.path
+
+[p] Instead of running one of the known diff tools,git difftoolcan be customized to run an alternative program
+by specifying the command line to invoke in a configuration
+variabledifftool.<tool>.cmd.
+
+[p] Whengit difftoolis invoked with this tool (either through the-tor--tooloption or thediff.toolconfiguration variable)
+the configured command line will be invoked with the following
+variables available:$LOCALis set to the name of the temporary
+file containing the contents of the diff pre-image and$REMOTEis set to the name of the temporary file containing the contents
+of the diff post-image.$MERGEDis the name of the file which is
+being compared.$BASEis provided for compatibility
+with custom merge t
+
+[p] Print a list of diff tools that may be used with--tool.
+
+[p] git difftool's default behavior is to create symlinks to the
+working tree when run in--dir-diffmode and the right-hand
+side of the comparison yields the same content as the file in
+the working tree.
+
+[p] Specifying--no-symlinksinstructsgit difftoolto create copies
+instead.--no-symlinksis the default on Windows.
+
+[code] --no-symlinks
+
+[code] --no-symlinks
+
+[p] Specify a custom command for viewing diffs.git-difftoolignores the configured defaults and runs<command>$LOCAL$REMOTEwhen this option is specified.
+Additionally,$BASEis set in the environment.
+
+[p] Whengit-difftoolis invoked with the-gor--guioption
+the default diff tool will be read from the configureddiff.guitoolvariable instead ofdiff.tool. This may be
+selected automatically using the configuration variabledifftool.guiDefault. The--no-guioption can be used to
+override these settings. Ifdiff.guitoolis not set, we will
+fallback in the order ofmerge.guitool,diff.tool,merge.tooluntil a tool is found.
+
+[code] diff.guitool
+
+[code] difftool.guiDefault
+
+[code] diff.guitool
+
+[code] merge.guitool
+
+[p] Errors reported by the diff tool are ignored by default.
+Use--trust-exit-codeto makegit-difftoolexit when an
+invoked diff tool returns a non-zero exit code.
+
+[code] --trust-exit-code
+
+[p] git-difftoolwill forward the exit code of the invoked tool when--trust-exit-codeis used.
+
+[code] --trust-exit-code
+
+[p] Seegit-diff[1]for the full list of supported options.
+
+[h2] CONFIGURATION
+
+[p] git difftoolfalls back togit mergetoolconfig variables when the
+difftool equivalents have not been defined.
+
+[p] Everything above this line in this section isn’t included from thegit-config[1]documentation. The content that follows is the
+same as what’s found there:
+
+[p] Controls which diff tool is used bygit-difftool[1].
+This variable overrides the value configured inmerge.tool.
+The list below shows the valid built-in values.
+Any other value is treated as a custom diff tool and requires
+that a corresponding difftool.<tool>.cmd variable is defined.
+
+[p] Controls which diff tool is used bygit-difftool[1]when
+the -g/--gui flag is specified. This variable overrides the value
+configured inmerge.guitool. The list below shows the valid
+built-in values. Any other value is treated as a custom diff tool
+and requires that a corresponding difftool.<guitool>.cmd variable
+is defined.
+
+[code] merge.guitool
+
+[li] codecompare
+
+[p] codecompare
+
+[li] deltawalker
+
+[p] deltawalker
+
+[p] Specify the command to invoke the specified diff tool.
+The specified command is evaluated in shell with the following
+variables available:LOCALis set to the name of the temporary
+file containing the contents of the diff pre-image andREMOTEis set to the name of the temporary file containing the contents
+of the diff post-image.
+
+[p] See the--tool=<tool>option ingit-difftool[1]for more details.
+
+[p] Override the path for the given tool.  This is useful in case
+your tool is not in the PATH.
+
+[p] Exit difftool if the invoked diff tool returns a non-zero exit status.
+
+[p] See the--trust-exit-codeoption ingit-difftool[1]for more details.
+
+[code] --trust-exit-code
+
+[p] Prompt before each invocation of the diff tool.
+
+[p] Settrueto use thediff.guitoolby default (equivalent to specifying
+the--guiargument), orautoto selectdiff.guitoolordiff.tooldepending on the presence of aDISPLAYenvironment variable value. The
+default isfalse, where the--guiargument must be provided
+explicitly for thediff.guitoolto be used.
+
