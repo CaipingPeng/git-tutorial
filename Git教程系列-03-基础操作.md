@@ -21,6 +21,16 @@ git log --oneline
 
 > Git 不会自动把你所有修改都保存成版本。你要先选择哪些改动进入暂存区，再提交成正式版本。
 
+如果你是第一次读，本章可以按这个顺序抓重点：
+
+| 优先级 | 建议先掌握 |
+|---|---|
+| 必学 | `status`、`add`、`commit`、`log`、`diff` |
+| 常用 | `restore`、`restore --staged`、`.gitignore`、好提交习惯 |
+| 进阶 | `add --patch`、`diff --check`、`commit --amend` 的边界 |
+
+先把必学命令跑通，再回头看进阶小节，压力会小很多。
+
 ---
 
 ## 1. 先确认你在 Git 仓库里
@@ -896,7 +906,17 @@ git log --oneline
 
 ---
 
-## 22. 本章总结
+## 22. 动手练习
+
+在练习目录里完成下面三个小任务，每一步都先用 `git status` 确认状态，再用 `git log --oneline` 观察历史变化。
+
+1. 从空仓库开始，创建 `hello.txt` 写入一行内容，`git add` 后用 `git commit -m "first"` 提交；再修改该文件加一行，用 `git add -p` 只暂存其中一块，分两次提交。预期：历史里出现三条提交，`git diff` 最终为空。
+2. 创建 `secret.txt` 并写入内容，编写 `.gitignore` 忽略它，再 `git add .gitignore` 并提交。预期：`git status` 不再提示 `secret.txt`，`git check-ignore -v secret.txt` 能显示命中规则。
+3. 故意提交一句带行尾空格的代码，用 `git diff --check` 看到警告，再用 `git restore` 撤销，重新提交干净版本。预期：`git diff --check` 无输出，`git log --oneline` 能看到修正后的提交。
+
+---
+
+## 23. 本章总结
 
 这一章你学会了 Git 的基础工作流：
 

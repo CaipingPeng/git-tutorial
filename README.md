@@ -2,27 +2,7 @@
 
 这是一份面向中文读者的 Git 系统教程，目标不是让你背完命令，而是让你在真实项目里安全地使用 Git：能保存版本、读懂历史、开分支、处理冲突、同步远程、写 Pull Request，也能在出错时把自己救回来。
 
-本教程参考了以下允许使用的资料方向，并以原创中文讲解重写：
-
-- 《Learning Git A Hands-On and Visual Guide to the Basics of Git》
-- 《Git Apprentice: Getting Started with Git Commands & Concepts》：入门路径、暂存区、分支图、合并图和远程同步案例。
-- **《Git Fundamentals》（Thom Parkin）** — 面向非程序员的极简入门，强调 Git 是纯本地系统、commit 即快照、Never Fear Change 的心态。
-- 《Git for Teams》：团队工作流、分支策略、评审和协作规则。
-- 《Git Learn Version Control with Git》：基础概念、生命周期、常见命令和错误修复。
-- 《Git Mastery Accelerated Crash Course》：安装配置、SSH、`.gitignore`、stash、rebase、hooks 和排障。
-- 《Git Prodigy》：GitHub、开源贡献、CLI/GUI 协作。
-- Git 官方文档与主流代码托管平台文档。
-- 《Learn Git The Hard Way》：四阶段内容流转、仓库平等模型、push 失败诊断、rebase/squash/force push 风险、reflog 救援和 hooks 边界。
-- 《Mastering Git》：Git 对象模型、索引、引用、stash 内部机制、`.gitignore` 失效原因、历史清理和工作流取舍。
-- 《Advanced Git》：rebase 冲突视角、`.gitignore` 事后补救、reset/reflog/revert 边界，以及集中式、功能分支、Gitflow、Forking Workflow 的协作取舍。
-- 《Git Essentials, Second Edition》：提交质量、配置层级、别名安全、bare/archive/bundle 备份、SVN 迁移心态和工作流选择。
-- 《Git Notes for Professionals》（GoalKicker，Stack Overflow 文档汇编）：作为命令级食谱补充，覆盖标签、`.gitattributes`、`git worktree`、`git clean`、修订号语法、`shortlog`/`.mailmap`、LFS 等零散但实用的知识点。
-- 《Git Repository Management in 30 Days》：仓库管理视角，补强 PR 元数据、开源 bug report、release tag 与 release branch 的关系，以及危险覆盖式同步的边界。
-- 《Git for Humans》：用“人如何管理变化”的角度补强版本思维、可信提交节奏、远程 hub 模型、历史阅读和命令行/GUI 配合。
-- 《Git Best Practices Guide》：以实践问题组织 Git 知识，补强远程协议选择、tracking branch、`git grep`、stash 分支化、补丁工作流、hooks 分类和 CI 分支门禁。
-- 《Git Internals: Source code control and beyond》：用底层对象、引用、索引、treeish 和分布式仓库模型解释日常命令背后的机制，补强 `cat-file`、`ls-tree`、`rev-parse` 等观察命令。
-
-完整来源说明见 [参考资料](./references.md)。
+本教程在写作时参考了多本 Git 英文著作、Git 官方文档与主流代码托管平台文档，并以原创中文讲解重写。完整来源与逐章对照见 [参考资料](./references.md)。
 
 ---
 
@@ -200,7 +180,7 @@
 01 → 02 → 03 → 04 → 05 → 06 → 08 → 09 → 17
 ```
 
-先把本地提交、分支、合并、远程和 PR 跑通，再学救援和综合实战。第 7 章 rebase 是进阶协作工具，完全新手可以先跳过，等能看懂 PR 和推送拒绝后再回来读。
+先把本地提交、分支、合并、远程和 PR 跑通，再学救援和综合实战。第 7 章 rebase 是进阶协作工具，完全新手可以先跳过，等能看懂 PR 和推送拒绝后再回来读。读到第 12 章团队工作流时若遇到 rebase 相关概念，可回看第 7 章。
 
 ### 路径 B：会基础命令但经常出错
 
@@ -311,6 +291,12 @@ git merge 源分支
 
 ---
 
+## 维护与反馈
+
+Git 命令本身相对稳定，但 GitHub、GitLab、Gitee 的页面入口、权限策略和默认分支规则可能变化。阅读平台相关章节时，如果发现页面名称或流程和当前平台不一致，优先以平台官方文档为准，并回到本教程对应章节更新示例。
+
+---
+
 ## 外部资源
 
 - Git 官方文档：`https://git-scm.com/book/zh/v2`
@@ -319,3 +305,6 @@ git merge 源分支
 - GitLab Docs：`https://docs.gitlab.com`
 - Gitee 帮助中心：`https://help.gitee.com`
 - 交互式分支练习：`https://learngitbranching.js.org/`
+教论场费东语法免体质万配文件套，一个功能中文区逼法名称，有统计数据。
+
+完全数据表造名称地域[中的缘为](./references.md)的控制，请辽扫散响晚.

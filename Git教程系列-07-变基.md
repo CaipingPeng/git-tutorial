@@ -809,7 +809,17 @@ rebase 前的位置
 
 ---
 
-## 18. 本章总结
+## 18. 动手练习
+
+在练习目录里完成下面三个任务，体会 rebase 与 merge 的差别，以及公共分支不能 rebase 的边界。
+
+1. 基于 `main` 开 `feature` 分支，做两次提交；回到 `main` 也做一次提交，再切回 `feature` 执行 `git rebase main`。用 `git log --oneline --graph --all` 观察历史变成线性。预期：`feature` 的两次提交被重放到 `main` 顶端，提交哈希发生变化。
+2. 在上一步基础上，对 `feature` 再做一次提交，然后 `git rebase -i HEAD~3` 把三个提交合并成一个。预期：历史里 `feature` 只剩一个提交，提交说明可重写。
+3. 故意制造一次 rebase 冲突：`main` 和 `feature` 改同一行，rebase 时按提示解决冲突、`git add` 后 `git rebase --continue`；再用 `git rebase --abort` 练习放弃。预期：能区分 `continue` 与 `abort` 的适用场景。
+
+---
+
+## 19. 本章总结
 
 这一章最重要的是理解：
 

@@ -19,7 +19,7 @@
 | 暂存当前目录改动 | `git add .` |
 | 提交暂存区 | `git commit -m "说明"` |
 | 修改最后一次提交说明或补文件 | `git commit --amend` |
-| 暂存所有已跟踪文件并提交（快捷方式） | `git commit -am "说明"` |
+| 暂存所有已跟踪文件并提交（快捷方式，慎用：跳过暂存选择） | `git commit -am "说明"` |
 
 ## 我想看改了什么
 
@@ -65,6 +65,32 @@
 | 从标签开分支修 bug | `git switch -c hotfix-1.0 v1.0.0` |
 | 删本地标签 | `git tag -d v1.0.0` |
 | 删远程标签 | `git push origin --delete v1.0.0` |
+
+## 我想配置 Git
+
+| 目标 | 命令 |
+|---|---|
+| 设置全局用户名和邮箱 | `git config --global user.name "名字"` / `git config --global user.email "邮箱"` |
+| 只为当前仓库设置身份 | `git config user.name "名字"`（去掉 `--global`） |
+| 设置默认分支名为 main | `git config --global init.defaultBranch main` |
+| 配置命令别名 | `git config --global alias.co checkout` |
+| 设置默认编辑器 | `git config --global core.editor "code --wait"` |
+| 跨平台换行符自动转换 | `git config --global core.autocrlf input`（macOS/Linux）或 `true`（Windows） |
+| 列出所有配置及来源 | `git config --list --show-origin` |
+| 编辑全局配置文件 | `git config --global --edit` |
+
+## 我想清理仓库
+
+| 目标 | 命令 |
+|---|---|
+| 预览将删除的未跟踪文件和目录 | `git clean -nd` |
+| 删除未跟踪文件和目录（危险） | `git clean -fd` |
+| 压缩松散对象并清理 | `git gc` |
+| 更激进地清理（慎用） | `git gc --aggressive` |
+| 立即清理不可达对象 | `git prune` |
+| 删除已被远程删除的本地远程引用 | `git fetch -p` |
+| 查看对象占用空间 | `git count-objects -vH` |
+| 检查仓库完整性 | `git fsck` |
 
 ## 我想开分支或切分支
 

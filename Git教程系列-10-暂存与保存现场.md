@@ -345,7 +345,17 @@ git update-index --no-skip-worktree 文件名
 
 ---
 
-## 12. 本章检查点
+## 12. 动手练习
+
+在练习仓库里完成下面三个任务，重点观察 `git status` 和 `git stash list` 的变化。
+
+1. 修改一个已跟踪文件，运行 `git stash push -m "保存中途现场"`，确认工作目录变干净，再用 `git stash apply` 恢复。
+2. 同时创建一个新文件和修改一个旧文件，用 `git stash push -u -m "包含新文件"` 保存。预期：未跟踪文件也会进入 stash。
+3. 在 `main` 上制造一个 stash，再切出 `stash-demo` 分支，用 `git stash branch stash-demo stash@{0}` 恢复现场。预期：现场恢复到新分支上，原分支保持干净。
+
+---
+
+## 13. 本章检查点
 
 1. `stash apply` 和 `stash pop` 有什么区别？
 2. 为什么 stash 不是长期保存方案？

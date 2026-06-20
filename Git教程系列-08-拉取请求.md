@@ -12,6 +12,16 @@
 
 GitHub 叫 Pull Request，GitLab 通常叫 Merge Request，简称 MR。名字不同，核心思想类似。
 
+常见平台叫法可以先这样对应：
+
+| 平台 | 常见名称 | 你通常要确认什么 |
+|---|---|---|
+| GitHub | Pull Request / PR | base 分支和 compare 分支是否选对 |
+| GitLab | Merge Request / MR | source branch 和 target branch 是否选对 |
+| Gitee | Pull Request / PR | 源分支和目标分支是否选对 |
+
+名字不同，但你都在做同一件事：请求把一个分支的改动合并到另一个分支，并在合并前完成讨论、检查和审查。
+
 本章目标：
 
 1. 理解 PR 不是 Git 命令，而是托管平台上的协作流程
@@ -465,7 +475,20 @@ git fetch -p
 
 ---
 
-## 14. 本章总结
+## 14. 动手练习
+
+用一个练习仓库完整跑一遍 PR 前后的本地动作：
+
+1. 从 `main` 创建 `feature-pr-demo`，提交一个小改动并 `git push -u origin feature-pr-demo`。
+2. 在平台页面创建 PR/MR，确认源分支是 `feature-pr-demo`，目标分支是 `main`。
+3. 再追加一次提交并 `git push`，观察 PR/MR 页面是否自动更新。
+4. 合并后回到本地执行 `git switch main`、`git fetch origin`、`git merge origin/main`、`git branch -d feature-pr-demo` 和 `git fetch -p`。
+
+如果没有远程平台账号，也可以先把第 1、3、4 步在本地练熟；创建页面动作以后再补。
+
+---
+
+## 15. 本章总结
 
 Pull Request 把前面学过的知识串起来了：
 

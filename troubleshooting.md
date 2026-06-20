@@ -251,6 +251,35 @@ git pull origin main --allow-unrelated-histories
 
 ---
 
+## LF/CRLF 换行符警告
+
+典型表现：提交后看到 `LF will be replaced by CRLF`，或跨平台协作时文件被标记为整文件改动。
+
+原因：Windows、macOS、Linux 默认换行符不同，Git 的 `core.autocrlf` 设置会在签出/提交时转换换行符。
+
+推荐做法是用 `.gitattributes` 显式声明，而不是只靠个人配置：
+
+```text
+* text=auto eol=lf
+```
+
+查看当前文件实际换行符：
+
+```bash
+git ls-files --eol
+```
+
+只想改个人配置时：
+
+| 平台 | 推荐设置 |
+|---|---|
+| Windows | `git config --global core.autocrlf true` |
+| macOS/Linux | `git config --global core.autocrlf input` |
+
+如果已经因为换行符转换产生大量“假改动”，先提交或 stash 现有改动，再统一规范化，避免把格式改动和真实改动混在一个提交里。
+
+---
+
 ## `.gitignore` 写了但文件还在被跟踪
 
 典型表现：

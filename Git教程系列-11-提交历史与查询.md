@@ -569,7 +569,17 @@ git status
 
 ---
 
-## 16. 本章检查点
+## 16. 动手练习
+
+在一个至少有 5 次提交的练习仓库里完成下面任务：
+
+1. 用 `git log --oneline --graph --all --decorate` 画出历史，再用 `git show 提交哈希` 查看其中一次提交的完整改动。
+2. 用 `git log -- 文件名` 和 `git blame 文件名` 分别回答“这个文件什么时候改过”和“这一行最后是谁改的”。
+3. 故意制造一次“坏提交”，用 `git bisect start`、`git bisect bad`、`git bisect good 哈希` 二分定位，再用 `git bisect reset` 回到正常状态。
+
+---
+
+## 17. 本章检查点
 
 1. 想看分支合并图，用哪条命令？
 2. 想看某次提交具体 diff，用哪条命令？

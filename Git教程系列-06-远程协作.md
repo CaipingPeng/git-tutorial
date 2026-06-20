@@ -46,6 +46,8 @@
 - 让多人把各自的提交同步到同一个地方
 - 支持 Pull Request / Merge Request 代码审查
 
+这里的 Pull Request / Merge Request 是代码托管平台提供的协作功能，不是一个本地 Git 命令。GitHub 和 Gitee 常叫 PR，GitLab 常叫 MR；完整流程放到第 8 章再讲。
+
 ---
 
 ## 2. 本地仓库和远程仓库不是同一个东西

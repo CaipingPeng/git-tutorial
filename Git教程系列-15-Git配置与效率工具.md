@@ -413,7 +413,18 @@ hook 可以提高质量，但不要把它当成唯一防线。CI 仍然需要在
 
 ---
 
-## 12. 本章检查点
+## 12. 动手练习
+
+在练习仓库里完成下面任务，练完后可以把临时配置删掉：
+
+1. 分别运行 `git config --global --list` 和 `git config --local --list`，观察全局配置和当前仓库配置的区别。
+2. 设置一个只在当前仓库生效的别名：`git config alias.lg "log --oneline --graph --all --decorate"`，运行 `git lg` 验证，再用 `git config --unset alias.lg` 删除。
+3. 新建 `.gitattributes`，写入 `* text=auto`，再运行 `git add --renormalize .` 观察是否有换行符相关改动。预期：如果没有跨平台换行符差异，可能不会产生实际 diff。
+4. 创建一个简单的 `.git/hooks/pre-commit`，只输出提示文字并退出 0；提交一次验证 hook 会运行。练习结束后删除该 hook，避免影响后续提交。
+
+---
+
+## 13. 本章检查点
 
 1. global 配置和 local 配置有什么区别？
 2. Windows 上为什么要注意换行符？
