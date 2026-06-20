@@ -304,6 +304,52 @@ git switch -c rescue-experiment abc1234
 
 ---
 
+## 9.5 中途切分支：用 stash 保存现场
+
+真实开发里经常遇到这种情况：你在功能分支改到一半，还没准备好提交，突然需要切回 `main` 修一个紧急问题。直接切分支会被 Git 拦下，因为未提交的改动可能被覆盖。
+
+先制造这个场景。切到功能分支并做未提交改动：
+
+```bash
+git switch -c feature/quick-note
+echo "还没写完的草稿" >> notes.md
+git status
+```
+
+此时 `notes.md` 有未暂存改动。现在假设要紧急切回 `main`，先把现场存起来：
+
+```bash
+git stash push -u -m "quick-note 草稿"
+```
+
+`-u` 让 stash 连未跟踪文件一起保存。存完后工作目录变干净，可以安全切分支：
+
+```bash
+git switch main
+```
+
+在 `main` 上处理完紧急事务并提交后，回到功能分支恢复现场：
+
+```bash
+git switch feature/quick-note
+git stash pop
+```
+
+`pop` 会恢复改动并删除该 stash。如果恢复时遇到冲突（比如你刚才在 `main` 上也改了同一处），Git 会保留 stash 不删除，等你解决冲突后手动 `git stash drop`。
+
+判断要点：
+
+| 情况 | 建议 |
+|---|---|
+| 改动已经能说清楚，只是还没提交 | 优先正常 `git commit`，stash 留给真正没写完的现场 |
+| 改动半成品，但必须马上切分支 | `git stash push -u -m "说明"` |
+| 不确定 stash 里存了什么 | `git stash list` 看列表，`git stash show -p stash@{0}` 看内容 |
+| stash 堆了很多条 | 不要长期囤积，要么 pop 回去继续做，要么 `git stash branch` 转成正式分支 |
+
+stash 是临时抽屉，不是长期仓库。每条 stash 都应该尽快被 pop 或转成分支，不要让它堆成“失物招领处”。
+
+---
+
 ## 10. 完整检查清单
 
 完成本章后，你应该做过：
@@ -318,6 +364,7 @@ git switch -c rescue-experiment abc1234
 - [ ] 创建 PR
 - [ ] 根据 review 修改并推送
 - [ ] 用 reflog 找回提交
+- [ ] 用 stash 保存中途现场并恢复
 
 如果这些都能独立完成，你已经不是“只会背命令”的 Git 新手了。
 
@@ -326,7 +373,7 @@ git switch -c rescue-experiment abc1234
 ## 11. 下一步怎么练？
 
 1. 把本章项目重做一遍，但换成自己的文件名。
-2. 用 `git stash` 加入一次“中途切分支”的场景。
+2. 重做 9.5 节的 stash 场景，但这次在 `main` 上也改 `notes.md` 同一行，制造恢复冲突。
 3. 用 `git rebase -i` 把两个小提交 squash 成一个。
 4. 和朋友互相 fork 仓库，练习真正的 PR review。
 5. 读 [常见错误排障](./troubleshooting.md)，把每个错误至少理解一遍。
