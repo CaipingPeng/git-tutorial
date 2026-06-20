@@ -166,6 +166,8 @@ git diff
 
 ## `You are in 'detached HEAD' state`
 
+**英文原文**：`You are in 'detached HEAD' state. You can look around, make experimental changes and commit them...`
+
 含义：你现在不是站在某个分支上，而是直接站在某个提交上。
 
 如果只是查看历史，可以不用处理。

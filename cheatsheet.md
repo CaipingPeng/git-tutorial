@@ -62,6 +62,134 @@
 
 ---
 
+## 按角色查找命令
+
+### 我是完全新手（刚开始学 Git）
+
+**只需记住这4个命令**：
+```bash
+git status              # 最重要！随时看状态
+git add 文件名           # 选择要保存的改动
+git commit -m "说明"     # 保存版本
+git log --oneline       # 看历史
+```
+
+**第一次提交流程**：
+```bash
+git init                # 初始化仓库（只需一次）
+# 编辑文件
+git add 文件名
+git commit -m "说明"
+```
+
+---
+
+### 我是团队协作新人（开始参与项目）
+
+**每天开始工作前**：
+```bash
+git switch main         # 切到主分支
+git pull                # 同步远程最新代码
+```
+
+**开发新功能**：
+```bash
+git switch -c feature-功能名    # 创建功能分支
+# 编辑、提交
+git push -u origin feature-功能名   # 推送并创建 PR
+```
+
+**同步主分支更新**：
+```bash
+git fetch origin        # 获取远程更新
+git merge origin/main   # 合并到当前分支
+# 或者
+git pull origin main    # 拉取并合并
+```
+
+---
+
+### 我在做代码审查（Review PR）
+
+**查看 PR 改动**：
+```bash
+git fetch origin        # 获取最新 PR 分支
+git switch pr-branch    # 切换到 PR 分支
+git log main..pr-branch --oneline  # 看新增提交
+git diff main...pr-branch          # 看总体差异
+```
+
+**本地测试 PR**：
+```bash
+git switch pr-branch
+# 运行测试、构建
+git switch main         # 审查完切回主分支
+```
+
+---
+
+### 我在修复紧急 Bug
+
+**快速修复流程**：
+```bash
+git switch main         # 从主分支开始
+git pull                # 确保是最新代码
+git switch -c hotfix-问题描述
+# 修复代码
+git add .
+git commit -m "fix: 修复XXX问题"
+git push -u origin hotfix-问题描述
+# 创建 PR 并请求快速审查
+```
+
+---
+
+### 我在整理提交历史（准备提交 PR）
+
+**合并多个提交**：
+```bash
+git rebase -i HEAD~3    # 交互式整理最近3个提交
+# 在编辑器中选择 squash/fixup
+git push --force-with-lease origin 分支名
+```
+
+**修改最后一次提交**：
+```bash
+git commit --amend      # 修改提交信息或补充文件
+```
+
+---
+
+### 我遇到了问题（救援模式）
+
+**不知道改了什么**：
+```bash
+git status              # 看当前状态
+git diff                # 看具体改动
+```
+
+**想撤销改动**：
+```bash
+git restore 文件名       # 撤销未暂存的改动
+git restore --staged 文件名  # 从暂存区撤出
+git reset HEAD~1        # 撤销最后一次提交（保留改动）
+```
+
+**提交好像丢了**：
+```bash
+git reflog              # 查看 HEAD 移动历史
+git switch -c rescue 哈希值  # 创建分支找回提交
+```
+
+**冲突不会解决**：
+```bash
+git merge --abort       # 取消正在进行的合并
+git rebase --abort      # 取消正在进行的 rebase
+```
+
+
+---
+
 ## 每日工作流速览
 
 ### 开始新功能
