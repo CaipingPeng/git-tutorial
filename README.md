@@ -16,6 +16,7 @@
 - 《Advanced Git》：rebase 冲突视角、`.gitignore` 事后补救、reset/reflog/revert 边界，以及集中式、功能分支、Gitflow、Forking Workflow 的协作取舍。
 - 《Git Essentials, Second Edition》：提交质量、配置层级、别名安全、bare/archive/bundle 备份、SVN 迁移心态和工作流选择。
 - 《Git Notes for Professionals》（GoalKicker，Stack Overflow 文档汇编）：作为命令级食谱补充，覆盖标签、`.gitattributes`、`git worktree`、`git clean`、修订号语法、`shortlog`/`.mailmap`、LFS 等零散但实用的知识点。
+- 《Git Repository Management in 30 Days》：仓库管理视角，补强 PR 元数据、开源 bug report、release tag 与 release branch 的关系，以及危险覆盖式同步的边界。
 
 完整来源说明见 [参考资料](./references.md)。
 
@@ -116,18 +117,20 @@
 11. [提交历史与查询](./Git教程系列-11-提交历史与查询.md)
     - `log`、`show`、`blame`、`bisect`
     - 如何读历史、定位问题、找到改动原因
-    - `git tag` 标记版本、`git shortlog` 统计贡献者
+    - `git tag` 标记版本、release tag 与 release branch 的区别、`git shortlog` 统计贡献者
 
 12. [团队工作流与分支策略](./Git教程系列-12-团队工作流与分支策略.md)
     - 集中式、Feature Branch、GitHub Flow、Git Flow、Trunk-based
     - release/hotfix 分支
     - 个人分支、共享分支、公共分支的更新规则
+    - 发布回流、分支保护和公共分支治理
     - Forking Workflow 的协作位置
     - 小团队、开源项目、企业项目如何选择
 
 13. [代码评审与 PR 质量](./Git教程系列-13-代码评审与PR质量.md)
     - 好 PR 和坏 PR
     - review checklist
+    - reviewer、assignee、label、milestone 等 PR 元数据
     - 作者和审查者职责
     - 合并前检查
 
@@ -135,7 +138,7 @@
     - SSH key、fork、upstream、issue、PR
     - fork、origin、upstream 和本地 clone 的关系
     - GitHub/GitLab/Gitee 差异
-    - 开源贡献完整流程
+    - 开源贡献完整流程、issue 和 bug report 写法
 
 15. [Git 配置与效率工具](./Git教程系列-15-Git配置与效率工具.md)
     - 常用 config、`push.default`、alias、editor、credential helper

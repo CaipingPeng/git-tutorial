@@ -19,6 +19,7 @@
 | 《Advanced Git: Understanding Git Collaboration & Workflows (2nd Edition)》, Jawwad Ahmad & Chris Belanger | rebase 冲突中的 `HEAD` 视角、`git rebase --skip` 边界、`.gitignore` 事后补救、reset/reflog/revert 的撤销边界、集中式/Feature Branch/Gitflow/Forking Workflow 的团队协作取舍 |
 | 《Git Essentials, Second Edition》, Ferdinando Santacroce | 提交质量与提交信息、配置层级、`push.default`、alias 边界、stash/amend/blame 的协作语境、bare 仓库、`git archive`、`git bundle`、从 SVN/旧系统迁移到 Git 的原则 |
 | 《Git Notes for Professionals》, GoalKicker（Stack Overflow 文档汇编） | 命令级食谱补充：标签、`.gitattributes`、`git worktree`、`git clean`、修订号语法、`shortlog`/`.mailmap`、Git LFS、子模块/子树、bisect/blame 进阶用法 |
+| 《Git Repository Management in 30 Days: Learn to manage code repositories like a pro》, Sumit Jaiswal | 仓库管理与平台协作视角：PR reviewer/assignee/label/milestone、开源 bug report、release tag 与 release branch、fork/duplicate/bare repo 语境，以及 `fetch + reset --hard` 这类危险覆盖式同步的边界 |
 
 ## 图片署名
 
@@ -43,6 +44,8 @@ Attribution: Artwork/images/designs: from Git Apprentice, available at www.raywe
 《Git Essentials, Second Edition》PDF 版权页显示 “Copyright © 2017 Packt Publishing. All rights reserved.”，未看到允许复用原图的开放许可说明。本次读取了目录、元数据、章节文本和图片分布，并检查了对象模型、三阶段区域、rebase/merge/cherry-pick、配置层级、提交质量、工作流和 SVN 迁移等候选图页；因候选图多为英文终端截图、旧界面截图、版权漫画或可由中文 Mermaid/表格更清楚表达，正文未采用该书位图，也未新增图片提取脚本。相关教学点已消化为原创中文讲解、表格和 Mermaid 图示。
 
 《Git Notes for Professionals》PDF 的“About”页说明：文本内容来自 Stack Overflow 文档，按 Creative Commons BY-SA 许可发布；图片“may be copyright of their respective owners unless otherwise specified”。该书是一本命令级食谱，本教程只吸收其结构、教学角度和命令用法，原创中文重写，未复制原文段落。因其图片版权状态不明确，本次未提取、未引用该书图片；相关知识点改用原创中文讲解、表格和 Mermaid 图示。
+
+《Git Repository Management in 30 Days》PDF 元数据显示标题为 “Git Repository Management in 30 Days”，作者 Sumit Jaiswal，出版物版权页显示 “Copyright © 2023 BPB Online All rights reserved.”。本次读取了目录、元数据、章节文本和图片分布，并检查了版本控制示意图、GitHub PR reviewer/assignee 页面截图、PR review 页面截图、tag/Release 相关示意图和命令截图。候选图多为英文旧版 GitHub 界面截图、终端输出或可由中文 Mermaid/表格更清楚表达的示意图，因此正文未采用该书位图，也未新增图片提取脚本。相关教学点已消化为原创中文讲解、表格和 Mermaid 图示。
 
 ## 官方与平台资料
 

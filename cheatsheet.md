@@ -40,6 +40,7 @@
 | 找回 HEAD 移动记录 | `git reflog` |
 | 按作者统计提交数 | `git shortlog -sn` |
 | 列出标签 | `git tag` |
+| 查看某个标签以来的提交 | `git log v1.0.0..HEAD --oneline` |
 
 ## 我想标记版本
 
@@ -51,6 +52,7 @@
 | 列出标签 | `git tag` |
 | 按模式过滤标签 | `git tag -l "v1.*"` |
 | 查看标签指向的提交 | `git show v1.0.0` |
+| 查看上次发布以来的提交 | `git log v1.0.0..HEAD --oneline` |
 | 推送单个标签 | `git push origin v1.0.0` |
 | 推送所有标签 | `git push origin --tags` |
 | 推送并附带附注标签 | `git push --follow-tags` |
@@ -98,7 +100,10 @@
 | 远程有别人新提交 | `git fetch origin` 后观察历史 |
 | 想让当前分支追上远程 | `git pull --ff-only` 或按团队规则 merge/rebase |
 | 自己 rebase 后需要更新自己的远程分支 | `git push --force-with-lease` |
+| 确认丢弃本地并对齐远程（危险） | `git fetch origin` 后 `git reset --hard origin/main` |
 | 公共分支推送失败 | 不要强推，先找原因或按团队流程处理 |
+
+最后一行会丢掉当前分支上没有保存好的工作区修改，也会让本地独有提交暂时离开分支历史。只在练习仓库、临时分支，或你确认本地内容都不要时使用。
 
 ## 我想撤销
 
