@@ -473,6 +473,116 @@ git log --oneline --graph --all --decorate
 
 ---
 
+
+---
+
+## 9.5. 实战场景: Alice 和 Bob 的协作
+
+用一个具体场景来理解 fetch 和 pull。
+
+**背景**: Alice 和 Bob 在同一个项目工作,各自在本地开发。
+
+### Alice 想查看 Bob 的改动
+
+Bob 告诉 Alice: "我在 `/home/bob/project` 做了一些更新"。
+
+Alice 想先看看 Bob 做了什么,再决定是否合并:
+
+```bash
+# Alice 获取 Bob 的改动
+git fetch /home/bob/project main
+
+# 查看 Bob 做了什么 (但还没合并)
+git log -p HEAD..FETCH_HEAD
+```
+
+`HEAD..FETCH_HEAD` 的意思是: "在 FETCH_HEAD 但不在 HEAD 的提交",也就是 Bob 新增的提交。
+
+如果 Alice 看完觉得没问题,可以合并:
+
+```bash
+git merge FETCH_HEAD
+```
+
+**等价的快捷方式**:
+
+```bash
+git pull /home/bob/project main
+```
+
+`git pull` = `git fetch` + `git merge`。
+
+但 Alice 更喜欢分步操作,因为她可以先检查,再决定是否合并。
+
+### 使用 remote 简化路径
+
+如果 Alice 经常需要从 Bob 那里获取改动,每次敲长路径很麻烦。可以给 Bob 的仓库起个短名字:
+
+```bash
+git remote add bob /home/bob/project
+```
+
+之后就可以:
+
+```bash
+git fetch bob
+git log -p main..bob/main  # 查看 Bob 的改动
+git merge bob/main         # 合并
+```
+
+或者直接:
+
+```bash
+git pull bob
+```
+
+### Bob 从 Alice 那里更新
+
+Bob 也可以从 Alice 那里获取改动。
+
+如果 Bob 是通过 `git clone` 从 Alice 的仓库克隆的,Git 会自动设置一个名为 `origin` 的 remote:
+
+```bash
+# Bob 不需要敲路径
+git pull
+
+# 等价于
+git pull origin main
+```
+
+查看 `origin` 指向哪里:
+
+```bash
+git config --get remote.origin.url
+# 输出: /home/alice/project
+```
+
+### 可视化理解
+
+Alice fetch 之前:
+
+```
+Alice 的本地:  A---B---C (main)
+Bob 的仓库:    A---B---C---D---E
+```
+
+Alice 执行 `git fetch bob`:
+
+```
+Alice 的本地:  A---B---C (main)
+                       \
+                        D---E (bob/main, 远程跟踪分支)
+```
+
+Alice 查看 `git log main..bob/main` 后,决定合并:
+
+```
+Alice 的本地:  A---B---C-------F (main, 合并提交)
+                       \     /
+                        D---E (bob/main)
+```
+
+---
 ## 10. 把远程更新合进本地：fetch + merge
 
 `fetch` 只是下载远程信息。如果想把远程更新合进当前分支，需要再 merge。

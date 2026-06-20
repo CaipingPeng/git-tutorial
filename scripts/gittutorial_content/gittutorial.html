@@ -1,0 +1,2609 @@
+<!DOCTYPE html>
+
+
+
+<html lang="en">
+
+
+
+
+
+
+<head>
+  <script type="text/javascript">
+    
+    const currentTheme = localStorage.getItem("theme")
+    if (currentTheme) {
+      
+      const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      if (prefersDarkScheme === (currentTheme === "dark")) localStorage.removeItem("theme")
+      else if ((prefersDarkScheme && currentTheme === "light")
+        || (!prefersDarkScheme && currentTheme === "dark")) {
+	document.documentElement.dataset.theme = currentTheme
+      }
+    }
+  </script>
+
+  <meta charset='utf-8'>
+  <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Git - gittutorial Documentation</title>
+
+  <link href="/favicon.ico" rel='shortcut icon' type='image/x-icon'>
+
+  
+  <link rel="stylesheet" href="/application.min.2ac21e7ab1273002c6d93cd2f0f7ac6bd0d8e578b8daf38d137a8ab78d07a717.css">
+  <script src="/js/modernizr.js"></script>
+  
+
+</head>
+
+<body id="documentation">
+
+  <div class="inner">
+    <header>
+  <a id="logo" href="/"><img src="/images/logo@2x.png" width="110" height="46" alt="Git" class="no-filter" /></a>
+  <span id="tagline"></span>
+  <script type="text/javascript">
+   const taglines = [
+     "fast-version-control",
+     "everything-is-local",
+     "distributed-even-if-your-workflow-isnt",
+     "local-branching-on-the-cheap",
+     "distributed-is-the-new-centralized"
+   ];
+   var tagline = taglines[Math.floor(Math.random() * taglines.length)];
+   document.getElementById('tagline').innerHTML = '--' + tagline;
+  </script>
+
+  
+  <div id="search-container">
+    <form id="search" action="/search/results">
+      <input id="search-text" name="search" placeholder="Type / to search entire site…" autocomplete="off" type="text" />
+    </form>
+    <div id="search-results"></div>
+  </div>
+  
+  <img src="/images/dark-mode.svg" id="dark-mode-button" />
+</header>
+
+  </div> 
+
+  
+    <div class="inner">
+      <div id="content-wrapper">
+        
+<div tabindex="1" class="sidebar-btn"></div>
+<aside class="sidebar" id="sidebar">
+  <nav>
+    <ul>
+      <li>
+        <a href="/about">About</a>
+        <ul >
+          <li>
+            <a href="/about/trademark">Trademark</a>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="/learn">Learn</a>
+        <ul >
+          <li>
+            <a href="/book">Book</a>
+          </li>
+          <li>
+            <a href="/cheat-sheet">Cheat Sheet</a>
+          </li>
+          <li>
+            <a href="/videos">Videos</a>
+          </li>
+          <li>
+            <a href="/doc/ext">External Links</a>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="/tools">Tools</a>
+        <ul >
+          <li>
+            <a href="/tools/command-line">Command Line</a>
+          </li>
+          <li>
+            <a href="/tools/guis">GUIs</a>
+          </li>
+          <li>
+            <a href="/tools/hosting">Hosting</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/docs" class="active">Reference</a>
+      </li>
+      <li>
+        <a href="/install" class="install-link">Install</a>
+      </li>
+      <li>
+        <a href="/community">Community</a>
+        <ul>
+          
+        </ul>
+      </li>
+    </ul>
+
+    
+    
+    <ul id="toc">
+      <li> Table of Contents
+        <ul class="expanded">
+          
+            <li><a href="#_name">NAME</a> </li>
+          
+            <li><a href="#_synopsis">SYNOPSIS</a> </li>
+          
+            <li><a href="#_description">DESCRIPTION</a> </li>
+          
+            <li><a href="#_importing_a_new_project">Importing a new project</a> </li>
+          
+            <li><a href="#_making_changes">Making changes</a> </li>
+          
+            <li><a href="#_git_tracks_content_not_files">Git tracks content not files</a> </li>
+          
+            <li><a href="#_viewing_project_history">Viewing project history</a> </li>
+          
+            <li><a href="#_managing_branches">Managing branches</a> </li>
+          
+            <li><a href="#_using_git_for_collaboration">Using Git for collaboration</a> </li>
+          
+            <li><a href="#_exploring_history">Exploring history</a> </li>
+          
+            <li><a href="#_next_steps">Next Steps</a> </li>
+          
+            <li><a href="#_see_also">SEE ALSO</a> </li>
+          
+            <li><a href="#_git">GIT</a> </li>
+          
+        </ul>
+      </li>
+    </ul>
+    
+
+    
+  </nav>
+</aside>
+
+        <div id="content">
+          <div id='reference-version'>
+            
+<a class="dropdown-trigger" id="reference-languages-trigger" data-panel-id="l10n-versions-dropdown" href="#"> English ▾</a>
+<div class='dropdown-panel right' id='l10n-versions-dropdown'>
+  <header>Localized versions of <strong>gittutorial</strong> manual</header>
+  <ol class='reference-previous-versions'>
+    
+    <li>
+      <a href="/docs/gittutorial"><span class="version">English</span>
+      </a>
+      </li>
+    
+    
+  </ol>
+  <footer>
+    Want to read in your language or fix typos?<br/> <a href="https://github.com/jnavila/git-manpages-l10n">You can help translate this page</a>.
+  </footer>
+</div>
+
+            
+<a class="dropdown-trigger" id="reference-topics-trigger" data-panel-id="topics-dropdown" href="#">Topics ▾</a>
+<div class='dropdown-panel right' id='topics-dropdown'>
+  <div class='three-column'>
+    <div class='column-left'>
+      
+      
+      
+
+<h3 class='setup'>Setup and Config</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git">
+    
+      
+        git
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-config">
+    
+      
+        config
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-help">
+    
+      
+        help
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-bugreport">
+    
+      
+        bugreport
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/doc/credential-helpers">
+    
+      
+        Credential helpers
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='projects'>Getting and Creating Projects</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-init">
+    
+      
+        init
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-clone">
+    
+      
+        clone
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='snapshotting'>Basic Snapshotting</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-add">
+    
+      
+        add
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-status">
+    
+      
+        status
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-diff">
+    
+      
+        diff
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-commit">
+    
+      
+        commit
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-notes">
+    
+      
+        notes
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-restore">
+    
+      
+        restore
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-reset">
+    
+      
+        reset
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-rm">
+    
+      
+        rm
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-mv">
+    
+      
+        mv
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='branching'>Branching and Merging</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-branch">
+    
+      
+        branch
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-checkout">
+    
+      
+        checkout
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-switch">
+    
+      
+        switch
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-merge">
+    
+      
+        merge
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-mergetool">
+    
+      
+        mergetool
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-log">
+    
+      
+        log
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-stash">
+    
+      
+        stash
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-tag">
+    
+      
+        tag
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-worktree">
+    
+      
+        worktree
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='sharing'>Sharing and Updating Projects</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-fetch">
+    
+      
+        fetch
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-pull">
+    
+      
+        pull
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-push">
+    
+      
+        push
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-remote">
+    
+      
+        remote
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-submodule">
+    
+      
+        submodule
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+    </div>
+    <div class='column-middle'>
+      
+      
+      
+
+<h3 class='inspection'>Inspection and Comparison</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-show">
+    
+      
+        show
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-log">
+    
+      
+        log
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-diff">
+    
+      
+        diff
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-difftool">
+    
+      
+        difftool
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-range-diff">
+    
+      
+        range-diff
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-shortlog">
+    
+      
+        shortlog
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-describe">
+    
+      
+        describe
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='patching'>Patching</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-apply">
+    
+      
+        apply
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-cherry-pick">
+    
+      
+        cherry-pick
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-diff">
+    
+      
+        diff
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-rebase">
+    
+      
+        rebase
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-revert">
+    
+      
+        revert
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='debugging'>Debugging</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-bisect">
+    
+      
+        bisect
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-blame">
+    
+      
+        blame
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-grep">
+    
+      
+        grep
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='email'>Email</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-am">
+    
+      
+        am
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-apply">
+    
+      
+        apply
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-imap-send">
+    
+      
+        imap-send
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-format-patch">
+    
+      
+        format-patch
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-send-email">
+    
+      
+        send-email
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-request-pull">
+    
+      
+        request-pull
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='external'>External Systems</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-svn">
+    
+      
+        svn
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-fast-import">
+    
+      
+        fast-import
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='server-admin'>Server Admin</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-daemon">
+    
+      
+        daemon
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-update-server-info">
+    
+      
+        update-server-info
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+    </div>
+    <div class='column-right'>
+      
+      
+      
+
+<h3 class='guides'>Guides</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/gitattributes">
+    
+      
+        gitattributes
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gitcli">
+    
+      
+        Command-line interface conventions
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/giteveryday">
+    
+      
+        Everyday Git
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gitfaq">
+    
+      
+        Frequently Asked Questions (FAQ)
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gitglossary">
+    
+      
+        Glossary
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/githooks">
+    
+      
+        Hooks
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gitignore">
+    
+      
+        gitignore
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gitmodules">
+    
+      
+        gitmodules
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gitrevisions">
+    
+      
+        Revisions
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gitsubmodules">
+    
+      
+        Submodules
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gittutorial">
+    
+      
+        Tutorial
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/gitworkflows">
+    
+      
+        Workflows
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git#_guides">
+    
+      
+        All guides...
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='admin'>Administration</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-clean">
+    
+      
+        clean
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-gc">
+    
+      
+        gc
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-fsck">
+    
+      
+        fsck
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-reflog">
+    
+      
+        reflog
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-filter-branch">
+    
+      
+        filter-branch
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-instaweb">
+    
+      
+        instaweb
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-archive">
+    
+      
+        archive
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-bundle">
+    
+      
+        bundle
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+      
+      
+
+<h3 class='plumbing'>Plumbing Commands</h3>
+<ul class='unstyled'>
+  
+  <li>
+    
+      <a href="/docs/git-cat-file">
+    
+      
+        cat-file
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-check-ignore">
+    
+      
+        check-ignore
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-checkout-index">
+    
+      
+        checkout-index
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-commit-tree">
+    
+      
+        commit-tree
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-count-objects">
+    
+      
+        count-objects
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-diff-index">
+    
+      
+        diff-index
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-for-each-ref">
+    
+      
+        for-each-ref
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-hash-object">
+    
+      
+        hash-object
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-ls-files">
+    
+      
+        ls-files
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-ls-tree">
+    
+      
+        ls-tree
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-merge-base">
+    
+      
+        merge-base
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-read-tree">
+    
+      
+        read-tree
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-rev-list">
+    
+      
+        rev-list
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-rev-parse">
+    
+      
+        rev-parse
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-show-ref">
+    
+      
+        show-ref
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-symbolic-ref">
+    
+      
+        symbolic-ref
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-update-index">
+    
+      
+        update-index
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-update-ref">
+    
+      
+        update-ref
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-verify-pack">
+    
+      
+        verify-pack
+      
+    </a>
+  </li>
+  
+  <li>
+    
+      <a href="/docs/git-write-tree">
+    
+      
+        write-tree
+      
+    </a>
+  </li>
+  
+</ul>
+
+      
+    </div>
+  </div>
+</div>
+
+            
+<a class="dropdown-trigger" id="reference-versions-trigger" data-panel-id="previous-versions-dropdown" href="#">
+  
+    Latest version
+   ▾ </a>
+<span class="light d-flex">gittutorial last updated in 2.54.0</span>
+<div class='dropdown-panel left' id='previous-versions-dropdown'>
+  <header>Changes in the <strong>gittutorial</strong> manual</header>
+  <ol class='reference-previous-versions'>
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.54.0"><span class="version">2.54.0</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2026-04-20</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.46.2 → 2.53.0 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.46.1"><span class="version">2.46.1</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2024-09-13</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.43.1 → 2.46.0 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.43.0"><span class="version">2.43.0</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2023-11-20</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.41.1 → 2.42.4 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.41.0"><span class="version">2.41.0</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2023-06-01</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.33.1 → 2.40.4 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.33.0"><span class="version">2.33.0</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2021-08-16</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.23.1 → 2.32.7 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.23.0"><span class="version">2.23.0</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2019-08-16</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.16.6 → 2.22.5 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.15.4"><span class="version">2.15.4</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2019-12-06</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.13.7 → 2.14.6 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.12.5"><span class="version">2.12.5</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2017-09-22</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.9.5 → 2.11.4 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.8.6"><span class="version">2.8.6</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2017-07-30</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.3.10 → 2.7.6 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.2.3"><span class="version">2.2.3</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2015-09-04</em>
+        </a>
+        </li>
+      
+    
+      
+        <li class="no-change"><span>2.1.4 no changes</span></li>
+      
+    
+      
+        <li>
+        <a href="/docs/gittutorial/2.0.5"><span class="version">2.0.5</span>
+          <span class="diff">
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+              <img src="/images/icons/green-dot.png" />
+            
+            
+              <img src="/images/icons/red-dot.png" />
+            
+              <img src="/images/icons/red-dot.png" />
+            
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+              <img src="/images/icons/grey-dot.png" />
+            
+          </span>
+          <em class="date">2014-12-17</em>
+        </a>
+        </li>
+      
+    
+    <li>&nbsp;</li>
+    
+  </ol>
+  <footer>
+    <p>Check your version of git by running</p>
+    <code class="command">git --version</code>
+  </footer>
+</div>
+
+          </div>
+
+          
+          
+          <div id="main" data-pagefind-filter="category:reference" data-pagefind-meta="category:Reference" data-pagefind-weight="0.05" data-pagefind-body>
+	    
+            <div class="sect1">
+<h2 id="_name"><a class="anchor" href="#_name"></a>NAME</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>gittutorial - A tutorial introduction to Git</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_synopsis"><a class="anchor" href="#_synopsis"></a>SYNOPSIS</h2>
+<div class="sectionbody">
+<div class="verseblock">
+<pre class="content">git *</pre>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_description"><a class="anchor" href="#_description"></a>DESCRIPTION</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This tutorial explains how to import a new project into Git, make
+changes to it, and share changes with other developers.</p>
+</div>
+<div class="paragraph">
+<p>If you are instead primarily interested in using Git to fetch a project,
+for example, to test the latest version, you may prefer to start with
+the first two chapters of <a href="/docs/user-manual">The Git User&#8217;s Manual</a>.</p>
+</div>
+<div class="paragraph">
+<p>First, note that you can get documentation for a command such as
+<span class='synopsis'><code>git</code> <code>log</code> <code>--graph</code></span> with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ man git-log</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git help log</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the latter, you can use the manual viewer of your choice; see
+<a href='/docs/git-help'>git-help[1]</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>It is a good idea to introduce yourself to Git with your name and
+public email address before doing any operation.  The easiest
+way to do so is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git config --global user.name "Your Name Comes Here"
+$ git config --global user.email you@yourdomain.example.com</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_importing_a_new_project"><a class="anchor" href="#_importing_a_new_project"></a>Importing a new project</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Assume you have a tarball <span class='synopsis'><code>project.tar.gz</code></span> with your initial work.  You
+can place it under Git revision control as follows.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ tar xzf project.tar.gz
+$ cd project
+$ git init</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Git will reply</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Initialized empty Git repository in .git/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ve now initialized the working directory&#8212;&#8203;you may notice a new
+directory created, named <span class='synopsis'><code>.git</code></span>.</p>
+</div>
+<div class="paragraph">
+<p>Next, tell Git to take a snapshot of the contents of all files under the
+current directory (note the <span class='synopsis'><code>.</code></span>), with <span class='synopsis'><code>git</code> <code>add</code></span>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git add .</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This snapshot is now stored in a temporary staging area which Git calls
+the "index".  You can permanently store the contents of the index in the
+repository with <span class='synopsis'><code>git</code> <code>commit</code></span>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git commit</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will prompt you for a commit message.  You&#8217;ve now stored the first
+version of your project in Git.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_making_changes"><a class="anchor" href="#_making_changes"></a>Making changes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Modify some files, then add their updated contents to the index:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git add file1 file2 file3</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You are now ready to commit.  You can see what is about to be committed
+using <span class='synopsis'><code>git</code> <code>diff</code></span> with the <span class='synopsis'><code>--cached</code></span> option:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git diff --cached</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Without <span class='synopsis'><code>--cached</code></span>, <span class='synopsis'><code>git</code> <code>diff</code></span> will show you any changes that
+you&#8217;ve made but not yet added to the index.)  You can also get a brief
+summary of the situation with <span class='synopsis'><code>git</code> <code>status</code></span>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged &lt;file&gt;..." to unstage)
+
+	modified:   file1
+	modified:   file2
+	modified:   file3</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to make any further adjustments, do so now, and then add any
+newly modified content to the index.  Finally, commit your changes with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git commit</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will again prompt you for a message describing the change, and then
+record a new version of the project.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively, instead of running <span class='synopsis'><code>git</code> <code>add</code></span> beforehand, you can use</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git commit -a</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which will automatically notice any modified (but not new) files, add
+them to the index, and commit, all in one step.</p>
+</div>
+<div class="paragraph">
+<p>A note on commit messages: Though not required, it&#8217;s a good idea to
+begin the commit message with a single short (no more than 50
+characters) line summarizing the change, followed by a blank line and
+then a more thorough description. The text up to the first blank line in
+a commit message is treated as the commit title, and that title is used
+throughout Git.  For example, <a href='/docs/git-format-patch'>git-format-patch[1]</a> turns a
+commit into email, and it uses the title on the Subject line and the
+rest of the commit in the body.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_git_tracks_content_not_files"><a class="anchor" href="#_git_tracks_content_not_files"></a>Git tracks content not files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many revision control systems provide an <span class='synopsis'><code>add</code></span> command that tells the
+system to start tracking changes to a new file.  Git&#8217;s <span class='synopsis'><code>add</code></span> command
+does something simpler and more powerful: <span class='synopsis'><code>git</code> <code>add</code></span> is used both for new
+and newly modified files, and in both cases it takes a snapshot of the
+given files and stages that content in the index, ready for inclusion in
+the next commit.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_viewing_project_history"><a class="anchor" href="#_viewing_project_history"></a>Viewing project history</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>At any point you can view the history of your changes using</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git log</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you also want to see complete diffs at each step, use</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git log -p</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Often the overview of the change is useful to get a feel of
+each step</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git log --stat --summary</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_managing_branches"><a class="anchor" href="#_managing_branches"></a>Managing branches</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A single Git repository can maintain multiple branches of
+development.  To create a new branch named <span class='synopsis'><code>experimental</code></span>, use</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git branch experimental</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you now run</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git branch</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>you&#8217;ll get a list of all existing branches:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  experimental
+* master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <span class='synopsis'><code>experimental</code></span> branch is the one you just created, and the
+<span class='synopsis'><code>master</code></span> branch is a default branch that was created for you
+automatically.  The asterisk marks the branch you are currently on;
+type</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git switch experimental</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to switch to the <span class='synopsis'><code>experimental</code></span> branch.  Now edit a file, commit the
+change, and switch back to the <span class='synopsis'><code>master</code></span> branch:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(edit file)
+$ git commit -a
+$ git switch master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check that the change you made is no longer visible, since it was
+made on the <span class='synopsis'><code>experimental</code></span> branch and you&#8217;re back on the <span class='synopsis'><code>master</code></span> branch.</p>
+</div>
+<div class="paragraph">
+<p>You can make a different change on the <span class='synopsis'><code>master</code></span> branch:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(edit file)
+$ git commit -a</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>at this point the two branches have diverged, with different changes
+made in each.  To merge the changes made in <span class='synopsis'><code>experimental</code></span> into <span class='synopsis'><code>master</code></span>, run</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git merge experimental</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the changes don&#8217;t conflict, you&#8217;re done.  If there are conflicts,
+markers will be left in the problematic files showing the conflict;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git diff</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will show this.  Once you&#8217;ve edited the files to resolve the
+conflicts,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git commit -a</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will commit the result of the merge. Finally,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ gitk</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will show a nice graphical representation of the resulting history.</p>
+</div>
+<div class="paragraph">
+<p>At this point you could delete the <span class='synopsis'><code>experimental</code></span> branch with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git branch -d experimental</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command ensures that the changes in the <span class='synopsis'><code>experimental</code></span> branch are
+already in the current branch.</p>
+</div>
+<div class="paragraph">
+<p>If you develop on a branch <span class='synopsis'><code>crazy-idea</code></span>, then regret it, you can always
+delete the branch with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git branch -D crazy-idea</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Branches are cheap and easy, so this is a good way to try something
+out.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_git_for_collaboration"><a class="anchor" href="#_using_git_for_collaboration"></a>Using Git for collaboration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Suppose that Alice has started a new project with a Git repository in
+<span class='synopsis'><code>/home/alice/project</code></span>, and that Bob, who has a home directory on the
+same machine, wants to contribute.</p>
+</div>
+<div class="paragraph">
+<p>Bob begins with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>bob$ git clone /home/alice/project myrepo</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This creates a new directory <span class='synopsis'><code>myrepo</code></span> containing a clone of Alice&#8217;s
+repository.  The clone is on an equal footing with the original
+project, possessing its own copy of the original project&#8217;s history.</p>
+</div>
+<div class="paragraph">
+<p>Bob then makes some changes and commits them:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(edit files)
+bob$ git commit -a
+(repeat as necessary)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When he&#8217;s ready, he tells Alice to pull changes from the repository
+at <span class='synopsis'><code>/home/bob/myrepo</code></span>.  She does this with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>alice$ cd /home/alice/project
+alice$ git pull /home/bob/myrepo master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This merges the changes from Bob&#8217;s <span class='synopsis'><code>master</code></span> branch into Alice&#8217;s
+current branch.  If Alice has made her own changes in the meantime,
+then she may need to manually fix any conflicts.</p>
+</div>
+<div class="paragraph">
+<p>The <span class='synopsis'><code>pull</code></span> command thus performs two operations: it fetches changes
+from a remote branch, then merges them into the current branch.</p>
+</div>
+<div class="paragraph">
+<p>Note that in general, Alice would want her local changes committed before
+initiating this <span class='synopsis'><code>pull</code></span>.  If Bob&#8217;s work conflicts with what Alice did since
+their histories forked, Alice will use her working tree and the index to
+resolve conflicts, and existing local changes will interfere with the
+conflict resolution process (Git will still perform the fetch but will
+refuse to merge&#8201;&#8212;&#8201;Alice will have to get rid of her local changes in
+some way and pull again when this happens).</p>
+</div>
+<div class="paragraph">
+<p>Alice can peek at what Bob did without merging first, using the <span class='synopsis'><code>fetch</code></span>
+command; this allows Alice to inspect what Bob did, using a special
+symbol <span class='synopsis'><code>FETCH_HEAD</code></span>, in order to determine if he has anything worth
+pulling, like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>alice$ git fetch /home/bob/myrepo master
+alice$ git log -p HEAD..FETCH_HEAD</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This operation is safe even if Alice has uncommitted local changes.
+The range notation <span class='synopsis'><code>HEAD..FETCH_HEAD</code></span> means "show everything that is reachable
+from the <span class='synopsis'><code>FETCH_HEAD</code></span> but exclude anything that is reachable from <span class='synopsis'><code>HEAD</code></span>".
+Alice already knows everything that leads to her current state (<span class='synopsis'><code>HEAD</code></span>),
+and reviews what Bob has in his state (<span class='synopsis'><code>FETCH_HEAD</code></span>) that she has not
+seen with this command.</p>
+</div>
+<div class="paragraph">
+<p>If Alice wants to visualize what Bob did since their histories forked
+she can issue the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ gitk HEAD..FETCH_HEAD</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This uses the same two-dot range notation we saw earlier with <span class='synopsis'><code>git</code> <code>log</code></span>.</p>
+</div>
+<div class="paragraph">
+<p>Alice may want to view what both of them did since they forked.
+She can use three-dot form instead of the two-dot form:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ gitk HEAD...FETCH_HEAD</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This means "show everything that is reachable from either one, but
+exclude anything that is reachable from both of them".</p>
+</div>
+<div class="paragraph">
+<p>Please note that these range notations can be used with both <span class='synopsis'><code>gitk</code></span>
+and <span class='synopsis'><code>git</code> <code>log</code></span>.</p>
+</div>
+<div class="paragraph">
+<p>After inspecting what Bob did, if there is nothing urgent, Alice may
+decide to continue working without pulling from Bob.  If Bob&#8217;s history
+does have something Alice would immediately need, Alice may choose to
+stash her work-in-progress first, do a <span class='synopsis'><code>pull</code></span>, and then finally unstash
+her work-in-progress on top of the resulting history.</p>
+</div>
+<div class="paragraph">
+<p>When you are working in a small closely knit group, it is not
+unusual to interact with the same repository over and over
+again.  By defining <em>remote</em> repository shorthand, you can make
+it easier:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>alice$ git remote add bob /home/bob/myrepo</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this, Alice can perform the first part of the <span class='synopsis'><code>pull</code></span> operation
+alone using the <span class='synopsis'><code>git</code> <code>fetch</code></span> command without merging them with her own
+branch, using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>alice$ git fetch bob</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unlike the longhand form, when Alice fetches from Bob using a
+remote repository shorthand set up with <span class='synopsis'><code>git</code> <code>remote</code></span>, what was
+fetched is stored in a remote-tracking branch, in this case
+<span class='synopsis'><code>bob/master</code></span>.  So after this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>alice$ git log -p master..bob/master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>shows a list of all the changes that Bob made since he branched from
+Alice&#8217;s <span class='synopsis'><code>master</code></span> branch.</p>
+</div>
+<div class="paragraph">
+<p>After examining those changes, Alice
+could merge the changes into her <span class='synopsis'><code>master</code></span> branch:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>alice$ git merge bob/master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This <span class='synopsis'><code>merge</code></span> can also be done by <em>pulling from her own remote-tracking
+branch</em>, like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>alice$ git pull . remotes/bob/master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that git pull always merges into the current branch,
+regardless of what else is given on the command line.</p>
+</div>
+<div class="paragraph">
+<p>Later, Bob can update his repo with Alice&#8217;s latest changes using</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>bob$ git pull</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that he doesn&#8217;t need to give the path to Alice&#8217;s repository;
+when Bob cloned Alice&#8217;s repository, Git stored the location of her
+repository in the repository configuration, and that location is
+used for pulls:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>bob$ git config --get remote.origin.url
+/home/alice/project</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(The complete configuration created by <span class='synopsis'><code>git</code> <code>clone</code></span> is visible using
+<span class='synopsis'><code>git</code> <code>config</code> <code>list</code></span>, and the <a href='/docs/git-config'>git-config[1]</a> man page
+explains the meaning of each option.)</p>
+</div>
+<div class="paragraph">
+<p>Git also keeps a pristine copy of Alice&#8217;s <span class='synopsis'><code>master</code></span> branch under the
+name <span class='synopsis'><code>origin/master</code></span>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>bob$ git branch -r
+  origin/master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If Bob later decides to work from a different host, he can still
+perform clones and pulls using the ssh protocol:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>bob$ git clone alice.org:/home/alice/project myrepo</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, Git has a native protocol, or can use http;
+see <a href='/docs/git-pull'>git-pull[1]</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>Git can also be used in a CVS-like mode, with a central repository
+that various users push changes to; see <a href='/docs/git-push'>git-push[1]</a> and
+<a href='/docs/gitcvs-migration'>gitcvs-migration[7]</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exploring_history"><a class="anchor" href="#_exploring_history"></a>Exploring history</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Git history is represented as a series of interrelated commits.  We
+have already seen that the <span class='synopsis'><code>git</code> <code>log</code></span> command can list those commits.
+Note that first line of each <span class='synopsis'><code>git</code> <code>log</code></span> entry also gives a name for the
+commit:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git log
+commit c82a22c39cbc32576f64f5c6b3f24b99ea8149c7
+Author: Junio C Hamano &lt;junkio@cox.net&gt;
+Date:   Tue May 16 17:18:22 2006 -0700
+
+    merge-base: Clarify the comments on post processing.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can give this name to <span class='synopsis'><code>git</code> <code>show</code></span> to see the details about this
+commit.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git show c82a22c39cbc32576f64f5c6b3f24b99ea8149c7</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But there are other ways to refer to commits.  You can use any initial
+part of the name that is long enough to uniquely identify the commit:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git show c82a22c39c	# the first few characters of the name are
+			# usually enough
+$ git show HEAD		# the tip of the current branch
+$ git show experimental	# the tip of the "experimental" branch</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Every commit usually has one "parent" commit
+which points to the previous state of the project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git show HEAD^  # to see the parent of HEAD
+$ git show HEAD^^ # to see the grandparent of HEAD
+$ git show HEAD~4 # to see the great-great grandparent of HEAD</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that merge commits may have more than one parent:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git show HEAD^1 # show the first parent of HEAD (same as HEAD^)
+$ git show HEAD^2 # show the second parent of HEAD</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also give commits names of your own; after running</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git tag v2.5 1b2e1d63ff</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>you can refer to <span class='synopsis'><code>1b2e1d63ff</code></span> by the name <span class='synopsis'><code>v2.5</code></span>.  If you intend to
+share this name with other people (for example, to identify a release
+version), you should create a "tag" object, and perhaps sign it; see
+<a href='/docs/git-tag'>git-tag[1]</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>Any Git command that needs to know a commit can take any of these
+names.  For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git diff v2.5 HEAD	 # compare the current HEAD to v2.5
+$ git branch stable v2.5 # start a new branch named "stable" based
+			 # at v2.5
+$ git reset --hard HEAD^ # reset your current branch and working
+			 # directory to its state at HEAD^</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Be careful with that last command: in addition to losing any changes
+in the working directory, it will also remove all later commits from
+this branch.  If this branch is the only branch containing those
+commits, they will be lost.  Also, don&#8217;t use <span class='synopsis'><code>git</code> <code>reset</code></span> on a
+publicly-visible branch that other developers pull from, as it will
+force needless merges on other developers to clean up the history.
+If you need to undo changes that you have pushed, use <span class='synopsis'><code>git</code> <code>revert</code></span>
+instead.</p>
+</div>
+<div class="paragraph">
+<p>The <span class='synopsis'><code>git</code> <code>grep</code></span> command can search for strings in any version of your
+project, so</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git grep "hello" v2.5</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>searches for all occurrences of "hello" in <span class='synopsis'><code>v2.5</code></span>.</p>
+</div>
+<div class="paragraph">
+<p>If you leave out the commit name, <span class='synopsis'><code>git</code> <code>grep</code></span> will search any of the
+files it manages in your current directory.  So</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git grep "hello"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>is a quick way to search just the files that are tracked by Git.</p>
+</div>
+<div class="paragraph">
+<p>Many Git commands also take sets of commits, which can be specified
+in a number of ways.  Here are some examples with <span class='synopsis'><code>git</code> <code>log</code></span>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git log v2.5..v2.6            # commits between v2.5 and v2.6
+$ git log v2.5..                # commits since v2.5
+$ git log --since="2 weeks ago" # commits from the last 2 weeks
+$ git log v2.5.. Makefile       # commits since v2.5 which modify
+				# Makefile</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also give <span class='synopsis'><code>git</code> <code>log</code></span> a "range" of commits where the first is not
+necessarily an ancestor of the second; for example, if the tips of
+the branches <span class='synopsis'><code>stable</code></span> and <span class='synopsis'><code>master</code></span> diverged from a common
+commit some time ago, then</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git log stable..master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will list commits made in the <span class='synopsis'><code>master</code></span> branch but not in the
+stable branch, while</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git log master..stable</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will show the list of commits made on the stable branch but not
+the <span class='synopsis'><code>master</code></span> branch.</p>
+</div>
+<div class="paragraph">
+<p>The <span class='synopsis'><code>git</code> <code>log</code></span> command has a weakness: it must present commits in a
+list.  When the history has lines of development that diverged and
+then merged back together, the order in which <span class='synopsis'><code>git</code> <code>log</code></span> presents
+those commits is meaningless.</p>
+</div>
+<div class="paragraph">
+<p>Most projects with multiple contributors (such as the Linux kernel,
+or Git itself) have frequent merges, and <span class='synopsis'><code>gitk</code></span> does a better job of
+visualizing their history.  For example,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ gitk --since="2 weeks ago" drivers/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>allows you to browse any commits from the last 2 weeks of commits
+that modified files under the <span class='synopsis'><code>drivers</code></span> directory.  (Note: you can
+adjust gitk&#8217;s fonts by holding down the control key while pressing
+"-" or "+".)</p>
+</div>
+<div class="paragraph">
+<p>Finally, most commands that take filenames will optionally allow you
+to precede any filename by a commit, to specify a particular version
+of the file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git diff v2.5:Makefile HEAD:Makefile.in</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use <span class='synopsis'><code>git</code> <code>show</code></span> to see any such file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git show v2.5:Makefile</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This tutorial should be enough to perform basic distributed revision
+control for your projects.  However, to fully understand the depth
+and power of Git you need to understand two simple ideas on which it
+is based:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The object database is the rather elegant system used to
+store the history of your project&#8212;&#8203;files, directories, and
+commits.</p>
+</li>
+<li>
+<p>The index file is a cache of the state of a directory tree,
+used to create commits, check out working directories, and
+hold the various trees involved in a merge.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Part two of this tutorial explains the object
+database, the index file, and a few other odds and ends that you&#8217;ll
+need to make the most of Git. You can find it at <a href='/docs/gittutorial-2'>gittutorial-2[7]</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t want to continue with that right away, a few other
+digressions that may be interesting at this point are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href='/docs/git-format-patch'>git-format-patch[1]</a>, <a href='/docs/git-am'>git-am[1]</a>: These convert
+series of git commits into emailed patches, and vice versa,
+useful for projects such as the Linux kernel which rely heavily
+on emailed patches.</p>
+</li>
+<li>
+<p><a href='/docs/git-bisect'>git-bisect[1]</a>: When there is a regression in your
+project, one way to track down the bug is by searching through
+the history to find the exact commit that&#8217;s to blame.  <span class='synopsis'><code>git</code> <code>bisect</code></span>
+can help you perform a binary search for that commit.  It is
+smart enough to perform a close-to-optimal search even in the
+case of complex non-linear history with lots of merged branches.</p>
+</li>
+<li>
+<p><a href='/docs/gitworkflows'>gitworkflows[7]</a>: Gives an overview of recommended
+workflows.</p>
+</li>
+<li>
+<p><a href='/docs/giteveryday'>giteveryday[7]</a>: Everyday Git with 20 Commands Or So.</p>
+</li>
+<li>
+<p><a href='/docs/gitcvs-migration'>gitcvs-migration[7]</a>: Git for CVS users.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>SEE ALSO</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href='/docs/gittutorial-2'>gittutorial-2[7]</a>,
+<a href='/docs/gitcvs-migration'>gitcvs-migration[7]</a>,
+<a href='/docs/gitcore-tutorial'>gitcore-tutorial[7]</a>,
+<a href='/docs/gitglossary'>gitglossary[7]</a>,
+<a href='/docs/git-help'>git-help[1]</a>,
+<a href='/docs/gitworkflows'>gitworkflows[7]</a>,
+<a href='/docs/giteveryday'>giteveryday[7]</a>,
+<a href="/docs/user-manual">The Git User&#8217;s Manual</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_git"><a class="anchor" href="#_git"></a>GIT</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Part of the <a href='/docs/git'>git[1]</a> suite</p>
+</div>
+</div>
+</div>
+            
+            
+              
+              
+              
+              <h3 hidden="true" data-pagefind-weight="10">gittutorial</h3>
+            
+          </div>
+        </div>
+      </div>
+      <footer>
+  <div class="site-source">
+    <a href="/site">About this site</a><br>
+    Patches, suggestions, and comments are welcome.
+  </div>
+  <div class="sfc-member">
+    Git is a member of <a href="/sfc">Software Freedom Conservancy</a>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
+<script src="/js/jquery.defaultvalue.js"></script>
+<script src="/js/session.min.js"></script>
+
+<script src="/js/application.min.501227e6642ae966f2b54bebd344b2c06c1eb7080bf76f9297621652492d15fd.js"></script>
+
+      <script src="/js/nanopop.umd.js"></script>
+      <script src="/js/glossary.js"></script>
+    </div>
+  
+
+</body>
+</html>
+
