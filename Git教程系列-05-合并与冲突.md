@@ -998,11 +998,68 @@ git pull
 
 它背后也可能触发合并，也可能遇到冲突。到那时你会发现，本章学的冲突解决流程仍然适用。
 
-如果你发现同一种冲突反复出现（比如长期并行维护两条分支），可以了解 `git rerere`（reuse recorded resolution）。开启后，Git 会记住你解决冲突的方式，下次遇到相同冲突时自动套用同样的解决方案。它属于进阶功能，新手阶段了解即可，不必急于启用。
+如果你发现同一种冲突反复出现（比如长期并行维护两条分支），可以了解 `git rerere`（reuse recorded resolution）。开启后，Git 会记住你解决冲突的方式，下次遇到相同冲突时自动套用同样的解决方案。它属于进阶功能，新手阶段了解即可，不必急于启
 
 ---
 
-## 21. 合并前后检查清单
+## 21. 使用图形化合并工具：mergetool 和 difftool
+
+Git 的命令行 diff 和冲突标记虽然功能完整，但面对大量冲突时，用图形化工具查看会更加直观。Git 支持配置第三方的图形化 diff 和 merge 工具。
+
+### 配置 difftool
+
+```bash
+# 查看当前配置的 diff 工具
+git config --global diff.tool
+
+# 设置为 VS Code（推荐）
+git config --global diff.tool vscode
+git config --global difftool.vscode.cmd 'code --wait --diff "$LOCAL" "$REMOTE"'
+
+# 或设置为 Beyond Compare、Kaleidoscope 等
+```
+
+配置后，可以用 `git difftool` 代替 `git diff`，它会在图形工具中打开文件对比：
+
+```bash
+# 对比工作目录和暂存区
+git difftool 文件名
+
+# 对比两个提交之间的差异
+git difftool 提交A 提交B -- 文件名
+```
+
+### 配置 mergetool
+
+```bash
+# 设置合并工具
+git config --global merge.tool vscode
+git config --global mergetool.vscode.cmd 'code --wait --merge "$REMOTE" "$LOCAL" "$BASE" "$MERGED"'
+```
+
+当出现合并冲突时，运行：
+
+```bash
+git mergetool
+```
+
+Git 会逐个打开冲突文件，你可以在图形界面中看到三个版本：
+
+- **本地版本（LOCAL）**：当前分支的内容
+- **远程版本（REMOTE）**：要合并进来的分支的内容
+- **共同祖先（BASE）**：两个分支分叉前的版本
+- **合并结果（MERGED）**：最终要保存的文件
+
+在图形工具中解决冲突后，保存文件即可。Git 会自动标记为已解决。
+
+常用图形化工具有 VS Code、Beyond Compare、Kaleidoscope（macOS）、Meld（Linux）等。选一个你觉得顺手的配置好就行，Git 的命令行工作流不变。
+
+---
+用。
+
+---
+
+## 22. 合并前后检查清单
 
 合并前：
 
@@ -1022,7 +1079,7 @@ git pull
 
 ---
 
-## 22. 本章命令速查表
+## 23. 本章命令速查表
 
 | 命令 | 作用 | 什么时候用 |
 |---|---|---|
@@ -1038,7 +1095,7 @@ git pull
 
 ---
 
-## 23. 本章总结
+## 24. 本章总结
 
 这一章最重要的是理解合并的方向和冲突的处理流程：
 

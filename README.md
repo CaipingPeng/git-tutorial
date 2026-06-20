@@ -70,6 +70,8 @@
    - `git log`、`git show`、`git diff`
    - `.gitignore`、`git rm`、`git mv`
    - 提交粒度、提交信息和拆分改动
+   - 交互式暂存：git add --patch 按块选择
+   - 提交前空白检查：git diff --check
 
 ### 第二部分：分支、合并与冲突
 
@@ -116,6 +118,7 @@
     - `git stash` 保存现场
     - `apply`、`pop`、`drop`、stash 冲突
     - stash 和临时提交怎么选
+   - assume-unchanged/skip-worktree 忽略本地文件改动
 
 11. [提交历史与查询](./Git教程系列-11-提交历史与查询.md)
     - `log`、`show`、`blame`、`bisect`

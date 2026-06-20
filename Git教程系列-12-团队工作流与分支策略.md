@@ -376,7 +376,109 @@ git switch -c hotfix/payment-timeout
 
 ---
 
-## 9. 怎么选择工作流？
+
+
+---
+
+## 9. 真实项目对比：CMake 的 merge 策略与 Homebrew 的 rebase 策略
+
+为了更直观地理解 merge-heavy 和 rebase-heavy 工作流的区别，来看两个真实开源项目。
+
+### CMake：merge-heavy 策略
+
+CMake 是一个跨平台构建系统，采用多重分支、频繁 merge 的策略：
+
+- **next 分支**：集成测试分支，功能分支先合入这里测试
+- **master 分支**：始终保持可发布状态
+- **功能分支**：从 master 分出，合并进 next，测试通过后再合并进 master
+
+关键特征：
+
+- 所有提交（包括 merge commit）永久保留在历史中
+- 功能分支名会出现在 merge commit 里，方便追踪"这个功能什么时候合入的"
+- master 定期合并进 next，及早发现冲突
+
+```text
+流程：
+功能分支 → 合并进 next（测试） → 合并进 master（发布）→ 删除分支
+```
+
+### Homebrew：rebase-heavy 策略
+
+Homebrew 是 macOS 包管理器，采用单分支、rebase + squash 的策略：
+
+- 几乎只有 master 分支
+- 外部贡献者从 fork 创建分支，维护者 cherry-pick 单个提交到 master
+- 提交在合入前会被 rebase 和 squash，保持历史线性
+
+关键特征：
+
+- master 历史完全线性，没有 merge commit
+- 每个提交都是一个完整的、可独立 revert 的功能单位
+- 历史可读性极高，适合通过 Git 向用户推送更新
+
+```text
+流程：
+fork → 功能分支 → rebase + squash → cherry-pick 到 master
+```
+
+### 如何选择
+
+| 因素 | 适合 merge | 适合 rebase/squash |
+|---|---|---|
+| 发布方式 | 版本发布（桌面应用、移动应用） | 持续部署（Web 应用、包管理） |
+| 团队规模 | 中型团队，需要追踪功能来源 | 小型核心团队 + 大量外部贡献 |
+| 历史需求 | 需要保留完整的分支和合并信息 | 需要线性、干净的历史 |
+| 回退需求 | 偶尔需要整体回退某个功能 | 经常需要回退单个提交 |
+
+---
+
+## 10. Mike Flow：作者推荐的混合工作流
+
+Mike Flow 是《Git in Practice》作者 Mike McQuaid 基于他在 GitHub 和 Homebrew 的经验总结的工作流。它分两种变体：
+
+### Mike Flow Single（单版本流）
+
+适合持续部署或只维护一个版本的项目。本质上是 GitHub Flow 加上 rebase 和 tag：
+
+- 所有开发在功能分支上完成
+- 功能分支在合并前可以 rebase、squash、重写历史
+- master 分支始终保持稳定
+- 发布时在 master 上打 tag
+
+```text
+master → 功能分支 → 开发 → rebase master → 合并回 master → 打 tag 发布
+```
+
+### Mike Flow Multiple（多版本流）
+
+适合需要同时维护多个发布版本的项目：
+
+- 在 Mike Flow Single 的基础上增加 release 分支
+- release 分支从 master 分出，可以被 cherry-pick
+- release 分支永不重写历史
+- 标签打在 release 分支上，而不是 master
+
+```text
+master → 功能分支 → 开发 → 合并回 master
+       → release-2.x 分支（从 master 分出）
+       → hotfix 分支 → 合并回 master 和 release 分支
+       → 在 release 分支上打 v2.0、v2.1 等标签
+```
+
+### 选择建议
+
+| 情况 | 推荐工作流 |
+|---|---|
+| 小型团队、Web 应用 | GitHub Flow |
+| 需要多版本支持 | Git Flow |
+| 持续部署 + 干净历史优先 | Mike Flow Single |
+| 多版本发布 + 干净历史优先 | Mike Flow Multiple |
+| 开源项目、大量外部贡献 | Homebrew 式 rebase + squash |
+| 需要完整追踪功能来源 | CMake 式 merge-heavy |
+
+---
+## 11. 怎么选择工作流？
 
 | 团队/项目 | 推荐 |
 |---|---|
@@ -392,7 +494,7 @@ git switch -c hotfix/payment-timeout
 
 ---
 
-## 10. 公共分支规则
+## 12. 公共分支规则
 
 公共分支包括：
 
@@ -415,7 +517,7 @@ git switch -c hotfix/payment-timeout
 
 ---
 
-## 11. 本章检查点
+## 13. 本章检查点
 
 1. 集中式工作流为什么适合小项目，但不适合强 review 团队？
 2. 个人功能分支和多人共享功能分支，更新主线时为什么策略不同？

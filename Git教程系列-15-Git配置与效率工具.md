@@ -213,17 +213,65 @@ git config --global help.autocorrect 10
 
 ---
 
+### `fetch.prune`
+
+每次 `git fetch` 时自动清理本地已不存在的远程分支引用：
+
+```bash
+git config --global fetch.prune true
+```
+
+启用后，`git branch -r` 里不会再有那些远程早已删除的分支名。
+
+### `color.ui`
+
+Git 默认已开启彩色输出。如果需要在脚本中禁用颜色：
+
+```bash
+git config --global color.ui never
+```
+
+大多数情况下保留默认 `auto` 即可。
+
+### 全局忽略文件
+
+如果有一些文件所有仓库都想忽略（如 `.DS_Store`），可以配置全局 .gitignore：
+
+```bash
+git config --global core.excludesFile ~/.gitignore_global
+```
+
+然后在 `~/.gitignore_global` 中添加规则。
+
+### 通过网页查看帮助
+
+```bash
+git help -w log
+```
+
+会在浏览器中打开更完整的帮助页面。
+
+---
+
 ## 8. 常用 alias
 
-alias 可以把长命令变短。
+alias 可以把长命令变短，是 Git 配置里最提升效率的功能之一。
 
 ```bash
 git config --global alias.st status
 git config --global alias.sw switch
 git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.co checkout
 git config --global alias.lg "log --oneline --graph --all --decorate"
 git config --global alias.last "log -1 HEAD"
 git config --global alias.unstage "restore --staged --"
+git config --global alias.df "diff --stat HEAD"
+git config --global alias.tree "log --oneline --graph --all"
+git config --global alias.pf "push --force-with-lease"
+git config --global alias.pullr "pull --rebase"
+git config --global alias.adp "add --patch"
+git config --global alias.cip "commit --patch"
 ```
 
 之后可以用：

@@ -253,7 +253,68 @@ git stash drop stash@{0}
 
 ---
 
-## 10. 本章检查点
+
+
+## 10. 告诉 Git 忽略对某些文件的改动：assume-unchanged 和 skip-worktree
+
+有时候你希望某些文件"看起来没有改动"，即使你确实改了它们。例如：
+
+- 本地配置文件里有你自己专属的调试开关，不想每次提交时都看到它们被标记为 modified
+- 开发环境依赖的 `.env` 文件，本地和团队版本不同
+- 构建产物或日志文件不小心进入跟踪后
+
+这些情况下可以告诉 Git："这个文件不要再检查是否有改动了"。
+
+### assume-unchanged
+
+```bash
+# 告诉 Git 假装这个文件没有变化
+git update-index --assume-unchanged 文件名
+
+# 查看哪些文件设置了 assume-unchanged
+git ls-files -v | Select-String "^h"
+
+# 取消 assume-unchanged
+git update-index --no-assume-unchanged 文件名
+```
+
+设置后，即使你修改了文件，`git status` 也不会显示它有改动，`git add` 也不会暂存它。
+
+### skip-worktree（推荐）
+
+`skip-worktree` 和 `assume-unchanged` 功能类似，但语义更准确——它表示"我主动想保留本地的这个版本，不要用远程的覆盖它"。它还常配合 `git pull` 使用，防止远程更新覆盖本地配置。
+
+```bash
+# 标记文件为 skip-worktree
+git update-index --skip-worktree 文件名
+
+# 查看标记了 skip-worktree 的文件
+git ls-files -v | Select-String "^S"
+
+# 取消
+git update-index --no-skip-worktree 文件名
+```
+
+### 两个命令的区别
+
+| 命令 | 场景 | 风险 |
+|---|---|---|
+| `--assume-unchanged` | 临时忽略改动，Git 可以丢弃这个标记 | 大批量文件时影响性能 |
+| `--skip-worktree` | 永久保留本地版本 | pull 可能报错提示冲突 |
+
+两者都只影响**本地仓库**，不会被推送到远程。它们最适合管理"本地特有的配置文件"，不适合替代 `.gitignore`（如果你希望文件永远不被跟踪，应该用 `.gitignore` 提前声明）。
+
+### 什么时候该用，什么时候不该用
+
+| 场景 | 建议 |
+|---|---|
+| 本地开发配置（调试开关、API key） | `skip-worktree` ✓ |
+| 不想提交的临时日志文件 | 先加 `.gitignore`，再用 `git rm --cached` |
+| .env 文件 | 仓库里放 `.env.example`，本地 `.env` 用 `.gitignore` 忽略最干净 |
+| 构建产物意外被跟踪 | `git rm --cached` 停止跟踪，再加 `.gitignore` |
+
+---
+## 11. 本章检查点
 
 1. `stash apply` 和 `stash pop` 有什么区别？
 2. 为什么 stash 不是长期保存方案？

@@ -311,6 +311,37 @@ git bisect reset
 
 ---
 
+
+
+## 10. 查看哪些提交未被合并：git cherry
+
+当你在不同分支上工作时，`git cherry` 可以告诉你当前分支的提交是否已经被合并到上游分支。
+
+```bash
+# 查看当前分支上有、但 upstream 没有的提交
+git cherry upstream
+
+# 只看未 cherry-pick 的提交
+git cherry -v upstream
+
+# 示例输出
+# + abc1234 添加登录验证
+# - def5678 修复拼写错误（已在 upstream 中）
+# + 789abcd 更新 README
+```
+
+输出中：
+
+- `+` 表示该提交在上游分支中不存在（未合并）
+- `-` 表示该提交已经在上游分支中（已合并或已被 cherry-pick）
+
+`git cherry` 适用于：
+
+- 检查在 release 分支上修复的 bug 是否同步回了 main
+- 查看某个功能分支还有哪些提交没被合并
+- 跨分支追踪 commits 的传播情况
+
+---
 ## 10. 给历史打标记：`git tag`
 
 发布版本时，你需要一个稳定、不会乱跑的名字，指向“这次发布对应的那次提交”。标签（tag）就是干这个的。
@@ -402,7 +433,48 @@ git push origin --delete v1.0.0         # 删远程标签
 
 ---
 
-## 11. 谁贡献了多少：`git shortlog`
+
+
+## 11. 用标签生成版本号：git describe
+
+`git describe` 可以根据最近的一个标签和当前提交之前的提交数，生成一个可读的版本描述。
+
+```bash
+# 假设最近的标签是 v1.0.0，之后又提交了 3 次
+git describe
+# 输出：v1.0.0-3-gabc1234
+```
+
+输出解读：
+
+| 部分 | 含义 |
+|---|---|
+| `v1.0.0` | 距离最近的标签 |
+| `3` | 自该标签以来的提交数 |
+| `gabc1234` | 当前提交的短哈希（前缀 g 表示 git） |
+
+常见用法：
+
+```bash
+# 查看当前 HEAD 的描述
+git describe
+
+# 指向更准确的提交
+git describe --tags
+
+# 显示包含提交哈希的完整描述（用于构建版本号）
+git describe --long
+```
+
+在持续集成脚本中，常用 `git describe` 来自动生成构建版本号：
+
+```bash
+VERSION=$(git describe --tags --long)
+echo "Building version: $VERSION"
+```
+
+---
+## 12. 谁贡献了多少：`git shortlog`
 
 想知道每个作者提交了多少次，可以用：
 
@@ -423,7 +495,7 @@ Alice <alice.work@company.com>
 
 ---
 
-## 12. 历史查询的安全边界
+## 13. 历史查询的安全边界
 
 本章命令大多是只读的，但有两个例外要注意：
 
@@ -443,7 +515,7 @@ git status
 
 ---
 
-## 13. 本章检查点
+## 14. 本章检查点
 
 1. 想看分支合并图，用哪条命令？
 2. 想看某次提交具体 diff，用哪条命令？

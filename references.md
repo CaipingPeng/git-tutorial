@@ -27,6 +27,13 @@
 
 《Git Fundamentals》PDF 中图片均为终端截图和命令行输出截图，不包含教学价值高的原创图解。本次未提取、未使用该书图片。相关教学角度已消化为原创中文讲解、表格和 Mermaid 图示。
 
+
+| 《Git in Practice: Includes 66 Techniques》, Mike McQuaid | 66 种实战技巧的组织形式、技术驱动的讲解角度；`git rerere`、`git describe`、`git cherry`、`git add --patch`、`git diff --check`、`assume-unchanged`/`skip-worktree`、`difftool`/`mergetool` 等具体技术点；CMake 与 Homebrew 真实工作流对比；Mike Flow（Single/Multiple）工作流；Git 配置附录（color、autocorrect、prune、全局忽略文件等）；`git bisect run` 自动化；`git filter-branch` 大体重写场景；`git daemon`/`git instaweb` 仓库托管 |
+
+### 本书图片情况
+
+《Git in Practice》PDF 中的图片多为 Manning 出版物风格的示意图（分支/合并图、工作流图、merge/rebase 对比图等）。教程正文已将相关概念用原创中文讲解、Mermaid 图示和表格呈现；额外从 PDF 中提取了一张 merge vs rebase 对比示意图（`assets/git-in-practice-merge_rebase_compare.jpeg`），该图展示 merge commit 与 rebase 重放提交的差别，保留在 assets 中作为参考附件。未嵌入教程正文使用。
+
 ## 图片署名
 
 本教程使用的以下图片来自 《Git Apprentice: Getting Started with Git Commands & Concepts》：
