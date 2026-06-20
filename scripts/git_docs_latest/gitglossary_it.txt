@@ -1,0 +1,26 @@
+URL: https://git-scm.com/docs/gitglossary/it
+Title: Git - gitglossary Documentation
+================================================================================
+
+NOME
+gitglossary - Un glossario di Git
+SINOSSI
+*
+DESCRIZIONE
+Warning
+Missing
+it/glossary-content.adoc
+See original version for this content.
+VEDERE ANCHE
+gittutorial[7]
+,
+gittutorial-2[7]
+,
+gitcvs-migration[7]
+,
+giteveryday[7]
+,
+Il manuale utente di Git
+GIT
+Parte del pacchetto
+git[1]

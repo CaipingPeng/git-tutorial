@@ -1,0 +1,26 @@
+URL: https://git-scm.com/docs/gitglossary/vi
+Title: Git - gitglossary Documentation
+================================================================================
+
+TÊN
+gitglossary - A Git Glossary
+TÓM TẮT
+*
+MÔ TẢ
+Warning
+Missing
+vi/glossary-content.adoc
+See original version for this content.
+XEM THÊM
+gittutorial[7]
+,
+gittutorial-2[7]
+,
+gitcvs-migration[7]
+,
+giteveryday[7]
+,
+Hướng dẫn sử dụng Git
+GIT
+Phần của bộ
+git[1]
