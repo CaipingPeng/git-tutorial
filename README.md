@@ -19,6 +19,7 @@
 - 《Git Notes for Professionals》（GoalKicker，Stack Overflow 文档汇编）：作为命令级食谱补充，覆盖标签、`.gitattributes`、`git worktree`、`git clean`、修订号语法、`shortlog`/`.mailmap`、LFS 等零散但实用的知识点。
 - 《Git Repository Management in 30 Days》：仓库管理视角，补强 PR 元数据、开源 bug report、release tag 与 release branch 的关系，以及危险覆盖式同步的边界。
 - 《Git for Humans》：用“人如何管理变化”的角度补强版本思维、可信提交节奏、远程 hub 模型、历史阅读和命令行/GUI 配合。
+- 《Git Best Practices Guide》：以实践问题组织 Git 知识，补强远程协议选择、tracking branch、`git grep`、stash 分支化、补丁工作流、hooks 分类和 CI 分支门禁。
 
 完整来源说明见 [参考资料](./references.md)。
 
@@ -92,7 +93,7 @@
 6. [远程协作](./Git教程系列-06-远程协作.md)
    - 本地仓库和远程仓库
    - `origin`、`upstream`、远程跟踪分支
-   - HTTPS/SSH、`clone`、`push`、`fetch`、`pull`
+   - HTTPS/SSH/本地协议等远程地址选择、`clone`、`push`、`fetch`、`pull`
    - 推送失败和远程分支排障
 
 7. [变基](./Git教程系列-07-变基.md)
@@ -116,17 +117,19 @@
 
 10. [暂存与保存现场](./Git教程系列-10-暂存与保存现场.md)
     - `git stash` 保存现场
-    - `apply`、`pop`、`drop`、stash 冲突
+    - `apply`、`pop`、`drop`、`stash branch`、stash 冲突
     - stash 和临时提交怎么选
-   - assume-unchanged/skip-worktree 忽略本地文件改动
+    - assume-unchanged/skip-worktree 忽略本地文件改动
 
 11. [提交历史与查询](./Git教程系列-11-提交历史与查询.md)
-    - `log`、`show`、`blame`、`bisect`
+    - `log`、`show`、`grep`、`blame`、`bisect`
     - 如何读历史、定位问题、找到改动原因
-    - `git tag` 标记版本、release tag 与 release branch 的区别、`git shortlog` 统计贡献者
+    - `git cherry` 判断提交是否已被吸收
+    - `git tag` 标记版本、release tag 与 release branch 的区别、`git describe` 和 `git shortlog`
 
 12. [团队工作流与分支策略](./Git教程系列-12-团队工作流与分支策略.md)
     - 集中式、Feature Branch、GitHub Flow、Git Flow、Trunk-based
+    - CI 反馈、QA/集成分支和短生命周期功能分支
     - release/hotfix 分支
     - 个人分支、共享分支、公共分支的更新规则
     - 发布回流、分支保护和公共分支治理
@@ -148,9 +151,9 @@
 
 15. [Git 配置与效率工具](./Git教程系列-15-Git配置与效率工具.md)
     - 常用 config、`push.default`、alias、editor、credential helper
+    - commit template 和 hooks 的本地/服务端边界
     - `.gitattributes` 统一跨平台换行与二进制规则
     - CLI、GUI、VS Code、GitHub Desktop 如何配合
-    - hooks 入门
 
 ### 第五部分：内部原理与综合实战
 
@@ -158,6 +161,7 @@
     - blob、tree、commit、tag 的对象模型
     - 索引、引用、HEAD、reflog、stash、FETCH_HEAD、ORIG_HEAD
     - 修订号语法（`HEAD~`、`^`、`@{n}`）和 `git worktree` 多工作目录
+    - submodule、subtree 与 patch 工作流的适用边界
     - `.gitignore` 对已跟踪文件无效的原因和事后补救边界
     - bare 仓库、archive、bundle、迁移和历史清理的安全边界
 

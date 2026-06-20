@@ -126,6 +126,27 @@ git commit
 git merge --abort
 ```
 
+## `Your local changes would be overwritten`
+
+常见于切分支、pull 或 merge 时。含义：你当前工作目录里的未提交改动，可能会被目标分支或远程更新覆盖，Git 先停下来保护你。
+
+先看当前改动：
+
+```bash
+git status
+git diff
+```
+
+根据改动是否还要，选择一种方式：
+
+| 你想怎样 | 建议 |
+|---|---|
+| 这些改动有价值，而且已经能描述 | 先提交到当前分支 |
+| 这些改动有价值，但暂时不想提交 | `git stash push -u -m "说明"` |
+| 这些改动确定不要 | `git restore 文件名`，未跟踪文件用 `git clean -nd` 先预览 |
+
+处理完以后再切分支或拉取。不要为了绕过提示直接用危险命令覆盖工作目录。
+
 ## `You are in 'detached HEAD' state`
 
 含义：你现在不是站在某个分支上，而是直接站在某个提交上。
@@ -189,6 +210,31 @@ git remote -v
 - 重新登录 Git Credential Manager
 - 或改用 SSH
 
+## `remote origin already exists`
+
+含义：当前仓库里已经有一个名叫 `origin` 的远程地址。常见场景是你重复运行了 `git remote add origin ...`。
+
+先看现有远程：
+
+```bash
+git remote -v
+```
+
+如果只是 URL 写错了，优先改地址：
+
+```bash
+git remote set-url origin 新URL
+```
+
+如果这个 `origin` 确实不该存在，再删除后重新添加：
+
+```bash
+git remote remove origin
+git remote add origin 新URL
+```
+
+不要在没看 `git remote -v` 的情况下反复 add。远程名只是本地仓库里的别名，真正重要的是它指向哪里、你有没有权限 push。
+
 ## `refusing to merge unrelated histories`
 
 含义：两个仓库没有共同历史，Git 默认不允许直接合并。
@@ -236,10 +282,6 @@ git check-ignore -v .env
 
 ---
 
-**返回目录**：[README](./README.md)
-
-
-
 ## `Git 和 GitHub 到底有什么区别？`
 
 很多人初学时会混淆这两个名字。其实很简单：
@@ -256,3 +298,28 @@ git check-ignore -v .env
 ### 一句话记住
 
 > **Git 是工具，GitHub 是平台。** 工具可以独立使用，平台提供协作基础设施。
+
+---
+
+## `bad index file sha1 signature` / `index file corrupt`
+
+含义：Git 的索引文件损坏了。索引是暂存区的内部文件，不是你的项目源文件本身。
+
+先确认没有正在进行的合并、rebase 或 cherry-pick，再在仓库根目录运行：
+
+```bash
+mv .git/index .git/index.backup
+git reset
+```
+
+`git reset` 会根据当前提交重新生成索引。之后运行：
+
+```bash
+git status
+```
+
+如果工作目录里有未提交改动，重新检查这些改动是否还在。这个问题不常见；如果反复出现，优先检查磁盘、杀毒软件、同步盘或编辑器插件是否在干扰 `.git/` 目录。
+
+---
+
+**返回目录**：[README](./README.md)

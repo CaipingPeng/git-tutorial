@@ -127,6 +127,25 @@ Changes to be committed:
 
 这表示 `hello.txt` 已经进入暂存区，准备提交。
 
+可以把文件状态先记成这张图：
+
+```mermaid
+stateDiagram-v2
+    state "未跟踪" as Untracked
+    state "已暂存" as Staged
+    state "已跟踪未修改" as Clean
+    state "已修改" as Modified
+    [*] --> Untracked: 新建文件
+    Untracked --> Staged: git add
+    Staged --> Clean: git commit
+    Clean --> Modified: 编辑文件
+    Modified --> Staged: git add
+    Staged --> Modified: git restore --staged
+    Modified --> Clean: git restore
+```
+
+这张图不是为了背术语，而是为了判断命令改变了哪里：`git add` 把改动放进暂存区，`git commit` 把暂存区保存成提交，`git restore` 则把你从某个状态往回撤。
+
 > **快捷方式：`git commit -am`**
 > 如果你只想提交所有已经被 Git 跟踪过的文件的改动（跳过暂存这一步），可以用 `git commit -am “说明”`。这个命令等于先 `git add` 所有已跟踪文件，再 `git commit`。
 >
@@ -586,6 +605,7 @@ git add logs/.gitkeep
 `.gitkeep` 不是 Git 的特殊命令，只是一个约定俗成的占位文件名，让 Git 能把这个目录纳入版本管理。
 
 ---
+
 ## 14. 删除和移动文件：`git rm` 与 `git mv`
 
 如果你想删除一个已经被 Git 管理的文件，可以直接删除文件后再 `git add`，也可以用：

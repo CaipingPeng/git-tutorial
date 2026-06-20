@@ -22,17 +22,16 @@
 | 《Git Repository Management in 30 Days: Learn to manage code repositories like a pro》, Sumit Jaiswal | 仓库管理与平台协作视角：PR reviewer/assignee/label/milestone、开源 bug report、release tag 与 release branch、fork/duplicate/bare repo 语境，以及 `fetch + reset --hard` 这类危险覆盖式同步的边界 |
 | 《Git for Humans》, David Demaree | 用面向人的版本控制叙事补强版本思维、可信提交节奏、命令行/GUI 配合、远程 hub 模型、短哈希、范围查询、标签永久性和 detached HEAD 边界 |
 | 《Git Fundamentals》, Thom Parkin | 面向非程序员的极简入门：Git 是纯本地系统不需要服务器、commit 即快照、`git commit -am` 快捷方式、checkout 等于时间旅行、分支即铁路系统比喻、Git ≠ GitHub 的明确区分、Never Fear Change 的心态模型 |
+| 《Git in Practice: Includes 66 Techniques》, Mike McQuaid | 66 种实战技巧的组织形式、技术驱动的讲解角度；`git rerere`、`git describe`、`git cherry`、`git add --patch`、`git diff --check`、`assume-unchanged`/`skip-worktree`、`difftool`/`mergetool` 等具体技术点；CMake 与 Homebrew 真实工作流对比；Mike Flow（Single/Multiple）工作流；Git 配置附录（color、autocorrect、prune、全局忽略文件等）；`git bisect run` 自动化；`git filter-branch` 大体重写场景；`git daemon`/`git instaweb` 仓库托管 |
+| 《Git Best Practices Guide》, Eric Pidoux | 以实践问题组织 Git 学习路径：远程协议选择、bare 仓库语境、tracking branch、`git grep` 内容搜索、stash 临时分支化、`reset` 三模式、`git clean` 预览、`bisect run`、submodule/subtree 取舍、format-patch/am 补丁工作流、hooks 分类、commit template、CI/QA 分支门禁和 GUI/仓库管理器的定位 |
 
 ### 本书图片情况
 
 《Git Fundamentals》PDF 中图片均为终端截图和命令行输出截图，不包含教学价值高的原创图解。本次未提取、未使用该书图片。相关教学角度已消化为原创中文讲解、表格和 Mermaid 图示。
 
+《Git in Practice》PDF 中的图片多为 Manning 出版物风格的示意图（分支/合并图、工作流图、merge/rebase 对比图等）。教程正文已将相关概念用原创中文讲解、Mermaid 图示和表格呈现；额外从 PDF 中提取了一张 merge vs rebase 对比示意图（[assets/git-in-practice-merge_rebase_compare.jpeg](./assets/git-in-practice-merge_rebase_compare.jpeg)），该图展示 merge commit 与 rebase 重放提交的差别，保留在 assets 中作为参考附件。未嵌入教程正文使用。
 
-| 《Git in Practice: Includes 66 Techniques》, Mike McQuaid | 66 种实战技巧的组织形式、技术驱动的讲解角度；`git rerere`、`git describe`、`git cherry`、`git add --patch`、`git diff --check`、`assume-unchanged`/`skip-worktree`、`difftool`/`mergetool` 等具体技术点；CMake 与 Homebrew 真实工作流对比；Mike Flow（Single/Multiple）工作流；Git 配置附录（color、autocorrect、prune、全局忽略文件等）；`git bisect run` 自动化；`git filter-branch` 大体重写场景；`git daemon`/`git instaweb` 仓库托管 |
-
-### 本书图片情况
-
-《Git in Practice》PDF 中的图片多为 Manning 出版物风格的示意图（分支/合并图、工作流图、merge/rebase 对比图等）。教程正文已将相关概念用原创中文讲解、Mermaid 图示和表格呈现；额外从 PDF 中提取了一张 merge vs rebase 对比示意图（`assets/git-in-practice-merge_rebase_compare.jpeg`），该图展示 merge commit 与 rebase 重放提交的差别，保留在 assets 中作为参考附件。未嵌入教程正文使用。
+《Git Best Practices Guide》PDF 元数据标题为 “Git Best Practices Guide”，作者 Eric Pidoux，PDF 由 calibre 生成，创建时间为 2015-04-11；目录包含 Starting a Git Repository、Working in a Team Using Git、Finding and Resolving Conflicts、Going Deeper into Git、Using Git for Continuous Integration 五章。本次读取了目录、元数据、章节文本和图片分布，并检查了文件生命周期、fast-forward/merge commit、rebase、reset、修订号、Git-SVN、Git Flow、BPF/QA 分支、CI 和 GUI 工具等候选图页。候选图片多为英文旧式示意图或年代较早的 GUI 截图，且可由中文表格/Mermaid 更清楚表达；正文未采用该书位图，也未新增图片提取脚本。相关教学点已消化为原创中文讲解、表格和 Mermaid 图示。
 
 ## 图片署名
 

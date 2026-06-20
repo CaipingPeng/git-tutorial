@@ -330,6 +330,17 @@ git@github.com:user/project.git
 | HTTPS | 快速 clone、临时学习 | 推送时通常需要 token 或凭据管理器 |
 | SSH | 长期开发、频繁 push | 需要生成 SSH key 并添加到平台账号 |
 
+你还可能在老资料或公司内网里看到其他远程地址形式：
+
+| 地址形式 | 示例 | 现在怎么判断 |
+|---|---|---|
+| 本地路径 | `/opt/git/project.git`、`../project.git` | 适合本机或共享磁盘里的练习/中转仓库，不适合互联网协作 |
+| SSH | `git@server:team/project.git` | 最常见的长期开发方式之一，权限由账号和 SSH key 控制 |
+| HTTPS | `https://server/team/project.git` | 最容易穿过公司网络，推送通常依赖 token 或凭据管理器 |
+| Git 协议 | `git://server/project.git` | 老资料里常见，缺少身份认证和加密；新项目通常不要选它 |
+
+新手不需要背协议细节。判断顺序可以更实际一点：平台给你 HTTPS 和 SSH 两个按钮时，临时 clone 用 HTTPS 没问题；长期 push 的项目优先配置 SSH；看到 `git://` 时先把它当作历史遗留或只读镜像，不要拿它做团队写入通道。
+
 开源 fork 工作流里，还常见 `upstream`：
 
 | 远程名 | 含义 |

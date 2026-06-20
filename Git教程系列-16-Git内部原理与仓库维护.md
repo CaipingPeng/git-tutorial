@@ -477,7 +477,60 @@ git worktree add ../project-hotfix main   # 在隔壁目录再开一个 main 的
 
 ---
 
-## 14. 什么内容不应该过早深入？
+## 14. 子仓库和补丁工作流：什么时候才需要
+
+有些 Git 能力很强，但不适合放进日常主线。你不需要在入门阶段掌握它们，但应该知道它们解决哪类问题，免得遇到时把普通分支、复制目录和压缩包混用。
+
+### submodule 和 subtree
+
+当一个项目需要把另一个 Git 仓库嵌进子目录时，常见选择是 submodule 或 subtree。
+
+| 方案 | 仓库里保存什么 | 优点 | 代价 |
+|---|---|---|---|
+| submodule | 保存子仓库的 URL 和一个具体提交指针 | 依赖边界清楚，适合严格锁定外部库版本 | clone 后要初始化/更新，团队容易忘；子仓库冲突需要单独处理 |
+| subtree | 把子项目内容合进当前仓库目录 | clone 后内容就在本仓库里，轻量团队更容易使用 | 历史会更重，和上游同步需要约定命令 |
+
+submodule 的典型操作：
+
+```bash
+git submodule add https://example.com/lib.git vendor/lib
+git submodule update --init --recursive
+```
+
+subtree 的典型操作：
+
+```bash
+git remote add lib https://example.com/lib.git
+git subtree add --prefix vendor/lib lib main --squash
+```
+
+选择时先问一个问题：这个子项目是否需要保持独立仓库身份，并且团队愿意承受额外操作？如果答案是“是”，submodule 可以考虑；如果只是想把一份外部代码嵌进来并偶尔同步，subtree 或包管理器往往更省心。对多数应用项目，优先使用语言生态的包管理工具，不要把 Git 子仓库当成通用依赖管理器。
+
+### format-patch 和 am
+
+在 GitHub/GitLab/Gitee 时代，大多数协作用 PR/MR 就够了。但有些项目仍使用邮件列表或补丁文件贡献，例如内核类项目、老牌开源项目或没有平台写权限的协作场景。
+
+`git format-patch` 会把提交变成可发送的补丁文件，保留作者、提交说明和 diff；`git am` 则把补丁重新应用成提交。
+
+```bash
+git format-patch main
+git apply --check 0001-fix-title.patch
+git am --signoff < 0001-fix-title.patch
+```
+
+这里有三个边界：
+
+| 命令 | 作用 | 注意 |
+|---|---|---|
+| `git diff > fix.patch` | 只保存文件差异 | 不包含完整提交元数据 |
+| `git format-patch` | 把一个或多个提交导出成邮件补丁 | 适合需要保留作者和提交说明的贡献 |
+| `git am` | 把邮件补丁应用为提交 | 应先在临时分支验证，冲突时按提示继续或中止 |
+
+如果你只是给同事发一次临时改动，PR/MR、分支或压缩包可能更直接；如果项目维护者明确要求补丁邮件，再学习 `format-patch`、`send-email` 和 `am`。
+
+---
+
+## 15. 什么内容不应该过早深入？
 
 理解内部原理有用，但新手不需要一开始就掌握所有底层细节。
 
@@ -498,7 +551,7 @@ git worktree add ../project-hotfix main   # 在隔壁目录再开一个 main 的
 
 ---
 
-## 15. 本章命令速查表
+## 16. 本章命令速查表
 
 | 命令 | 作用 | 注意 |
 |---|---|---|
@@ -519,10 +572,16 @@ git worktree add ../project-hotfix main   # 在隔壁目录再开一个 main 的
 | `git clone --bare 仓库目录 仓库.git` | 克隆成 bare 仓库 | 自建远程或迁移中转 |
 | `git reflog` | 查看本地指针移动记录 | 救援常用 |
 | `git stash list` | 查看 stash 栈 | stash 不是长期分支 |
+| `git submodule add URL 路径` | 添加子仓库指针 | clone 后还需要初始化/更新 |
+| `git submodule update --init --recursive` | 拉取并检出子模块内容 | 接手含 submodule 项目时常用 |
+| `git subtree add --prefix 路径 远程 分支 --squash` | 把外部仓库内容合进子目录 | 适合轻量嵌入，但要约定同步方式 |
+| `git format-patch main` | 导出当前分支相对 main 的补丁文件 | 适合邮件/补丁工作流 |
+| `git apply --check 补丁文件` | 检查补丁能否应用 | 应用前先预检 |
+| `git am --signoff < 补丁文件` | 把补丁应用成提交 | 建议在临时分支验证 |
 
 ---
 
-## 16. 本章总结
+## 17. 本章总结
 
 1. Git 的核心不是文件夹复制，而是对象、索引和引用。
 2. commit 指向 tree，tree 指向 blob；分支名指向 commit。
@@ -530,6 +589,7 @@ git worktree add ../project-hotfix main   # 在隔壁目录再开一个 main 的
 4. reflog、stash、FETCH_HEAD、ORIG_HEAD 都是本地排障线索。
 5. `archive`、`bundle` 和 bare 仓库解决的是不同的导出/交换问题，不能混用。
 6. 清理历史和旧系统迁移都要当成团队级迁移处理，尤其是密钥泄露、大文件清理和 SVN 迁移。
+7. submodule、subtree 和 patch 工作流属于特定场景工具；先理解边界，再决定是否引入。
 
 ---
 

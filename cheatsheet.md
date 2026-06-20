@@ -38,8 +38,11 @@
 | 简洁历史 | `git log --oneline` |
 | 图形历史 | `git log --oneline --graph --all --decorate` |
 | 看 B 有而 A 没有的提交 | `git log A..B --oneline` |
+| 在当前版本里搜索内容 | `git grep -n "关键词"` |
+| 在某个标签或提交里搜索内容 | `git grep -n "关键词" v1.0.0` |
 | 看某个文件历史 | `git log -- 文件名` |
 | 看每行最后是谁改的 | `git blame 文件名` |
+| 用自动命令二分定位坏提交 | `git bisect run 测试命令` |
 | 找回 HEAD 移动记录 | `git reflog` |
 | 按作者统计提交数 | `git shortlog -sn` |
 | 列出标签 | `git tag` |
@@ -94,6 +97,7 @@
 | 只允许快进拉取 | `git pull --ff-only` |
 | 首次推送并设置上游 | `git push -u origin 分支名` |
 | 推送当前分支 | `git push` |
+| 修改已有远程地址 | `git remote set-url origin 新URL` |
 | 清理已删除远程分支引用 | `git fetch -p` |
 | 基于远程分支创建本地跟踪分支 | `git switch --track origin/分支名` |
 
@@ -130,6 +134,7 @@
 | 查看 stash 列表 | `git stash list` |
 | 应用但保留 stash | `git stash apply` |
 | 应用并删除 stash | `git stash pop` |
+| 从 stash 创建新分支 | `git stash branch 新分支名 stash@{0}` |
 | 删除 stash | `git stash drop stash@{0}` |
 
 ## 我想排查忽略规则或仓库内部
@@ -147,6 +152,9 @@
 | 新开一个工作树检出的分支 | `git worktree add ../path 分支` |
 | 列出所有工作树 | `git worktree list` |
 | 提交跨平台换行/二进制规则 | `.gitattributes` |
+| 初始化子模块内容 | `git submodule update --init --recursive` |
+| 检查补丁能否应用 | `git apply --check 补丁文件` |
+| 应用邮件补丁为提交 | `git am --signoff < 补丁文件` |
 
 ## 我想导出或离线搬运仓库
 
@@ -157,6 +165,7 @@
 | 检查 bundle 是否可用 | `git bundle verify ../project.bundle` |
 | 从 bundle 克隆仓库 | `git clone ../project.bundle project-copy` |
 | 克隆成 bare 仓库 | `git clone --bare my-project my-project.git` |
+| 导出当前分支相对 main 的补丁 | `git format-patch main` |
 
 ---
 

@@ -7,9 +7,10 @@
 1. 用 `git log` 按不同方式查看历史
 2. 用 `git show` 查看某次提交内容
 3. 理解短哈希和范围查询
-4. 知道 `git cherry-pick` 适合什么场景
-5. 用 `git blame` 找到某一行最后是谁改的
-6. 用 `git bisect` 定位哪个提交引入了问题
+4. 用 `git grep` 在当前版本或历史版本里搜索内容
+5. 知道 `git cherry-pick` 适合什么场景
+6. 用 `git blame` 找到某一行最后是谁改的
+7. 用 `git bisect` 定位哪个提交引入了问题
 
 ---
 
@@ -22,6 +23,7 @@
 | 最近有哪些提交？ | `git log --oneline` |
 | 分支怎么分叉和合并的？ | `git log --oneline --graph --all --decorate` |
 | 某次提交到底改了什么？ | `git show 提交哈希` |
+| 某个关键词现在出现在哪里？ | `git grep -n 关键词` |
 | 想把某个提交搬到当前分支 | `git cherry-pick 提交哈希` |
 | 某个文件经历了哪些提交？ | `git log -- 文件名` |
 | 某一行是谁改的？ | `git blame 文件名` |
@@ -174,7 +176,39 @@ git show c3d4e5f:路径/文件名
 
 ---
 
-## 6. 搬运单个提交：`git cherry-pick`
+## 6. 在版本库里搜索内容：`git grep`
+
+编辑器或系统搜索只能告诉你当前工作目录里有什么；`git grep` 的好处是：它从 Git 认识的文件里搜索，速度快，也能指定某个提交、分支或标签。
+
+在仓库根目录运行：
+
+```bash
+git grep -n "login"
+```
+
+常用参数：
+
+| 命令 | 作用 |
+|---|---|
+| `git grep "关键词"` | 搜索当前版本里被 Git 跟踪的文件 |
+| `git grep -n "关键词"` | 显示行号 |
+| `git grep -i "关键词"` | 忽略大小写 |
+| `git grep "关键词" HEAD~3` | 在三次提交之前的版本里搜索 |
+| `git grep "关键词" v1.0.0` | 在某个标签对应的版本里搜索 |
+
+它适合回答这些问题：
+
+| 问题 | 示例 |
+|---|---|
+| 某个函数现在还有没有调用点？ | `git grep -n "createUser"` |
+| 某个配置项在旧版本里叫什么？ | `git grep -n "API_URL" v1.2.0` |
+| 某段错误文案来自哪里？ | `git grep -n "Permission denied"` |
+
+如果你想搜的是提交说明，而不是文件内容，用 `git log --grep="关键词"`；如果你想搜某行是谁改的，用 `git blame`。把这三类问题分开，排查会快很多。
+
+---
+
+## 7. 搬运单个提交：`git cherry-pick`
 
 有时你不想合并整个分支，只想把某一个提交带到当前分支。例如：
 
@@ -220,7 +254,7 @@ git cherry-pick --abort
 
 ---
 
-## 7. 查看某个文件历史
+## 8. 查看某个文件历史
 
 ```bash
 git log -- README.md
@@ -244,7 +278,7 @@ git log --follow --oneline -- README.md
 
 ---
 
-## 8. 找某一行是谁改的：`git blame`
+## 9. 找某一行是谁改的：`git blame`
 
 ```bash
 git blame README.md
@@ -267,7 +301,7 @@ a1b2c3d4 (Alice 2026-06-01 10:00:00 +0800  12) 本项目使用 Git 管理版本
 
 ---
 
-## 9. 用二分法找 bug：`git bisect`
+## 10. 用二分法找 bug：`git bisect`
 
 场景：你知道现在有 bug，也知道以前某个版本没 bug，但不知道中间哪次提交引入了它。
 
@@ -309,11 +343,23 @@ git bisect bad
 git bisect reset
 ```
 
+如果项目有一条能自动判断“好/坏”的命令，可以让 Git 自动跑完整个二分过程。比如测试命令失败就代表坏：
+
+```bash
+git bisect start
+git bisect bad
+git bisect good v1.0.0
+git bisect run npm test
+git bisect reset
+```
+
+`git bisect run` 会反复切换提交并执行命令。命令退出码为 `0` 时表示这个提交是好的，非 `0` 表示坏。它很适合已经有自动化测试的项目；如果没有测试，只能手动验证每个中间提交。
+
 ---
 
 
 
-## 10. 查看哪些提交未被合并：git cherry
+## 11. 查看哪些提交未被合并：git cherry
 
 当你在不同分支上工作时，`git cherry` 可以告诉你当前分支的提交是否已经被合并到上游分支。
 
@@ -342,7 +388,8 @@ git cherry -v upstream
 - 跨分支追踪 commits 的传播情况
 
 ---
-## 10. 给历史打标记：`git tag`
+
+## 12. 给历史打标记：`git tag`
 
 发布版本时，你需要一个稳定、不会乱跑的名字，指向“这次发布对应的那次提交”。标签（tag）就是干这个的。
 
@@ -435,7 +482,7 @@ git push origin --delete v1.0.0         # 删远程标签
 
 
 
-## 11. 用标签生成版本号：git describe
+## 13. 用标签生成版本号：git describe
 
 `git describe` 可以根据最近的一个标签和当前提交之前的提交数，生成一个可读的版本描述。
 
@@ -474,7 +521,8 @@ echo "Building version: $VERSION"
 ```
 
 ---
-## 12. 谁贡献了多少：`git shortlog`
+
+## 14. 谁贡献了多少：`git shortlog`
 
 想知道每个作者提交了多少次，可以用：
 
@@ -495,13 +543,14 @@ Alice <alice.work@company.com>
 
 ---
 
-## 13. 历史查询的安全边界
+## 15. 历史查询的安全边界
 
 本章命令大多是只读的，但有两个例外要注意：
 
 | 命令 | 风险 |
 |---|---|
 | `git bisect` | 会切换工作目录到不同提交；开始前保持工作目录干净 |
+| `git bisect run` | 会反复切换提交并执行命令；确认命令不会破坏重要数据 |
 | `git cherry-pick` | 会在当前分支创建新提交；开始前确认目标分支正确 |
 | `git show 哈希:文件` | 只读，不会改文件 |
 
@@ -515,16 +564,18 @@ git status
 
 ---
 
-## 14. 本章检查点
+## 16. 本章检查点
 
 1. 想看分支合并图，用哪条命令？
 2. 想看某次提交具体 diff，用哪条命令？
-3. `origin/main..HEAD` 和 `HEAD..origin/main` 分别适合回答什么问题？
-4. `cherry-pick` 适合搬运整个分支还是单个独立提交？
-5. `git blame` 的正确使用目的是什么？
-6. `git bisect reset` 为什么重要？
-7. 正式发布版本应该用轻量标签还是附注标签？打完标签还要做什么？
-8. 标签会随 `git push` 自动推送吗？
+3. 想搜索当前版本里某个关键词，应该用 `git grep` 还是 `git log --grep`？
+4. `origin/main..HEAD` 和 `HEAD..origin/main` 分别适合回答什么问题？
+5. `cherry-pick` 适合搬运整个分支还是单个独立提交？
+6. `git blame` 的正确使用目的是什么？
+7. `git bisect reset` 为什么重要？
+8. 什么时候可以考虑用 `git bisect run`？
+9. 正式发布版本应该用轻量标签还是附注标签？打完标签还要做什么？
+10. 标签会随 `git push` 自动推送吗？
 
 ---
 
