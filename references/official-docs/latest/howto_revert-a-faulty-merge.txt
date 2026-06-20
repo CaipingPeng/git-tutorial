@@ -1,6 +1,0 @@
-URL: https://git-scm.com/docs/howto/revert-a-faulty-merge
-Title: Redirecting…
-================================================================================
-
-Redirecting…
-Click here if you are not redirected.
