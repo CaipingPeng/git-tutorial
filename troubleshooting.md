@@ -12,6 +12,8 @@ git remote -v
 
 ## `fatal: not a git repository`
 
+**英文原文**：`fatal: not a git repository (or any of the parent directories): .git`
+
 含义：当前目录不是 Git 仓库，或者你不在项目根目录/子目录里。
 
 优先检查：
@@ -29,6 +31,15 @@ git init
 
 ## `Please tell me who you are`
 
+**英文原文**：
+```
+Please tell me who you are.
+
+Run
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+```
+
 含义：Git 不知道提交作者是谁。
 
 解决：
@@ -42,6 +53,8 @@ git config --global user.email "you@example.com"
 
 ## `nothing to commit, working tree clean`
 
+**英文原文**：`nothing to commit, working tree clean`
+
 含义：当前没有可提交改动。这通常不是错误。
 
 如果你以为自己改了文件，检查：
@@ -52,6 +65,8 @@ git config --global user.email "you@example.com"
 - 是否切到了另一个分支
 
 ## `Your branch is ahead of 'origin/main'`
+
+**英文原文**：`Your branch is ahead of 'origin/main' by N commit(s)`
 
 含义：本地分支有远程还没有的提交。
 
@@ -68,6 +83,8 @@ git log --oneline origin/main..HEAD
 ```
 
 ## `Your branch is behind 'origin/main'`
+
+**英文原文**：`Your branch is behind 'origin/main' by N commit(s)`
 
 含义：远程分支有你本地没有的提交。
 

@@ -9,6 +9,40 @@
 
 ---
 
+
+---
+
+## 🚨 紧急救援速查
+
+遇到问题时的快速解决方案：
+
+| 我遇到的问题 | 快速方案 | 详细说明 |
+|---|---|---|
+| 刚提交错了，还没推送 | `git commit --amend` 或 `git reset HEAD~1` | 修改最后一次提交或撤销提交但保留改动 |
+| 刚提交错了，已经推送 | `git revert HEAD` | 创建一个新提交来撤销上次改动 |
+| 推送被拒绝 | `git pull` 然后再 `git push` | 先拉取远程更新，解决冲突后再推送 |
+| 冲突不会解决 | `git merge --abort` 或 `git rebase --abort` | 取消正在进行的合并或变基 |
+| 文件改坏了想恢复 | `git restore 文件名` | 恢复到最后一次提交的状态（**会丢失未提交改动**） |
+| 删错分支了 | `git reflog` 找到提交，`git switch -c 新分支名 哈希` | 从 reflog 找回提交并创建新分支 |
+| 不知道在哪个分支 | `git status` 和 `git branch` | 查看当前状态和所有分支 |
+| 忘了自己改了什么 | `git diff` | 查看未暂存的改动 |
+| 不小心 `git add` 了不该加的 | `git restore --staged 文件名` | 从暂存区撤出，改动保留 |
+| 想撤销最近3次提交但保留改动 | `git reset --soft HEAD~3` | 提交撤销，改动保留在暂存区 |
+| rebase 搞乱了想回到之前 | `git reflog` 找到 rebase 前的提交，`git reset --hard 哈希` | 强制回到 rebase 之前的状态 |
+| 想放弃本地所有改动，对齐远程 | `git fetch origin` 然后 `git reset --hard origin/main` | **危险操作**，会丢失所有本地改动 |
+
+**救援三步曲**：
+
+1. **不要慌** - Git 很难真正丢失已提交的内容
+2. **先看状态** - `git status` 和 `git log --oneline`
+3. **查 reflog** - `git reflog` 是最后的救命稻草，记录了 HEAD 的所有移动
+
+**记住**：
+- 只要提交过，就能从 `reflog` 找回
+- 还没提交的改动被 `git restore` 或 `git reset --hard` 删除后无法恢复
+- 遇到不确定的操作，先在测试分支上试验
+
+---
 ## 新手最常用的10个命令
 
 初学者应该先掌握这10个命令，它们覆盖了80%的日常工作：
@@ -253,3 +287,4 @@ git branch -d feature-旧功能     # 删除已合并的分支
 ---
 
 **返回目录**：[README](./README.md)
+

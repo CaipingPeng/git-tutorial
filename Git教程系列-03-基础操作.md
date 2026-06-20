@@ -1,6 +1,6 @@
 # Git 基础操作
 
-上一章你已经创建了一个 Git 仓库。现在仓库还只是一个“空档案柜”，里面没有任何正式版本。
+上一章你已经创建了一个 Git 仓库。现在仓库还只是一个"空档案柜"，里面没有任何正式版本。
 
 这一章要学习 Git 最常用的一条工作流：
 
@@ -21,17 +21,23 @@ git log --oneline
 
 > Git 不会自动把你所有修改都保存成版本。你要先选择哪些改动进入暂存区，再提交成正式版本。
 
-如果你是第一次读，本章可以按这个顺序抓重点：
+---
 
-| 优先级 | 建议先掌握 |
-|---|---|
-| 必学 | `status`、`add`、`commit`、`log`、`diff` |
-| 常用 | `restore`、`restore --staged`、`.gitignore`、好提交习惯 |
-| 进阶 | `add --patch`、`diff --check`、`commit --amend` 的边界 |
+## 学习建议
 
-先把必学命令跑通，再回头看进阶小节，压力会小很多。
+本章内容分为三个部分：
+
+| 部分 | 内容 | 建议 |
+|---|---|---|
+| **第一部分：核心流程** ⭐ | status、add、commit、log、diff | **新手必读**，先跑通这部分 |
+| **第二部分：日常必备** | restore、.gitignore、好提交习惯 | 掌握核心流程后再读 |
+| **第三部分：进阶技巧** | add -p、commit --amend、diff --check | 可以先跳过，需要时再回来查 |
+
+**新手优先级**：先把第一部分的命令跑通，能完成"改文件 → add → commit → 查看历史"这个循环，再回头看第二、三部分。
 
 ---
+
+# 第一部分：核心流程 ⭐ 新手必读
 
 ## 1. 先确认你在 Git 仓库里
 
@@ -63,10 +69,9 @@ fatal: not a git repository
 
 ---
 
+## 2. 最小可用流程（4个命令就够）
 
-## 1.5. 最小可用流程 (先记住这个)
-
-如果你觉得后面章节太长,可以先只记住这个最小流程:
+如果你是第一次学，先只记住这4个命令：
 
 ```bash
 git status              # 看当前状态
@@ -75,36 +80,31 @@ git commit -m "说明"     # 提交
 git log --oneline       # 看历史
 ```
 
-这4个命令就能让你开始用 Git 管理版本。
+**这4个命令就能让你开始用 Git 管理版本。**
 
-**快捷方式** (适用于已跟踪的文件):
+**快捷方式**（适用于已跟踪的文件）：
 
 ```bash
 git commit -a -m "说明"  # 自动 add 所有已跟踪且修改的文件
 ```
 
-`-a` 的意思是 "all tracked files"。注意它不会 add 新文件(untracked),只会 add 已经被 Git 管理的文件。
+`-a` 的意思是 "all tracked files"。注意它**不会 add 新文件**（untracked），只会 add 已经被 Git 管理的文件。
 
-**什么时候用 `-a`**:
+**什么时候用 `-a`**：
 
 | 场景 | 用不用 `-a` |
 |---|---|
-| 只改了已有文件,想全部提交 | 可以用 `git commit -a` |
+| 只改了已有文件，想全部提交 | 可以用 `git commit -a` |
 | 有新文件要提交 | 必须先 `git add 新文件` |
-| 想只提交部分改动 | 不能用 `-a`,要手动 `git add` 选择 |
-
-后面的内容会详细讲每个命令的边界和进阶用法。如果你是第一次学,可以先把这个最小流程跑通,再回来看细节。
+| 想只提交部分改动 | 不能用 `-a`，要手动 `git add` 选择 |
 
 ---
-## 2. 创建一个文件，观察 Git 怎么看它
 
-假设你在项目里新建一个文件：
+## 3. 创建第一个文件并提交
 
-```text
-hello.txt
-```
+### 步骤1：创建文件
 
-内容是：
+假设你在项目里新建一个文件 `hello.txt`，内容是：
 
 ```text
 Hello Git
@@ -124,10 +124,10 @@ On branch main
 No commits yet
 
 Untracked files:
-  (use "git add <file>..." to include in what will be committed)
+  (use \"git add <file>...\" to include in what will be committed)
         hello.txt
 
-nothing added to commit but untracked files present (use "git add" to track)
+nothing added to commit but untracked files present (use \"git add\" to track)
 ```
 
 `Untracked files` 的意思是：
@@ -136,9 +136,7 @@ nothing added to commit but untracked files present (use "git add" to track)
 
 新文件默认不会自动进入 Git 历史。你要明确告诉 Git：这个文件我要管理。
 
----
-
-## 3. 把文件加入暂存区：git add
+### 步骤2：加入暂存区
 
 运行：
 
@@ -146,7 +144,7 @@ nothing added to commit but untracked files present (use "git add" to track)
 git add hello.txt
 ```
 
-这一步的意思不是“提交”，而是：
+这一步的意思不是"提交"，而是：
 
 > 我准备把 `hello.txt` 放进下一次提交。
 
@@ -164,191 +162,57 @@ On branch main
 No commits yet
 
 Changes to be committed:
-  (use "git rm --cached <file>..." to unstage)
+  (use \"git rm --cached <file>...\" to unstage)
         new file:   hello.txt
 ```
 
 这表示 `hello.txt` 已经进入暂存区，准备提交。
 
-可以把文件状态先记成这张图：
+### 步骤3：提交
 
-```mermaid
-stateDiagram-v2
-    state "未跟踪" as Untracked
-    state "已暂存" as Staged
-    state "已跟踪未修改" as Clean
-    state "已修改" as Modified
-    [*] --> Untracked: 新建文件
-    Untracked --> Staged: git add
-    Staged --> Clean: git commit
-    Clean --> Modified: 编辑文件
-    Modified --> Staged: git add
-    Staged --> Modified: git restore --staged
-    Modified --> Clean: git restore
-```
-
-这张图不是为了背术语，而是为了判断命令改变了哪里：`git add` 把改动放进暂存区，`git commit` 把暂存区保存成提交，`git restore` 则把你从某个状态往回撤。
-
-> **快捷方式：`git commit -am`**
-> 如果你只想提交所有已经被 Git 跟踪过的文件的改动（跳过暂存这一步），可以用 `git commit -am “说明”`。这个命令等于先 `git add` 所有已跟踪文件，再 `git commit`。
->
-> ```bash
-> git commit -am “fix: 修复了登录按钮的样式问题”
-> ```
->
-> 注意它 **不会** 自动跟踪新文件——新建的文件仍然需要先 `git add`。如果既有修改已有文件又有新增文件，你还是需要先 `git add` 新增文件，再用 `git commit -am` 或 `git commit`。
-
-还有一个常见坑：如果你已经用 `git add 文件名` 或 `git add -p` 精挑细选了暂存区，后面就不要再用 `git commit -a` 或 `git commit -am`。`-a` 会把所有已跟踪文件的修改重新加入本次提交，可能把你刚才特意跳过的改动也带进去。越是想做小而清楚的提交，越应该先用 `git diff --staged` 确认暂存区，再运行普通的 `git commit`。
-
-### 暂存区到底有什么用？
-
-暂存区让你可以选择“这次提交要包含哪些改动”。
-
-比如你同时改了三个文件：
-
-| 文件 | 改动 | 是否适合放进同一次提交 |
-|---|---|---|
-| `login.html` | 登录页面 | 适合 |
-| `login.css` | 登录样式 | 适合 |
-| `README.md` | 顺手改错别字 | 不一定适合 |
-
-你可以只提交登录相关文件：
+运行：
 
 ```bash
-git add login.html login.css
-git commit -m "添加登录页面"
+git commit -m \"first: 添加 hello.txt\"
 ```
 
-这样提交历史会更清楚。
-
-真实开发经常不是“一次只改一个点”。你可能在同一轮工作里修了 CSS、改了图片、顺手调整了脚本，还改了文档。如果把这些全部塞进一个提交，历史以后会很难读：
-
-![多个不相关改动被塞进同一次提交的例子](./assets/git-apprentice-staging-area-files.png)
-
-暂存区的价值就在这里：它让你把一堆同时发生的文件变化，拆成几次更清楚的逻辑提交。比如先提交样式修复，再提交图片调整，最后提交脚本清理：
-
-![把杂乱改动拆成多个逻辑提交的例子](./assets/git-apprentice-staging-area-selection.png)
-
-所以 `git add` 不只是“把文件交给 Git”。更准确地说，它是在回答一个问题：
-
-> 下一次提交应该包含哪些改动？
-
-如果你希望提交历史以后还能帮助自己和队友理解项目，就不要把 `git add .` 当成无脑默认动作。可以先用 `git diff` 看改动，再选择真正属于同一件事的文件进入暂存区。
-
-如果一个文件里同时有两类改动，比如一部分是功能代码，另一部分只是顺手改格式，可以用按块暂存：
-
-```bash
-git add -p hello.txt
-```
-
-`-p` 是 patch 的意思。Git 会一段一段展示 diff，问你这一段要不要放进暂存区。常见选择先记两个：
-
-| 选择 | 含义 |
-|---|---|
-| `y` | 暂存这一段 |
-| `n` | 先不暂存这一段 |
-
-新手不必一开始就熟练掌握 `git add -p`，但要知道暂存区不只按“文件”选择，也可以按“改动块”选择。它解决的问题是：同一个文件里有不该放进同一次提交的混杂改动。
-
-`git add .` 和 `git add -A` 很高效，但也更容易把“顺手改动”一起扫进去。它们适合在你已经看过 `git status` 和 `git diff`，确认当前目录里的变化都属于同一件事时使用。否则，先明确写文件名，或者用 `git add -p` 逐块选择。
-
----
-
-## 4. 提交成第一个版本：git commit
-
-当暂存区准备好后，运行：
-
-```bash
-git commit -m "添加 hello 文件"
-```
-
-这里：
-
-| 部分 | 含义 |
-|---|---|
-| `git commit` | 创建一次提交 |
-| `-m` | message，表示后面写提交说明 |
-| `"添加 hello 文件"` | 这次提交的说明 |
+`-m` 后面跟的是**提交说明**。这段话会和这次提交一起保存在历史里，以后你可以通过它快速了解这次改了什么。
 
 提交成功后，你可能看到类似：
 
 ```text
-[main (root-commit) 5556dc3] 添加 hello 文件
+[main (root-commit) a1b2c3d] first: 添加 hello.txt
  1 file changed, 1 insertion(+)
  create mode 100644 hello.txt
 ```
 
-重点看：
+`a1b2c3d` 是这次提交的哈希值（实际会更长，这里显示缩写）。
 
-| 输出 | 含义 |
-|---|---|
-| `main` | 这次提交发生在 main 分支上 |
-| `root-commit` | 这是这个仓库历史里的第一次提交 |
-| `5556dc3` | 提交编号的前几位，每个人电脑上看到的编号通常不一样 |
-| `1 file changed` | 有 1 个文件变化 |
-| `1 insertion(+)` | 新增了 1 行 |
+### 步骤4：查看历史
 
-`root-commit` 里的 `root` 可以理解成“根”。第一次提交之前没有任何提交，所以这次提交没有上一个版本可以连接，它就是整个提交历史的起点。
-
-后面再提交时，通常不会再看到 `root-commit`。例如第二次提交的输出可能更像这样：
-
-```text
-[main 8f3a2b1] 修改 hello 文件
- 1 file changed, 1 insertion(+)
-```
-
-提交编号也叫 commit hash。它是这次提交的“身份证号”。
-
----
-
-## 5. 查看历史：git log
-
-提交后，查看历史：
-
-```bash
-git log
-```
-
-完整输出比较长，新手更推荐：
+运行：
 
 ```bash
 git log --oneline
 ```
 
-示例：
+你会看到类似：
 
 ```text
-a1b2c3d 添加 hello 文件
+a1b2c3d (HEAD -> main) first: 添加 hello.txt
 ```
 
-每一行就是一次提交。
-
-| 内容 | 含义 |
-|---|---|
-| `a1b2c3d` | 提交编号的前几位 |
-| `添加 hello 文件` | 提交说明 |
-
-如果提交很多，可以用：
-
-```bash
-git log --oneline --graph --decorate
-```
-
-后面学习分支时，这个命令会更有用。
+这就是你的第一次提交。
 
 ---
 
-## 6. 再修改文件，理解 tracked 和 modified
+## 4. 修改文件并再次提交
 
-现在 `hello.txt` 已经被提交过，所以 Git 已经认识它。
-
-这种文件叫 tracked file，也就是**已跟踪文件**。
-
-打开 `hello.txt`，改成：
+修改 `hello.txt`，加一行内容：
 
 ```text
 Hello Git
-This is my second line.
+This is a second line
 ```
 
 保存后运行：
@@ -357,114 +221,25 @@ This is my second line.
 git status
 ```
 
-你可能看到：
+你会看到：
 
-```bash
+```text
 On branch main
 Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
-  (use "git restore <file>..." to discard changes in working directory)
+  (use \"git add <file>...\" to update what will be committed)
+  (use \"git restore <file>...\" to discard changes in working directory)
         modified:   hello.txt
 
-no changes added to commit (use "git add" and/or "git commit -a")
+no changes added to commit (use \"git add\" and/or \"git commit -a\")
 ```
 
-其中`Changes not staged for commit`意思是：`hello.txt` 是 Git 已经管理的文件，它被修改了，但这个修改还没进入暂存区。
+`modified` 表示这个文件被修改了，但还没有加入暂存区。
 
-文件常见状态可以这样理解：
-
-| 状态 | 含义 | 下一步常见操作 |
-|---|---|---|
-| untracked | 新文件，Git 还没管理 | `git add 文件名` |
-| modified | 已跟踪文件被修改 | `git diff` 或 `git add 文件名` |
-| staged | 改动已进入暂存区 | `git commit -m "说明"` |
-| clean | 没有未提交改动 | 可以继续开发 |
-
----
-
-## 7. 查看具体改了什么：git diff
-
-`git status` 告诉你“哪些文件变了”。
-
-如果想看“具体哪一行变了”，用：
-
-```bash
-git diff
-```
-
-示例输出类似：
-
-```diff
- Hello Git
-+This is my second line.
-```
-
-`+` 表示新增的行。
-
-常见符号：
-
-| 符号 | 含义 |
-|---|---|
-| `+` | 新增的内容 |
-| `-` | 删除的内容 |
-
-如果只想看某个文件：
-
-```bash
-git diff hello.txt
-```
-
-注意：
-
-> `git diff` 默认查看的是“工作目录里还没有 add 的改动”。
-
----
-
-## 8. 查看已暂存的改动：git diff --staged
-
-现在把修改加入暂存区：
+运行：
 
 ```bash
 git add hello.txt
-```
-
-再运行：
-
-```bash
-git diff
-```
-
-你可能发现什么都不显示了。
-
-这不是改动消失了，而是因为改动已经进入暂存区。
-
-要查看暂存区里的改动，用：
-
-```bash
-git diff --staged
-```
-
-只看某个已暂存文件：
-
-```bash
-git diff --staged hello.txt
-```
-
-可以这样记：
-
-| 命令 | 看哪里 |
-|---|---|
-| `git diff` | 工作目录中还没 add 的改动 |
-| `git diff --staged` | 已经 add、准备 commit 的改动 |
-
----
-
-## 9. 再提交一次
-
-暂存区确认无误后，提交：
-
-```bash
-git commit -m "更新 hello 内容"
+git commit -m \"update: 添加第二行\"
 ```
 
 再查看历史：
@@ -473,227 +248,105 @@ git commit -m "更新 hello 内容"
 git log --oneline
 ```
 
-可能看到：
+你会看到两次提交：
 
 ```text
-f2783f9 (HEAD -> main) 更新 hello 内容
-5556dc3 添加 hello 文件
+b2c3d4e (HEAD -> main) update: 添加第二行
+a1b2c3d first: 添加 hello.txt
 ```
 
-最新提交在上面。
-
-你现在已经有两次提交了：
-
-```text
-5556dc3 --- f2783f9
-```
-
-这条提交链会成为第 4 章学习分支的基础。
+**恭喜！你已经完成了 Git 的核心工作流。**
 
 ---
 
-## 10. 撤销还没 add 的修改：git restore
+## 5. 查看具体改了什么：git diff
 
-如果你改坏了文件，还没有 `git add`，可以恢复到上一次提交时的样子。
+`git status` 告诉你哪些文件变了，`git diff` 告诉你具体哪几行变了。
 
-例如你把 `hello.txt` 改坏了。
+### 查看未暂存的改动
 
-先看状态：
-
-```bash
-git status
-```
-
-确认它还在：
+修改 `hello.txt`，加第三行：
 
 ```text
-Changes not staged for commit
+Hello Git
+This is a second line
+Third line here
 ```
 
-然后恢复：
+运行：
 
 ```bash
-git restore hello.txt
+git diff
 ```
 
-这个命令会丢掉 `hello.txt` 当前未提交的修改。
+你会看到类似：
 
-> 使用前确认这些改动真的不要了。
+```diff
+diff --git a/hello.txt b/hello.txt
+index ...
+--- a/hello.txt
++++ b/hello.txt
+@@ -1,2 +1,3 @@
+ Hello Git
+ This is a second line
++Third line here
+```
 
----
+`+` 开头的行表示新增内容。`-` 开头的行表示删除内容（这里没有）。
 
-## 11. 撤销已经 add 的修改：git restore --staged
+### 查看已暂存的改动
 
-如果你已经运行了：
+如果你已经 `git add` 了：
 
 ```bash
 git add hello.txt
+git diff --staged
 ```
 
-但后来发现不想把它放进这次提交，可以运行：
+`--staged` 显示已经加入暂存区、即将提交的改动。
 
-```bash
-git restore --staged hello.txt
-```
+**常用组合**：
 
-这一步不会删除工作目录里的文件内容。
-
-更准确地说，`git restore --staged hello.txt` 做的是：取消暂存区里准备提交的那一版，让它重新变成“已修改，但还没准备提交”的状态。
-
-可以这样理解：
-
-```text
-已经放进待归档盒 → 从待归档盒拿出来
-```
-
-有一个细节值得知道：同一个文件可能同时有“已暂存版本”和“工作目录版本”。例如你先修改到 B 并 `git add`，随后又继续改到 C。这时 `git status` 可能同时显示：
-
-```text
-Changes to be committed:
-        modified:   hello.txt
-
-Changes not staged for commit:
-        modified:   hello.txt
-```
-
-意思是：如果现在提交，会提交暂存区里的旧版本 B；但工作目录里还有更新的 C 没有进入暂存区。
-
-这时有两个常见选择：
-
-| 你想做什么 | 命令 |
+| 命令 | 查看什么 |
 |---|---|
-| 暂存区不要 B，只保留工作目录里的 C | `git restore --staged hello.txt` |
-| 让暂存区也更新成 C | `git add hello.txt` |
-
-所以 `git add` 不只是“第一次把文件放进暂存区”，也可以理解成：
-
-> 用工作目录里的当前版本，更新暂存区里的待提交版本。
+| `git diff` | 工作目录相对暂存区的改动（还没 add 的） |
+| `git diff --staged` | 暂存区相对最后一次提交的改动（已 add 但还没 commit 的） |
+| `git diff HEAD` | 工作目录相对最后一次提交的全部改动 |
 
 ---
 
-## 12. 修改最后一次提交说明：git commit --amend
+## 6. 查看历史：git log
 
-如果刚提交完，发现提交说明写错了，可以修改最后一次提交说明：
+`git log` 有很多有用的参数：
+
+| 命令 | 作用 |
+|---|---|
+| `git log --oneline` | 一行显示一个提交（最常用） |
+| `git log --graph` | 显示分支图 |
+| `git log --oneline --graph --all --decorate` | 完整图形历史 |
+| `git log -3` | 只看最近3次提交 |
+| `git log --author=\"张三\"` | 只看某个作者的提交 |
+| `git log -- 文件名` | 只看某个文件的提交历史 |
+
+**推荐日常使用**：
 
 ```bash
-git commit --amend -m "新的提交说明"
+git log --oneline --graph --all --decorate
 ```
 
-例如：
+你可以给它设置一个别名（在第15章会详细讲）：
 
 ```bash
-git commit --amend -m "更新 hello 文件内容"
+git config --global alias.lg \"log --oneline --graph --all --decorate\"
 ```
 
-注意：
-
-> 如果这次提交已经推送到远程仓库，先不要随便 amend。因为它会改写提交历史。远程协作学完后再处理这种情况。
-
-新手阶段，把 `--amend` 用在“刚刚本地提交，尚未推送”的情况最安全。
+之后就可以用 `git lg` 查看图形历史。
 
 ---
 
-## 13. 忽略不该提交的文件：`.gitignore`
+## 7. 查看某次提交：git show
 
-不是项目里的每个文件都应该进入 Git 历史。
-
-常见不该提交的内容：
-
-| 类型 | 示例 | 为什么不提交 |
-|---|---|---|
-| 依赖目录 | `node_modules/` | 体积大，可重新安装 |
-| 构建产物 | `dist/`、`build/` | 可由源码生成 |
-| 日志 | `*.log` | 临时运行记录 |
-| 密钥配置 | `.env` | 可能泄露密码、token |
-| 系统文件 | `.DS_Store` | 和项目无关 |
-
-在项目根目录创建 `.gitignore`：
-
-```text
-node_modules/
-dist/
-*.log
-.env
-```
-
-然后提交它：
-
-```bash
-git add .gitignore
-git commit -m "添加 Git 忽略规则"
-```
-
-注意：`.gitignore` 只会影响尚未被 Git 跟踪的文件。如果某个文件已经提交过，后来再写进 `.gitignore`，Git 仍然会继续跟踪它。
-
-如果你想让 Git 从此不再跟踪某个已经提交过的本地配置文件，但又想保留磁盘上的文件，用：
-
-```bash
-git rm --cached .env
-git add .gitignore
-git commit -m "停止跟踪本地环境配置"
-```
-
-这里的 `--cached` 表示“只从暂存区/索引里移除”，不会删除你工作目录里的 `.env`。如果误提交的是密码、token 或私钥，只停止跟踪还不够；历史里仍然可能找得到它，需要先轮换密钥，再看 [Git 内部原理与仓库维护](./Git教程系列-16-Git内部原理与仓库维护.md) 里的历史清理说明。
-
----
-
-### 空目录不会被 Git 跟踪
-
-Git 只跟踪文件，不跟踪空目录。如果你需要一个空目录作为占位（比如 `logs/`、`uploads/`），直接建空文件夹提交是没用的，`git status` 不会看到它。常见做法是在里面放一个占位文件：
-
-```bash
-mkdir logs
-echo "" > logs/.gitkeep
-git add logs/.gitkeep
-```
-
-`.gitkeep` 不是 Git 的特殊命令，只是一个约定俗成的占位文件名，让 Git 能把这个目录纳入版本管理。
-
----
-
-## 14. 删除和移动文件：`git rm` 与 `git mv`
-
-如果你想删除一个已经被 Git 管理的文件，可以直接删除文件后再 `git add`，也可以用：
-
-```bash
-rm old.txt
-git add old.txt
-git commit -m "删除 old 文件"
-```
-
-这里的 `git add old.txt` 不是“重新添加文件内容”，而是把“`old.txt` 已经被删除”这个变化放进暂存区。
-
-可以把 Git 理解成在记录项目状态的变化：
-
-| 你做了什么 | Git 看到的变化 | 需要暂存什么 |
-|---|---|---|
-| 修改文件内容 | 这个文件的内容变了 | 暂存“内容修改” |
-| 新建文件 | 多了一个新文件 | 暂存“新增文件” |
-| 删除文件 | 少了一个已跟踪文件 | 暂存“删除文件” |
-
-所以，`git add` 不只用于添加新文件，也用于把某个文件的最新变化放进暂存区。这个“最新变化”可能是修改，也可能是删除。
-
-如果你觉得 `git add old.txt` 用来暂存删除有点反直觉，可以改用下面这个命令：
-
-```bash
-git rm old.txt
-git commit -m "删除 old 文件"
-```
-
-如果你想重命名或移动文件：
-
-```bash
-git mv old-name.txt new-name.txt
-git commit -m "重命名说明文件"
-```
-
-`git mv` 本质上是“移动文件 + 把这个变化放进暂存区”。它不是必须用，但能让意图更清楚。
-
----
-
-## 15. 查看某次提交：`git show`
-
-`git log --oneline` 只能看到提交列表。如果你想看某次提交到底改了什么，用：
+想看某次提交的详细内容：
 
 ```bash
 git show 提交哈希
@@ -702,254 +355,380 @@ git show 提交哈希
 例如：
 
 ```bash
-git show c3d4e5f
+git show a1b2c3d
 ```
 
-它会显示提交作者、时间、说明和具体 diff。
+会显示这次提交的说明、作者、时间和具体改动。
 
-如果只想看统计信息：
+---
+
+# 第二部分：日常必备
+
+## 8. 撤销还没 add 的修改：git restore
+
+如果你改了文件但还没 `git add`，想撤销改动：
 
 ```bash
-git show --stat c3d4e5f
+git restore 文件名
+```
+
+**警告**：这会**丢弃工作目录的改动**，恢复到最后一次提交的状态。改动无法找回。
+
+例如：
+
+```bash
+# 修改了 hello.txt 但后悔了
+git restore hello.txt
+```
+
+**安全检查**：
+
+```bash
+git diff 文件名    # 先看改了什么
+git status         # 确认状态
+git restore 文件名  # 确认后再撤销
 ```
 
 ---
 
-## 16. 什么是一次好提交？
+## 9. 撤销已经 add 的修改：git restore --staged
 
-一次好提交应该是“一个清楚的小故事”：它解决一个具体问题，包含完整相关改动，并且说明能让以后的人看懂。
-
-不要把提交只当成“今天的备份”。如果仓库里全是 `update`、`fix`、`改一下`，以后查看历史、做 code review、回滚某个功能、用 `cherry-pick` 搬运改动时都会很痛苦。Git 历史应该能回答：
-
-| 问题 | 好提交应该提供的信息 |
-|---|---|
-| 这次改变解决了什么？ | 提交说明能看出目的或结果 |
-| 改动范围是否清楚？ | 一个提交尽量只做一件事 |
-| 这件事是否完整？ | 不把同一个逻辑改动拆得七零八落 |
-| 以后能不能单独回退？ | 相关文件在同一次提交里，不相关改动分开 |
-
-| 好提交 | 坏提交 |
-|---|---|
-| `添加登录表单校验` | `update` |
-| `修复 README 链接错误` | `fix` |
-| `删除废弃配置文件` | `改一下` |
-
-提交说明也可以分两层：第一行写一句清楚的标题，空一行后再写更详细的原因、取舍或验证方式。小提交用 `git commit -m "说明"` 足够；如果这次改动需要解释背景，就直接运行 `git commit`，让 Git 打开编辑器写多行说明。
-
-提交粒度建议：
-
-1. 相关文件放在同一次提交。
-2. 不相关改动分开提交。
-3. 提交前先看 `git diff --staged`。
-4. 提交说明写“这次改变的结果”，不要只写“修改”。
-
-如果你发现自己改着改着把几件事混在一起了，先不要急着 `git add .`。可以按下面顺序整理：
+如果你已经 `git add` 了，但不想把这个文件放进这次提交：
 
 ```bash
-git status
-git diff
-git add -p 文件名
-git diff --staged
-git commit -m "说明这一次完整改变"
+git restore --staged 文件名
 ```
 
-`git add -p` 适合把同一个文件里的不同改动拆开。它不是为了炫技，而是为了把“修 bug”“顺手格式化”“补文档”这类不同目的分开保存。
+这只是把文件从暂存区移出，改动还在工作目录。
 
-提交说明可以先在心里写出来，再开始改代码。比如你准备写：
-
-```text
-添加登录失败提示
-```
-
-这句话会反过来提醒你：这次提交应该围绕“登录失败提示”展开，不要顺手把注册页样式、README 错别字和构建脚本也塞进去。
-
-如果你只是需要临时离开、切分支处理别的事，未完成工作不一定要变成提交。更合适的选择通常是：
-
-| 场景 | 更合适的做法 |
-|---|---|
-| 半成品还不适合进入历史 | `git stash push -m "说明"` |
-| 工作已经有价值，但还没准备合并 | 创建临时分支并正常提交 |
-| 已经形成完整逻辑改动 | 提交到当前功能分支 |
-
-一句话：小而完整、说明清楚、范围单一，就是好提交。
-
-
-
-## 17. 精确选择改动：git add --patch
-
-有时候一个文件里有两类不同目的的改动，比如同时改了功能逻辑和调试日志。如果用 `git add 文件名`，会把它们打包进同一个提交，以后查找历史时很难分开。
-
-这时候可以用 `git add --patch`（简写 `git add -p`）。它会按"改动块"（hunk）逐个询问你是否要暂存：
+例如：
 
 ```bash
-# 先看看改了什么
-git diff myfile.py
-
-# 按改动块逐个选择暂存
-git add -p myfile.py
+git add hello.txt
+git restore --staged hello.txt  # 从暂存区移出，改动保留
 ```
 
-执行后会看到类似这样的提示：
+之后可以用 `git diff` 看到改动还在。
+
+---
+
+## 10. 忽略不该提交的文件：.gitignore
+
+有些文件不应该提交到 Git，例如：
+
+- 编译生成的文件（`*.o`、`*.exe`、`*.class`）
+- 编辑器临时文件（`.vscode/`、`.idea/`、`*.swp`）
+- 日志文件（`*.log`）
+- 敏感信息（`config.local.js`、`.env`）
+- 依赖文件夹（`node_modules/`、`venv/`）
+
+在项目根目录创建 `.gitignore` 文件，写入要忽略的规则：
+
+```gitignore
+# 注释：忽略日志文件
+*.log
+
+# 忽略 node_modules 文件夹
+node_modules/
+
+# 忽略所有 .env 文件
+.env
+.env.local
+
+# 但不忽略 .env.example
+!.env.example
+```
+
+**规则语法**：
+
+| 规则 | 含义 |
+|---|---|
+| `*.log` | 忽略所有 .log 文件 |
+| `build/` | 忽略 build 文件夹 |
+| `!important.log` | 不忽略这个文件（即使前面规则匹配） |
+| `doc/*.txt` | 忽略 doc 下的 .txt，但不包括子文件夹 |
+| `doc/**/*.pdf` | 忽略 doc 下所有 .pdf（包括子文件夹） |
+
+**常见问题**：
+
+如果文件已经被 Git 跟踪，添加到 `.gitignore` 不会自动忽略它。需要先移除：
+
+```bash
+git rm --cached 文件名
+git commit -m \"stop tracking 文件名\"
+```
+
+`--cached` 表示只从 Git 仓库移除，文件本身保留在工作目录。
+
+---
+
+## 11. 什么是一次好提交？
+
+好提交的标准：
+
+1. **粒度合适**：一次提交只做一件事
+   - ✅ 好："修复登录按钮样式"
+   - ❌ 不好："修复登录按钮样式 + 添加注册功能 + 重构数据库"
+
+2. **说明清楚**：让别人（或3个月后的你）能看懂
+   - ✅ 好："fix: 修复用户名包含空格时登录失败的问题"
+   - ❌ 不好："修复bug"、"临时提交"、"asdf"
+
+3. **能通过测试**：提交前确保代码能运行
+   - 不要提交会导致项目无法运行的版本
+
+4. **不包含无关改动**：
+   - 不要把调试代码、临时文件、敏感信息提交上去
+
+**提交信息格式建议**：
 
 ```text
-@@ -10,6 +10,7 @@ def login():
-     if not user:
-         return False
-+    # 添加日志记录
-+    log.info("login attempt")
-     return True
-Stage this hunk [y,n,q,a,d,/,s,e,?]?
+类型: 简短描述（不超过50字符）
+
+可选的详细说明（如果需要解释背景、原因）
 ```
 
-每个选项的含义：
+常见类型：
+
+- `feat`: 新功能
+- `fix`: 修复bug
+- `docs`: 文档修改
+- `style`: 格式调整（不影响代码逻辑）
+- `refactor`: 重构
+- `test`: 添加测试
+- `chore`: 构建工具、依赖更新等
+
+例如：
+
+```bash
+git commit -m \"feat: 添加用户登录功能\"
+```
+
+---
+
+# 第三部分：进阶技巧 ⭐ 可选
+
+新手可以先跳过这部分，需要时再回来查阅。
+
+## 12. 精确选择改动：git add --patch
+
+有时你在一个文件里改了多处，但只想提交其中一部分。
+
+`git add --patch`（简写 `-p`）可以让你按"块"选择：
+
+```bash
+git add -p hello.txt
+```
+
+Git 会逐块询问：
+
+```diff
+@@ -1,3 +1,4 @@
+ Hello Git
+ This is a second line
++Third line here
+Stage this hunk [y,n,q,a,d,s,e,?]?
+```
+
+常用选项：
 
 | 选项 | 含义 |
 |---|---|
-| `y` | 暂存这个改动块 |
-| `n` | 跳过这个改动块 |
-| `q` | 退出，不再处理剩下的块 |
-| `s` | 把这个块拆成更小的块 |
-| `e` | 手动编辑这个块 |
-| `d` | 不暂存当前块，也不暂存文件里剩下的块 |
+| `y` | 暂存这一块 |
+| `n` | 不暂存这一块 |
+| `s` | 拆分成更小的块 |
+| `q` | 退出 |
 | `?` | 查看帮助 |
 
-常用场景：
+这样可以把一个文件的改动分成多次提交，让历史更清晰。
 
-1. 先把功能相关的改动暂存、提交
-2. 再把调试日志、格式整理等"顺手改的"单独提交
+---
 
-```bash
-# 按块选择暂存
-git add -p app.py
-# 只暂存功能改动块，跳过日志块
+## 13. 修改最后一次提交：git commit --amend
 
-git commit -m "添加登录验证逻辑"
+如果刚提交完发现：
 
-# 现在再暂存剩下的日志改动
-git add -p app.py
-git commit -m "添加登录日志"
-```
+- 提交说明写错了
+- 忘了加某个文件
+- 发现小错误想立即修正
 
-如果想在提交的同时直接选择改动块，可以一步到位：
+可以用 `--amend` 修改最后一次提交：
+
+### 只改提交说明
 
 ```bash
-git commit --patch -m "添加登录验证逻辑"
+git commit --amend -m \"新的提交说明\"
 ```
 
-这相当于 `git add --patch` 加 `git commit` 的组合。
+### 补文件到最后一次提交
 
-`git add -p` 非常适合把"改到一半时发现了另一个小问题顺手修了"的情况拆开。但它不适合大范围的重构——如果改动本身跨越多个文件，应该在分支层面拆分，而不是依赖单文件的块选择。
+```bash
+git add 忘记的文件.txt
+git commit --amend --no-edit
+```
 
-## 18. 检查空白问题：git diff --check
+`--no-edit` 表示不修改提交说明。
 
-提交前检查空白问题可以避免很多跨平台协作时的小麻烦。Git 默认会对以下几种空白格式发出警告：
+**警告**：
 
-- 行尾有多余空格
-- 行首空格后面紧跟制表符（space before tab）
-- 文件末尾缺少换行符
+- `--amend` 会**改写历史**。如果这次提交已经推送到远程，不要用 `--amend`，否则会导致推送冲突。
+- 只能修改**最后一次**提交。
 
-在提交前运行：
+---
+
+## 14. 检查空白问题：git diff --check
+
+提交前检查是否有多余的空白字符（行尾空格、文件末尾空行等）：
 
 ```bash
 git diff --check
 ```
 
-如果存在空白问题，输出会像这样：
+如果有问题，会显示类似：
 
 ```text
-app.py:15: trailing whitespace.
-    def login():     <- 行尾有空格
-app.py:23: space before tab in indent.
-    ->return True    <- 空格和制表符混用
+hello.txt:3: trailing whitespace.
++This line has trailing spaces   
 ```
 
-修复方式很简单：配置编辑器在保存时自动去掉行尾空格，或者在暂存前手动清理。在 .gitattributes 中还可以设置统一的空白规则（详见第 15 章）。
-
-偶尔提交前跑一次 `git diff --check`，能让你的代码库避免很多因为空格格式引起的噪音 diff。
+很多项目要求提交前清理空白问题，避免无意义的 diff。
 
 ---
 
-## 19. 一个完整小流程
+## 15. 删除和移动文件
 
-下面是一套完整流程：
+### 删除文件
 
 ```bash
-# 1. 查看状态
+git rm 文件名
+git commit -m \"删除文件名\"
+```
+
+`git rm` 做两件事：
+
+1. 删除工作目录的文件
+2. 把删除操作加入暂存区
+
+如果只想从 Git 移除，但保留文件：
+
+```bash
+git rm --cached 文件名
+```
+
+### 移动或重命名文件
+
+```bash
+git mv 旧文件名 新文件名
+git commit -m \"重命名文件\"
+```
+
+相当于：
+
+```bash
+mv 旧文件名 新文件名
+git rm 旧文件名
+git add 新文件名
+```
+
+---
+
+# 综合实践
+
+## 一个完整小流程
+
+```bash
+# 1. 创建项目文件夹并初始化
+mkdir my-project
+cd my-project
+git init
+
+# 2. 创建第一个文件
+echo \"# My Project\" > README.md
+
+# 3. 查看状态
 git status
 
-# 2. 新建或修改文件
-# 这里用编辑器修改 hello.txt
+# 4. 加入暂存区并提交
+git add README.md
+git commit -m \"docs: 添加 README\"
 
-# 3. 查看具体改动
-git diff hello.txt
+# 5. 创建 .gitignore
+echo \"*.log\" > .gitignore
+git add .gitignore
+git commit -m \"chore: 添加 gitignore\"
 
-# 4. 加入暂存区
-git add hello.txt
+# 6. 修改 README
+echo \"This is my first Git project\" >> README.md
 
-# 5. 查看暂存区改动
-git diff --staged hello.txt
+# 7. 查看改动
+git diff
 
-# 6. 提交
-git commit -m "更新 hello 文件"
+# 8. 提交修改
+git add README.md
+git commit -m \"docs: 更新 README 说明\"
 
-# 7. 查看历史
+# 9. 查看历史
 git log --oneline
 ```
 
-这就是 Git 的基础闭环。
-
 ---
 
-## 20. 常见误解
+## 常见误解
 
 | 误解 | 正确理解 |
 |---|---|
-| `git add` 就是提交 | 不是。它只是把改动放进暂存区 |
-| `git commit` 会提交所有文件 | 不是。只提交暂存区里的内容 |
-| 新文件会自动被 Git 管理 | 不会。需要先 `git add` |
-| `git diff` 没输出就表示没改动 | 不一定。可能改动已经被 add，要看 `git diff --staged` |
-| `git restore 文件` 很安全 | 它会丢弃未提交修改，执行前要确认 |
-| 提交信息随便写就行 | 不建议。清楚的提交信息能帮助以后看历史 |
+| `git add` 就是提交 | `git add` 只是加入暂存区，`git commit` 才是提交 |
+| `git commit` 会上传到 GitHub | `git commit` 只保存到本地仓库，`git push` 才上传 |
+| `.gitignore` 可以忽略已跟踪的文件 | `.gitignore` 只能忽略**未跟踪**的文件，已跟踪的要用 `git rm --cached` |
+| `git commit -a` 会提交所有文件 | `-a` 只提交**已跟踪**的修改文件，不包括新文件 |
 
 ---
 
-## 21. 本章命令速查表
+## 提交前的自查清单
+
+每次提交前，建议快速检查：
+
+- [ ] 运行 `git status` 确认要提交的文件
+- [ ] 运行 `git diff --staged` 确认暂存的改动
+- [ ] 提交信息清楚描述了"做了什么"
+- [ ] 提交粒度合适（一个提交只做一件事）
+- [ ] 没有包含调试代码、临时文件或敏感信息
+- [ ] （可选）运行 `git diff --check` 检查空白字符问题
+
+**快速检查命令**：
+
+```bash
+git status           # 看要提交什么
+git diff --staged    # 看具体改动
+git diff --check     # 检查空白问题（可选）
+```
+
+---
+
+## 本章命令速查表
 
 | 命令 | 作用 | 什么时候用 |
 |---|---|---|
-| `git status` | 查看当前状态 | 不知道下一步做什么时 |
-| `git add 文件` | 把文件放进暂存区 | 准备提交某个文件时 |
-| `git add 文件1 文件2` | 添加多个文件 | 一次提交包含多个相关文件时 |
-| `git add .` | 添加当前目录所有改动 | 确认所有改动都要提交时 |
-| `git add -A` | 暂存整个仓库里的新增、修改和删除 | 已确认全仓库改动都属于本次提交时 |
-| `git add -p 文件` | 按改动块选择暂存 | 一个文件里混有多类改动时 |
-| `git commit -m "说明"` | 提交成一个版本 | 暂存区准备好后 |
-| `git commit` | 打开编辑器写多行提交说明 | 需要解释背景、原因或风险时 |
-| `git log --oneline` | 查看历史提交 | 想看保存过哪些版本时 |
+| `git status` | 查看当前状态 | 随时用，最有用的命令 |
+| `git add 文件名` | 暂存文件 | 准备提交前 |
+| `git add .` | 暂存当前目录所有改动 | 想一次暂存多个文件时 |
+| `git commit -m \"说明\"` | 提交 | 暂存好后 |
+| `git commit -a -m \"说明\"` | 自动暂存已跟踪文件并提交 | 只改了已有文件且全部要提交时 |
+| `git log --oneline` | 查看历史 | 想看保存过哪些版本时 |
 | `git diff` | 查看未暂存改动 | add 之前检查改了什么 |
-| `git diff 文件` | 查看某个文件未暂存改动 | 只想检查单个文件时 |
 | `git diff --staged` | 查看已暂存改动 | commit 之前检查将提交什么 |
-| `git diff --staged 文件` | 查看某个文件已暂存改动 | 只想检查单个已 add 文件时 |
+| `git show 提交哈希` | 查看某次提交详情 | 想知道某次提交具体改了什么时 |
 | `git restore 文件` | 撤销工作目录修改 | 文件改坏且还没 add 时 |
 | `git restore --staged 文件` | 从暂存区撤出 | 不想把某个文件放进这次提交时 |
-| `git commit --amend -m "说明"` | 修改最后一次提交说明 | 刚提交完且还没推送时 |
 | `git rm 文件` | 删除已跟踪文件并暂存删除 | 确认文件不再需要时 |
-| `git mv 旧名 新名` | 移动或重命名文件并暂存变化 | 文件改名或移动位置时 |
-| `git show 提交哈希` | 查看某次提交详情 | 想知道某次提交具体改了什么时 |
+| `git mv 旧名 新名` | 移动或重命名文件并暂存 | 文件改名或移动位置时 |
+| `git add -p` | 交互式暂存（进阶） | 想按块选择改动时 |
+| `git commit --amend` | 修改最后一次提交（进阶） | 刚提交完且还没推送时 |
+| `git diff --check` | 检查空白问题（进阶） | 提交前检查代码质量时 |
 
 ---
 
-## 22. 动手练习
-
-在练习目录里完成下面三个小任务，每一步都先用 `git status` 确认状态，再用 `git log --oneline` 观察历史变化。
-
-1. 从空仓库开始，创建 `hello.txt` 写入一行内容，`git add` 后用 `git commit -m "first"` 提交；再修改该文件加一行，用 `git add -p` 只暂存其中一块，分两次提交。预期：历史里出现三条提交，`git diff` 最终为空。
-2. 创建 `secret.txt` 并写入内容，编写 `.gitignore` 忽略它，再 `git add .gitignore` 并提交。预期：`git status` 不再提示 `secret.txt`，`git check-ignore -v secret.txt` 能显示命中规则。
-3. 故意提交一句带行尾空格的代码，用 `git diff --check` 看到警告，再用 `git restore` 撤销，重新提交干净版本。预期：`git diff --check` 无输出，`git log --oneline` 能看到修正后的提交。
-
----
-
-## 23. 本章总结
+## 本章总结
 
 这一章你学会了 Git 的基础工作流：
 
@@ -957,14 +736,25 @@ git log --oneline
 工作目录修改 → git add 到暂存区 → git commit 保存到本地仓库
 ```
 
-你还学会了：
+**核心命令（必学）**：
 
-- 用 `git status` 判断当前状态
-- 用 `git diff` 查看具体改动
-- 用 `git log --oneline` 查看历史
-- 用 `git restore` 撤销小错误
-- 用 `git add -p` 把同一个文件的改动按块分开提交
-- 用 `git diff --check` 在提交前检查空白问题
+- `git status` - 随时查看状态
+- `git add` - 选择要提交的改动
+- `git commit -m` - 提交版本
+- `git log --oneline` - 查看历史
+- `git diff` - 查看具体改动
+
+**日常必备**：
+
+- `git restore` - 撤销修改
+- `.gitignore` - 忽略文件
+- 好提交习惯 - 粒度合适、说明清楚
+
+**进阶技巧（可选）**：
+
+- `git add -p` - 精确选择改动
+- `git commit --amend` - 修改最后一次提交
+- `git diff --check` - 检查空白问题
 
 到这里，你已经能在一条主线上保存版本了。
 
@@ -977,67 +767,3 @@ git log --oneline
 ---
 
 **返回目录**：[README](./README.md)
-
-
----
-
-## 提交前的自查清单
-
-每次提交前，建议快速检查：
-
-- [ ] 运行 `git diff --staged` 确认暂存的改动
-- [ ] 运行 `git diff --check` 检查空白字符问题
-- [ ] 提交信息清楚描述了"做了什么"和"为什么"
-- [ ] 提交粒度合适（一个提交只做一件事）
-- [ ] 没有包含调试代码、临时文件或敏感信息
-
-**快速检查命令：**
-
-```bash
-git diff --staged    # 看将要提交什么
-git diff --check     # 检查空白字符问题
-```
-
----
-
-## 本章检查点
-
-在继续下一章之前，请确认你能够：
-
-- [ ] 用自己的话解释"工作目录、暂存区、本地仓库"三个区域
-- [ ] 理解 `git add` 的作用（不是提交，而是加入暂存区）
-- [ ] 独立完成：创建文件 → add → commit → 查看 log
-- [ ] 知道 `.gitignore` 的作用和使用场景
-- [ ] 理解 `git commit -a` 的边界（不会 add 新文件）
-
-### 自测练习
-
-在练习目录（如 `C:\git-practice`）完成：
-
-1. **基础流程**：
-   - 创建3个文件：`hello.txt`、`world.txt`、`README.md`
-   - 只提交前两个文件
-   - 查看 `git log` 确认提交
-   - 预期：第三个文件显示为 untracked
-
-2. **选择性暂存**：
-   - 修改 `hello.txt` 和 `world.txt`
-   - 只暂存 `hello.txt`
-   - 查看 `git status` 确认状态
-   - 提交后查看 `git diff` 应该只显示 `world.txt` 的改动
-
-3. **忽略文件**：
-   - 创建 `.gitignore`，内容为 `*.log`
-   - 创建 `test.log` 文件
-   - 运行 `git status`，确认 `.log` 文件不显示
-
-### 常见困惑
-
-**Q: 为什么 `git add` 后又修改了文件，`git status` 显示文件既在暂存区又有改动？**  
-A: `git add` 暂存的是"当时的文件快照"。如果之后又修改，新改动还在工作目录，需要再次 `git add`。
-
-**Q: `.gitignore` 加了规则，但文件还是被跟踪？**  
-A: `.gitignore` 只能忽略"未跟踪"的文件。如果文件已经被 Git 管理（已经 commit 过），需要先用 `git rm --cached 文件名` 从仓库移除。
-
-**Q: 什么时候用 `git commit -a`，什么时候手动 `git add`？**  
-A: 有新文件、想选择性提交、需要精细控制时，手动 `git add`。只改了已有文件且全部要提交时，可以用 `-a`。
