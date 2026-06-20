@@ -293,8 +293,10 @@ abc1234 (HEAD -> main) 添加 hello 文件
 
 这里的意思是：
 
-```text
-HEAD -> main -> abc1234
+```mermaid
+flowchart LR
+    HEAD --> main
+    main --> abc1234["提交 abc1234"]
 ```
 
 可以这样理解：
@@ -308,14 +310,16 @@ HEAD -> main -> abc1234
 
 当你在 `main` 分支上时：
 
-```text
-HEAD -> main
+```mermaid
+flowchart LR
+    HEAD --> main
 ```
 
 当你切换到 `feature-login` 分支后：
 
-```text
-HEAD -> feature-login
+```mermaid
+flowchart LR
+    HEAD --> feature-login
 ```
 
 所以：
@@ -407,12 +411,10 @@ git checkout -b feature-login
 
 刚创建分支时，两个分支通常指向同一个提交：
 
-```text
-A --- B
-      ↑
-    main
-      ↑
-  feature-login
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B (main, feature-login)"
 ```
 
 这时它们还没有真正分开。
@@ -1194,3 +1196,4 @@ git reset HEAD^
 ---
 
 **返回目录**：[README](./README.md)
+

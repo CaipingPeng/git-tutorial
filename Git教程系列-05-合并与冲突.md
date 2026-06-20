@@ -40,14 +40,13 @@ feature-login：登录功能分支
 
 你在 `feature-login` 上完成了登录功能：
 
-```text
-A --- B
-      ↑
-    main
-       \
-        C --- D
-              ↑
-        feature-login
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    branch feature-login
+    commit id: "C"
+    commit id: "D"
 ```
 
 现在问题来了：
@@ -160,14 +159,13 @@ Git 合并时，常见结果有两种：
 
 合并前：
 
-```text
-A --- B
-      ↑
-    main
-       \
-        C --- D
-              ↑
-        feature-login
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    branch feature-login
+    commit id: "C"
+    commit id: "D"
 ```
 
 这里 `main` 停在 `B`，`feature-login` 从 `B` 往前走到了 `D`。
@@ -178,12 +176,12 @@ A --- B
 
 所以 Git 可以很轻松地把 `main` 指针直接移动到 `D`：
 
-```text
-A --- B --- C --- D
-                  ↑
-                main
-                  ↑
-          feature-login
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    commit id: "C"
+    commit id: "D (main, feature-login)"
 ```
 
 这就叫**快进合并**。
@@ -1181,3 +1179,132 @@ git config --global mergetool.keepBackup false
 ---
 
 **返回目录**：[README](./README.md)
+
+
+
+
+---
+
+## 使用合并工具解决冲突
+
+除了手动编辑冲突标记，还可以使用图形化工具：
+
+### 使用 VS Code
+VS Code 内置了很好的冲突解决界面：
+- 打开冲突文件，会看到高亮的冲突区域
+- 点击 "Accept Current Change"（保留当前分支）
+- 点击 "Accept Incoming Change"（保留合并进来的分支）
+- 点击 "Accept Both Changes"（两个都保留）
+- 或者手动编辑出最终想要的内容
+- 保存后运行 `git add 文件名`
+
+### 使用 Git 自带的 mergetool
+
+```bash
+git mergetool
+```
+
+会打开配置的合并工具（如 vimdiff、meld、kdiff3）。
+
+### 使用 GitHub Desktop / GitKraken
+这些图形化客户端提供了更友好的冲突解决界面。
+
+**选择建议：**
+- 新手：使用 VS Code 或图形化客户端
+- 熟练后：手动编辑通常更快
+- 复杂冲突：图形化工具能更清晰地看到三方对比
+
+---
+
+## 本章检查点
+
+在继续下一章之前，请确认你能够：
+
+- [ ] 清楚区分"源分支"和"目标分支"
+- [ ] 理解快进合并和三方合并的区别
+- [ ] 能够独立解决一个简单的合并冲突
+- [ ] 知道合并前要确保工作目录干净
+- [ ] 理解冲突标记 `<<<<<<<`、`=======`、`>>>>>>>` 的含义
+
+### 自测练习
+
+在练习目录完成：
+
+1. **快进合并**：
+   ```bash
+   # 创建分支并提交
+   git switch -c feature-a
+   echo "Feature A" > feature.txt
+   git add feature.txt
+   git commit -m "Add feature A"
+   
+   # 回到 main 并合并
+   git switch main
+   git merge feature-a    # 应该是快进合并
+   git log --oneline --graph
+   ```
+   预期：看到一条直线历史，没有合并提交
+
+2. **三方合并**：
+   ```bash
+   # 在 main 上提交
+   git switch main
+   echo "Main work" > main.txt
+   git add main.txt
+   git commit -m "Work on main"
+   
+   # 创建分支并提交
+   git switch -c feature-b
+   echo "Feature B" > feature-b.txt
+   git add feature-b.txt
+   git commit -m "Add feature B"
+   
+   # 回到 main 并合并
+   git switch main
+   git merge feature-b    # 应该是三方合并
+   git log --oneline --graph
+   ```
+   预期：看到分叉历史，有一个合并提交
+
+3. **解决冲突**：
+   ```bash
+   # 在 main 修改同一文件
+   echo "Main version" > conflict.txt
+   git add conflict.txt
+   git commit -m "Main version"
+   
+   # 在分支修改同一文件同一位置
+   git switch -c feature-conflict
+   git reset --hard HEAD~1  # 回到分叉前
+   echo "Feature version" > conflict.txt
+   git add conflict.txt
+   git commit -m "Feature version"
+   
+   # 合并产生冲突
+   git switch main
+   git merge feature-conflict  # 会冲突
+   
+   # 查看冲突
+   cat conflict.txt
+   
+   # 解决冲突（编辑文件，删除标记，保留想要的内容）
+   # 完成合并
+   git add conflict.txt
+   git commit
+   ```
+
+### 常见困惑
+
+**Q: 为什么我 `git merge feature` 时提示 "Already up to date"？**  
+A: 说明 main 分支已经包含了 feature 的所有提交，不需要合并。可能是你已经合并过，或者方向反了。
+
+**Q: 冲突解决后，是用 `git commit` 还是 `git merge --continue`？**  
+A: 都可以。`git add` 冲突文件后直接 `git commit` 即可。Git 会自动识别这是合并提交。
+
+**Q: 合并时能否撤销？**  
+A: 
+- 合并冲突中想放弃：`git merge --abort`
+- 合并已完成想撤销：`git reset --hard HEAD~1` (危险，会丢改动) 或 `git revert -m 1 提交哈希`
+
+**Q: `--no-ff` 有什么用？**  
+A: 强制创建合并提交，即使可以快进。让历史更清晰，能看出哪些提交来自哪个功能分支。

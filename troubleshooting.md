@@ -352,3 +352,311 @@ git status
 ---
 
 **返回目录**：[README](./README.md)
+
+
+## 排障思维流程
+
+`mermaid
+flowchart TD
+    A[遇到Git问题] --> B{能看到错误信息吗?}
+    B -- 是 --> C[复制完整错误信息]
+    B -- 否 --> D[运行 git status]
+    C --> E[在本文档搜索错误信息]
+    D --> E
+    E --> F{找到解决方案了吗?}
+    F -- 是 --> G[按步骤操作]
+    F -- 否 --> H[检查三件事]
+    H --> I[1. git status<br/>2. git branch<br/>3. git remote -v]
+    I --> J[用搜索引擎搜索<br/>完整错误信息]
+`
+
+---
+
+## 更多常见场景
+
+### 推送被拒绝 (rejected)
+
+完整错误可能是：
+
+`	ext
+! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/...'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+`
+
+**含义：** 远程分支有你本地没有的提交，Git 拒绝直接推送以避免覆盖别人的工作。
+
+**解决步骤：**
+
+1. 先拉取远程改动：
+   `ash
+   git pull
+   `
+
+2. 如果有冲突，解决冲突后提交
+
+3. 再次推送：
+   `ash
+   git push
+   `
+
+**不要使用 git push --force**，除非你：
+- 明确知道会覆盖什么
+- 已经和团队确认过
+- 这是你的个人分支
+
+---
+
+### 合并冲突太乱，想放弃这次合并
+
+如果正在合并过程中，运行 git status 看到：
+
+`	ext
+You have unmerged paths.
+`
+
+放弃本次合并：
+
+`ash
+git merge --abort
+`
+
+这会回到合并前的状态。
+
+---
+
+### 不小心提交了敏感信息（密码、密钥）
+
+**场景1：刚提交，还没推送**
+
+`ash
+# 撤销最后一次提交，保留改动在工作目录
+git reset --soft HEAD~1
+
+# 从文件中移除敏感信息
+
+# 重新提交
+git add .
+git commit -m "修正后的提交"
+`
+
+**场景2：已经推送到远程**
+
+这很严重。敏感信息一旦推送，就可能已经被别人看到或克隆下来。
+
+⚠️ **立即行动：**
+1. 立即更换泄露的密码/密钥
+2. 联系仓库管理员
+3. 考虑使用 git filter-branch 或 BFG Repo-Cleaner 清理历史（会重写历史，影响所有协作者）
+
+**预防措施：**
+- 使用 .gitignore 忽略敏感文件
+- 提交前用 git diff --staged 检查
+- 使用 git-secrets 工具预防
+
+---
+
+### 提交历史一团糟，想重新整理
+
+**如果还没推送：**
+
+使用交互式 rebase：
+
+`ash
+git rebase -i HEAD~5  # 整理最近5次提交
+`
+
+会打开编辑器，你可以：
+- squash：合并提交
+- eword：修改提交信息
+- drop：删除提交
+- eorder：调整顺序
+
+**如果已经推送：**
+
+不要 rebase 已推送的公共分支。可以考虑：
+- 创建新的干净分支重新开始
+- 或者接受现状，以后注意提交质量
+
+---
+
+### 切换分支时提示有未提交改动
+
+错误：
+
+`	ext
+error: Your local changes to the following files would be overwritten by checkout:
+        file.txt
+Please commit your changes or stash them before you switch branches.
+`
+
+**原因：** 工作目录有改动，切换分支可能会丢失这些改动。
+
+**方案1：提交改动**
+
+`ash
+git add .
+git commit -m "保存当前工作"
+git switch 其他分支
+`
+
+**方案2：暂存改动（不想提交）**
+
+`ash
+git stash
+git switch 其他分支
+# 工作完成后回来
+git switch 原分支
+git stash pop
+`
+
+**方案3：放弃改动（确定不要了）**
+
+`ash
+git restore .
+git switch 其他分支
+`
+
+---
+
+### 误删了一个分支
+
+如果分支还没被垃圾回收（通常30天内）：
+
+`ash
+# 查看最近的操作记录
+git reflog
+
+# 找到分支被删除前的提交哈希，例如 abc1234
+
+# 重建分支
+git switch -c 恢复的分支名 abc1234
+`
+
+---
+
+### git pull 后代码变乱了
+
+git pull = git fetch + git merge
+
+如果 pull 后出现问题：
+
+`ash
+# 查看合并前的状态
+git reflog
+
+# 回到 pull 之前（例如显示为 HEAD@{1}）
+git reset --hard HEAD@{1}
+`
+
+⚠️ --hard 会丢弃工作目录改动，使用前确认！
+
+**更安全的做法：**
+
+以后用两步代替 git pull：
+
+`ash
+git fetch origin
+git log --oneline --graph --all --decorate  # 先看看远程有什么
+git merge origin/main  # 确认后再合并
+`
+
+---
+
+### 提交后发现commit message写错了
+
+**场景1：最后一次提交，还没推送**
+
+`ash
+git commit --amend
+`
+
+会打开编辑器让你修改提交信息。
+
+或者直接：
+
+`ash
+git commit --amend -m "正确的提交信息"
+`
+
+**场景2：已经推送**
+
+不要修改已推送的提交信息，除非：
+- 这是你的个人分支
+- 团队同意你修改
+
+---
+
+### 不知道自己在哪个分支上改了东西
+
+如果你改了代码，但不记得在哪个分支：
+
+`ash
+git status  # 看当前分支和改动
+git branch  # 确认分支列表
+`
+
+如果改动在错误的分支：
+
+`ash
+git stash              # 保存改动
+git switch 正确的分支
+git stash pop         # 恢复改动
+`
+
+---
+
+## 求助前的检查清单
+
+在向别人求助前，请先完成这个清单：
+
+- [ ] 运行 git status 并截图
+- [ ] 运行 git log --oneline --graph --all -10 并截图
+- [ ] 复制完整的错误信息（不要只说"报错了"）
+- [ ] 说明你想做什么操作
+- [ ] 说明期望的结果是什么
+- [ ] 说明实际发生了什么
+- [ ] 确认是否已经推送到远程
+
+---
+
+## 紧急救援命令
+
+当你不确定发生了什么，又担心搞砸时：
+
+### 先备份当前状态
+
+`ash
+# 创建一个临时分支保存当前状态
+git switch -c backup-
+`
+
+### 查看最近的操作记录
+
+`ash
+git reflog -20
+`
+
+这会显示 HEAD 的移动历史，通常能帮你找回"丢失"的提交。
+
+### 检查仓库完整性
+
+`ash
+git fsck
+`
+
+如果仓库损坏，这个命令会报告。
+
+---
+
+## 最后的建议
+
+1. **不要慌张**：Git 很少真正丢失数据，大多数错误都能恢复
+2. **求助时说清楚**：完整的错误信息 + 你想做什么 + 已经尝试了什么
+3. **定期备份**：重要项目定期推送到远程
+4. **学会 reflog**：它是 Git 的"后悔药"
+5. **练习环境试错**：不确定的命令先在测试目录里试
+
+记住：**git status 和 git reflog 是你最好的朋友。**

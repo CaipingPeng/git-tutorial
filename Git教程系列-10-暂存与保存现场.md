@@ -36,14 +36,10 @@ stash 可以理解为：
 
 它解决的是“我还没准备好提交，但现在需要一个干净工作目录”的问题。它不是用来替代 commit 的长期保存机制。
 
-```text
-工作目录/暂存区的未提交改动
-        │ git stash push
-        ▼
-stash 临时记录
-        │ git stash apply / pop
-        ▼
-重新回到工作目录
+```mermaid
+flowchart TD
+    A["工作目录/暂存区的未提交改动"] -->|git stash push| B["stash 临时记录"]
+    B -->|git stash apply / pop| C["重新回到工作目录"]
 ```
 
 ---
@@ -370,3 +366,4 @@ git update-index --no-skip-worktree 文件名
 ---
 
 **返回目录**：[README](./README.md)
+

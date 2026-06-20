@@ -21,36 +21,125 @@
 
 ---
 
+
+---
+
+## ⚠️ Rebase 的黄金法则
+
+**永远不要 rebase 已经推送到公共分支的提交。**
+
+这是使用 rebase 最重要的规则。违反它会导致团队协作混乱。
+
+### 什么是"公共分支"？
+
+| 分支类型 | 能否 rebase | 说明 |
+|---------|------------|------|
+| 你的个人功能分支（只有你在用） | ✅ 可以 | 前提：没有其他人基于它开发 |
+| `main` / `master` 主分支 | ❌ 不要 | 这是团队共享的稳定分支 |
+| 团队共同开发的分支 | ❌ 不要 | 多人协作的分支不能随意改历史 |
+| 已经有 PR 的分支 | ⚠️ 谨慎 | 除非团队约定允许，否则不建议 |
+| 已推送但只有你在用的分支 | ✅ 可以 | 使用 `--force-with-lease` |
+
+### 为什么不能 rebase 公共分支？
+
+Rebase 会**重写提交历史**（改变提交的 SHA-1 哈希值）。
+
+如果别人基于旧的提交开发，你 rebase 后强推，会导致：
+- 他们的历史和你的历史分叉
+- 合并时产生重复的提交
+- 团队成员需要手动修复各自的分支
+- 协作陷入混乱
+
+**简单记忆：**
+> 一旦提交被推送到了别人可能拉取的地方，就不要再 rebase 它。
+
+### 安全的 rebase 场景示例
+
+```bash
+# ✅ 场景1：整理自己的功能分支后推送
+git switch feature-mine
+git rebase main                              # 让功能分支基于最新 main
+git push --force-with-lease origin feature-mine
+
+# ✅ 场景2：本地整理提交，还没推送
+git rebase -i HEAD~3                        # 合并、调整提交顺序
+git push                                     # 第一次推送，没问题
+
+# ✅ 场景3：个人分支同步主分支更新
+git switch feature-mine
+git fetch origin
+git rebase origin/main                      # 保持功能分支跟上主线
+```
+
+### 危险的 rebase 场景（不要这样做！）
+
+```bash
+# ❌ 场景1：永远不要 rebase 主分支
+git switch main
+git rebase feature-something               # 错误！不要 rebase main
+git push --force                           # 更错误！强推主分支
+
+# ❌ 场景2：不要 rebase 已经被别人拉取的分支
+git switch shared-feature                  # 团队共同开发的分支
+git rebase main                            # 错误！别人可能已经基于旧历史
+git push --force                           # 会破坏别人的工作
+
+# ❌ 场景3：不要 rebase 已发布的版本
+git switch release-v1.0
+git rebase main                            # 错误！发布分支不应改变
+```
+
+### 记住这个决策流程
+
+```mermaid
+flowchart TD
+    A[我想 rebase] --> B{这些提交推送过吗?}
+    B -- 没有 --> C[✅ 安全，可以 rebase]
+    B -- 推送过 --> D{有其他人可能拉取过吗?}
+    D -- 没有，只有我 --> E[✅ 可以，用 --force-with-lease]
+    D -- 有，或不确定 --> F[❌ 不要 rebase，用 merge]
+    
+    F --> G[更安全的替代方案:<br/>git merge main]
+```
+
+**当不确定时，用 `merge` 而不是 `rebase`。**
+
+Merge 不会改变已有提交的历史，总是安全的。
+
+---
 ## 1. 为什么已经有 merge，还要有 rebase？
 
 假设你从 `main` 创建了一个功能分支：
 
-```text
-A --- B
-      ↑
-    main
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B (main)"
 ```
 
 你在功能分支上提交了两次：
 
-```text
-        C --- D
-       /      ↑
-A --- B       feature
-      ↑
-    main
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    branch feature
+    commit id: "C"
+    commit id: "D"
 ```
 
 与此同时，`main` 上也有了新提交：
 
-```text
-        C --- D
-       /      ↑
-A --- B       feature
-       \
-        E --- F
-              ↑
-            main
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    branch feature
+    commit id: "C"
+    commit id: "D"
+    checkout main
+    commit id: "E"
+    commit id: "F"
 ```
 
 现在你想让 `feature` 基于最新的 `main` 继续开发。
@@ -83,10 +172,14 @@ git rebase main
 
 结果看起来像这样：
 
-```text
-A --- B --- E --- F --- C' --- D'
-                    ↑          ↑
-                  main       feature
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    commit id: "E"
+    commit id: "F (main)"
+    commit id: "C'"
+    commit id: "D' (feature)"
 ```
 
 `feature` 的改动还在，但变成了新的提交 `C'`、`D'`，接在最新的 `main` 后面。
@@ -143,20 +236,30 @@ Git 大致做三件事：
 
 图示：
 
-```text
-变基前：
-        C --- D
-       /      ↑
-A --- B       feature
-       \
-        E --- F
-              ↑
-            main
+**变基前：**
 
-变基后：
-A --- B --- E --- F --- C' --- D'
-                    ↑          ↑
-                  main       feature
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    branch feature
+    commit id: "C"
+    commit id: "D"
+    checkout main
+    commit id: "E"
+    commit id: "F"
+```
+
+**变基后：**
+
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    commit id: "E"
+    commit id: "F (main)"
+    commit id: "C'"
+    commit id: "D' (feature)"
 ```
 
 为什么是 `C'`、`D'`，不是原来的 `C`、`D`？
@@ -258,18 +361,28 @@ git merge feature-login
 
 图示：
 
-```text
-rebase 后：
-A --- B --- E --- F --- C' --- D'
-                    ↑          ↑
-                  main       feature-login
+**rebase 后：**
 
-merge 后：
-A --- B --- E --- F --- C' --- D'
-                               ↑
-                             main
-                               ↑
-                         feature-login
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    commit id: "E"
+    commit id: "F (main)"
+    commit id: "C'"
+    commit id: "D' (feature-login)"
+```
+
+**merge 后：**
+
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    commit id: "E"
+    commit id: "F"
+    commit id: "C'"
+    commit id: "D' (main, feature-login)"
 ```
 
 也就是说，rebase 常用于整理功能分支，让最后合并更像直线。
@@ -842,3 +955,5 @@ rebase 前的位置
 ---
 
 **返回目录**：[README](./README.md)
+
+

@@ -35,8 +35,9 @@
 
 远程仓库就是放在服务器上的 Git 仓库：
 
-```text
-你的电脑上的本地仓库  ←→  GitHub/GitLab/Gitee 上的远程仓库
+```mermaid
+flowchart LR
+    A["本地仓库<br/>(你的电脑)"] <-->|push/pull| B["远程仓库<br/>(GitHub/GitLab/Gitee)"]
 ```
 
 它的作用是：
@@ -1091,3 +1092,190 @@ git show-ref
 ---
 
 **返回目录**：[README](./README.md)
+
+
+## 选择远程协议：HTTPS 还是 SSH？
+
+克隆仓库时，你会看到两种 URL 格式：
+
+```bash
+# HTTPS 格式
+https://github.com/username/repo.git
+
+# SSH 格式
+git@github.com:username/repo.git
+```
+
+### 对比
+
+| 特性 | HTTPS | SSH |
+|-----|-------|-----|
+| 设置难度 | ✅ 简单，无需配置 | ⚠️ 需要生成和配置密钥对 |
+| 推送认证 | 每次输入密码（或缓存凭据） | 🔑 自动认证，无需输入密码 |
+| 防火墙友好 | ✅ 使用端口443，通常不被阻止 | ⚠️ 使用端口22，有时被防火墙阻止 |
+| 安全性 | 依赖密码或 token | 依赖密钥对（更安全） |
+| 适合场景 | 新手、临时克隆、偶尔推送 | 频繁推送、多仓库协作 |
+
+### 建议
+
+**新手从 HTTPS 开始：**
+- 简单直接，立即可用
+- 不需要额外配置
+- 适合学习和实验
+
+**频繁推送后配置 SSH：**
+- 避免反复输入密码
+- 提升推送效率
+- 团队协作的标准做法
+
+**企业环境：**
+- 询问团队规范
+- 有些公司要求使用 SSH
+- 有些公司有内部 Git 服务器配置
+
+### 配置 SSH（可选）
+
+如果你决定使用 SSH，按以下步骤配置：
+
+#### 1. 生成 SSH 密钥对
+
+```bash
+# 推荐使用 Ed25519 算法（更安全、更快）
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+# 如果系统不支持 Ed25519，使用 RSA
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
+
+按提示操作：
+- 密钥保存位置：直接回车（使用默认 `~/.ssh/id_ed25519`）
+- 是否设置密码短语：可选（更安全但每次使用需输入）
+
+#### 2. 查看公钥
+
+```bash
+# Windows (PowerShell)
+cat ~/.ssh/id_ed25519.pub
+
+# macOS/Linux
+cat ~/.ssh/id_ed25519.pub
+
+# 或者用 clip 命令直接复制到剪贴板
+# Windows
+clip < ~/.ssh/id_ed25519.pub
+
+# macOS
+pbcopy < ~/.ssh/id_ed25519.pub
+
+# Linux (需要 xclip)
+xclip -sel clip < ~/.ssh/id_ed25519.pub
+```
+
+#### 3. 在 Git 平台添加公钥
+
+**GitHub：**
+1. 登录 GitHub
+2. 右上角头像 → Settings
+3. 左侧 SSH and GPG keys
+4. 点击 New SSH key
+5. 粘贴公钥内容，填写标题（如 "我的笔记本"）
+6. 点击 Add SSH key
+
+**GitLab：**
+1. 登录 GitLab
+2. 右上角头像 → Preferences
+3. 左侧 SSH Keys
+4. 粘贴公钥，设置过期时间（可选）
+5. 点击 Add key
+
+**Gitee（码云）：**
+1. 登录 Gitee
+2. 右上角头像 → 设置
+3. 左侧 SSH 公钥
+4. 粘贴公钥内容，填写标题
+5. 点击 确定
+
+#### 4. 测试连接
+
+```bash
+# 测试 GitHub 连接
+ssh -T git@github.com
+
+# 测试 GitLab 连接
+ssh -T git@gitlab.com
+
+# 测试 Gitee 连接
+ssh -T git@gitee.com
+```
+
+如果成功，你会看到类似：
+```
+Hi username! You've successfully authenticated...
+```
+
+### 切换已有仓库的远程 URL
+
+如果你之前用 HTTPS 克隆，想改用 SSH：
+
+```bash
+# 查看当前远程 URL
+git remote -v
+
+# 更改为 SSH URL（以 GitHub 为例）
+git remote set-url origin git@github.com:username/repo.git
+
+# 验证更改
+git remote -v
+```
+
+反之，从 SSH 改为 HTTPS：
+
+```bash
+git remote set-url origin https://github.com/username/repo.git
+```
+
+### 常见问题
+
+**Q: HTTPS 每次都要输入密码，太麻烦？**  
+A: 可以配置凭据缓存：
+```bash
+# Windows
+git config --global credential.helper wincred
+
+# macOS
+git config --global credential.helper osxkeychain
+
+# Linux
+git config --global credential.helper cache
+```
+
+**Q: SSH 配置后还是要输入密码？**  
+A: 你可能设置了密钥密码短语（passphrase）。可以使用 ssh-agent 避免重复输入。
+
+**Q: GitHub 现在不支持密码推送了？**  
+A: 是的。2021年8月起，GitHub 弃用了密码认证。HTTPS 方式需要使用 Personal Access Token (PAT)。建议新手直接学 SSH。
+
+**Q: 公司防火墙阻止了 SSH（端口22），怎么办？**  
+A: GitHub 支持通过 HTTPS 端口使用 SSH：
+```bash
+# 测试连接
+ssh -T -p 443 git@ssh.github.com
+
+# 配置使用 443 端口
+# 编辑 ~/.ssh/config
+Host github.com
+  Hostname ssh.github.com
+  Port 443
+```
+
+### 推荐学习路径
+
+1. **第一次学 Git**：用 HTTPS，专注学命令
+2. **开始频繁推送**：配置 SSH，提升效率
+3. **多设备协作**：每台设备生成独立密钥
+4. **团队协作**：询问团队规范，保持一致
+
+详细文档：
+- GitHub SSH: https://docs.github.com/cn/authentication
+- GitLab SSH: https://docs.gitlab.com/ee/user/ssh.html
+- Gitee SSH: https://help.gitee.com/base/account/SSH公钥设置

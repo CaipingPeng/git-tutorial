@@ -432,3 +432,168 @@ git clean -fdx
 ---
 
 **返回目录**：[README](./README.md)
+
+
+---
+
+## Reflog 的保留期限和最佳实践
+
+`git reflog` 是 Git 的"后悔药"，但它不是永久的。
+
+### 保留时间
+
+| 情况 | 保留时间 | 说明 |
+|-----|---------|------|
+| 可达的提交（有分支/标签指向） | **永久保留** | 不会被垃圾回收 |
+| 不可达的提交（只能通过 reflog 找到） | 默认 **90 天** | 过期后可能被 `git gc` 删除 |
+| reflog 记录本身 | 默认 **90 天** | `git reflog expire` 后清除 |
+
+### 这意味着什么？
+
+**场景：你3个月前删除了一个分支**
+
+1. 当时你删除了分支 `feature-old`
+2. 没有给那些提交创建新分支或标签
+3. 现在想恢复，运行 `git reflog`
+4. **可能已经找不到了**（超过90天，被垃圾回收）
+
+### 保险做法
+
+如果通过 reflog 找到了重要提交，**立即**给它创建一个分支：
+
+```bash
+# 1. 查看 reflog 找到提交
+git reflog
+
+# 假设找到重要提交 abc1234
+
+# 2. 立即创建分支固定它
+git switch -c rescue-重要功能 abc1234
+
+# 或者创建标签
+git tag backup-20250621 abc1234
+```
+
+这样提交就变成"可达"的，不会被删除。
+
+### 查看和修改保留期限
+
+```bash
+# 查看当前配置（默认90天）
+git config gc.reflogExpire
+git config gc.reflogExpireUnreachable
+
+# 修改保留期限（不推荐随意修改）
+git config gc.reflogExpire "180 days"        # 可达提交的 reflog
+git config gc.reflogExpireUnreachable "60 days"  # 不可达提交的 reflog
+```
+
+**建议：** 保持默认90天就够了，但要养成及时给重要提交创建分支的习惯。
+
+### Reflog 最佳实践
+
+#### ✅ 好习惯
+
+1. **误操作后立即查看**
+   ```bash
+   git reflog -20  # 查看最近20次 HEAD 移动
+   ```
+
+2. **找到提交后立即固定**
+   ```bash
+   git switch -c rescue-分支名 提交哈希
+   ```
+
+3. **重要操作前做标记**
+   ```bash
+   git tag before-dangerous-operation  # 操作前打标签
+   # 进行危险操作...
+   # 如果出问题，可以基于标签恢复
+   ```
+
+#### ❌ 常见误区
+
+1. **误以为 reflog 永久保存一切**
+   - Reflog 只保留90天
+   - 只记录 HEAD 和分支指针的移动
+   - 不记录未 commit 的文件内容
+
+2. **以为 reflog 是备份**
+   - Reflog 只在本地，不会推送到远程
+   - 重新克隆仓库后，reflog 是空的
+   - 定期推送才是真正的备份
+
+3. **忘记 reflog 是按仓库的**
+   - 每个 Git 仓库有自己的 reflog
+   - 不同电脑的同一仓库，reflog 不同
+
+---
+
+## 本章检查点
+
+在继续下一章之前，请确认你能够：
+
+- [ ] 理解"未暂存、已暂存、已提交、已推送"四种状态的撤销方式
+- [ ] 知道 `git restore` 和 `git reset` 的区别
+- [ ] 理解 `git reset --soft/--mixed/--hard` 的差异
+- [ ] 知道 `git revert` 适用于已推送的提交
+- [ ] 会使用 `git reflog` 找回"丢失"的提交
+
+### 自测练习
+
+**练习1：撤销未暂存的改动**
+```bash
+echo "wrong content" > test.txt
+git restore test.txt
+cat test.txt  # 应该恢复到最近提交的内容
+```
+
+**练习2：从暂存区撤回**
+```bash
+echo "staged" > test.txt
+git add test.txt
+git restore --staged test.txt
+git status  # test.txt 应该在 "Changes not staged"
+```
+
+**练习3：用 reflog 恢复"丢失"的提交**
+```bash
+# 创建提交
+echo "important" > important.txt
+git add important.txt
+git commit -m "Important commit"
+
+# "丢失"它（移动 HEAD）
+git reset --hard HEAD~1
+
+# 恢复
+git reflog  # 找到 "Important commit" 的哈希
+git switch -c rescue abc1234  # 用实际哈希替换
+```
+
+### 常见困惑
+
+**Q: `git reset` 和 `git revert` 什么时候用哪个？**  
+A: 
+- `reset`：撤销本地提交，改写历史（未推送时用）
+- `revert`：创建新提交来反做某次提交（已推送时用）
+
+**Q: `git restore` 丢失的内容能找回吗？**  
+A: **不能**。`git restore` 丢弃的工作目录改动，如果没有 commit 或 stash，通常无法恢复。这就是为什么要谨慎使用。
+
+**Q: 多次 `git reset --hard` 后，能用 reflog 都找回来吗？**  
+A: 只要在90天内，通常可以。但要注意：`git reset --hard` 会丢弃工作目录改动，reflog 只能恢复已提交的内容。
+
+---
+
+## 紧急救援提醒
+
+如果你不小心执行了危险操作：
+
+1. **立即停止**：不要继续敲命令
+2. **查看 reflog**：`git reflog -20`
+3. **截图或复制**：保存 reflog 输出
+4. **创建救援分支**：`git switch -c emergency 可疑提交哈希`
+5. **寻求帮助**：带着 reflog 截图求助
+
+记住：**慌乱中的操作比原问题更危险。**

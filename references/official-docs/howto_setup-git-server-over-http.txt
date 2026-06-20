@@ -1,0 +1,6 @@
+URL: https://git-scm.com/docs/howto/setup-git-server-over-http
+Title: Redirecting…
+================================================================================
+
+Redirecting…
+Click here if you are not redirected.
