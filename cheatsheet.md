@@ -27,6 +27,7 @@
 | 看未暂存改动 | `git diff` |
 | 看已暂存改动 | `git diff --staged` |
 | 看工作目录相对最近提交的全部改动 | `git diff HEAD` |
+| 看两个提交/标签之间的差异统计 | `git diff A..B --stat` |
 | 看某次提交内容 | `git show 提交哈希` |
 
 ## 我想看历史
@@ -35,6 +36,7 @@
 |---|---|
 | 简洁历史 | `git log --oneline` |
 | 图形历史 | `git log --oneline --graph --all --decorate` |
+| 看 B 有而 A 没有的提交 | `git log A..B --oneline` |
 | 看某个文件历史 | `git log -- 文件名` |
 | 看每行最后是谁改的 | `git blame 文件名` |
 | 找回 HEAD 移动记录 | `git reflog` |
@@ -92,6 +94,7 @@
 | 首次推送并设置上游 | `git push -u origin 分支名` |
 | 推送当前分支 | `git push` |
 | 清理已删除远程分支引用 | `git fetch -p` |
+| 基于远程分支创建本地跟踪分支 | `git switch --track origin/分支名` |
 
 ## 我推不上去
 

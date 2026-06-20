@@ -138,6 +138,12 @@ git merge --abort
 git switch -c rescue-work
 ```
 
+如果你是因为运行了类似 `git checkout origin/main` 才看到这条提示，说明你切到的是远程跟踪分支指向的提交，而不是一个可继续日常开发的本地分支。想基于它继续工作，先创建本地分支：
+
+```bash
+git switch -c my-work origin/main
+```
+
 ## `pathspec ... did not match`
 
 常见原因：分支名、文件名或路径写错，或者远程分支还没 fetch 到本地。

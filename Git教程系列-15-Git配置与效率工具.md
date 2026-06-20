@@ -290,6 +290,16 @@ git remote -v
 
 建议：用命令行建立心智模型，用 GUI 辅助查看 diff 和解决冲突。
 
+更实际的组合方式是：常规流程用命令行确认状态和执行命令，复杂差异用 GUI 看清楚。比如提交前先运行：
+
+```bash
+git status
+git diff
+git diff --staged
+```
+
+如果 diff 很长，再打开 VS Code Git 面板或专业 Git GUI 按文件查看。这样你既不会只靠按钮猜 Git 做了什么，也能利用图形工具降低阅读成本。
+
 ---
 
 ## 11. hooks 入门

@@ -65,6 +65,10 @@
 
 这就是为什么 Git 远程协作不是“上传文件”这么简单，而是在不同仓库之间交换提交。
 
+![团队把 origin 作为共享 hub，各成员的本地仓库围绕它同步](./assets/git-for-humans-hub-model.png)
+
+上图里的 `origin` 是团队约定的中心副本。日常协作时，大家通常先把自己的提交推到这个中心，再从中心获取别人的提交，而不是互相拷贝项目文件夹。注意：这是协作习惯上的“中心”，不是说你的本地仓库不完整；每个正常克隆下来的仓库仍然带着完整提交历史。
+
 如果想把本地提交上传到远程仓库，需要：
 
 ```bash
@@ -260,6 +264,25 @@ main
 | `main` | 你的本地 main 分支 | 可以 |
 | `origin/main` | 本地记录的远程 main 状态 | 不建议直接开发 |
 | `origin` | 远程仓库别名 | 不是分支 |
+
+不要把 `origin/main` 当作日常工作分支直接切过去。老教程里如果运行：
+
+```bash
+git checkout origin/main
+```
+
+Git 往往会让你进入 detached HEAD 状态，也就是只是临时查看远程分支指向的那次提交。想基于远程分支继续工作，应该创建本地分支：
+
+```bash
+git switch -c my-work origin/main
+```
+
+如果远程已经有一个功能分支，想在本地创建同名分支并建立追踪关系，可以用：
+
+```bash
+git fetch origin
+git switch --track origin/feature-cart
+```
 
 运行：
 
@@ -692,6 +715,7 @@ git fetch -p
 | `git remote add origin URL` | 添加远程仓库 | 本地仓库要连接远程时 |
 | `git remote add upstream URL` | 添加原项目远程 | fork 工作流中同步原项目时 |
 | `git branch -vv` | 查看本地分支上游关系 | 不确定 push/pull 对应哪个远程分支时 |
+| `git switch --track origin/分支` | 从远程跟踪分支创建本地分支 | 参与别人已经推到远程的功能分支时 |
 | `git push -u origin 分支` | 首次推送并设置上游 | 第一次推送某个本地分支时 |
 | `git push` | 推送当前分支提交 | 上游关系已设置后 |
 | `git fetch origin` | 下载远程更新 | 想先看看远程有什么变化时 |

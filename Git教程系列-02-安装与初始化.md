@@ -141,6 +141,8 @@ git config --global user.email "zhangsan@example.com"
 
 如果将来某个项目要用另一套身份，也可以在那个项目里单独配置，不加 `--global` 即可。新手阶段先记全局配置就够了。
 
+提交里的作者信息会跟着提交一起进入历史；如果你把提交推到公共仓库，别人也能看到这些信息。如果不想暴露私人邮箱，可以在 GitHub/GitLab/Gitee 里查看平台提供的 noreply 或隐私邮箱，再把 `user.email` 配成那个地址。
+
 ---
 
 ## 6. 查看配置是否成功
@@ -180,6 +182,8 @@ Git 命令通常要在项目目录里运行。
 所以在学 `git init` 前，先认识几个命令行基础命令。
 
 本教程默认使用 **Git Bash**。如果你用的是 Windows 自带的 **PowerShell** 或 **cmd**，Git 命令本身大多一样，例如 `git status`、`git init`、`git add` 都还是这样写；差别主要出现在 `pwd`、`ls`、`clear` 这类“命令行自己的命令”上。
+
+一开始建议先跟着命令行走，不是因为 GUI 不专业，而是因为 Git 最重要的信息会通过命令输出告诉你：当前在哪个分支、哪些文件已暂存、远程是否落后。等你能读懂这些提示后，再配合 VS Code、GitHub Desktop 或其他图形工具看 diff，会更稳。
 
 | 作用 | Git Bash | PowerShell | Windows cmd |
 |---|---|---|---|
